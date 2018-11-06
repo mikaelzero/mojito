@@ -331,9 +331,9 @@ public class DragDiooto {
                 SketchImageView sketchImageView = getSketchImageView(position);
                 if (sketchImageView.getZoomer() != null && sketchImageView.isZoomEnabled()) {
                     //TODO BlockDisplayer的处理
-//                    e("isWork:" + sketchImageView.getZoomer().getBlockDisplayer().isWorking());
-//                    sketchImageView.getZoomer().getBlockDisplayer().setPause(true);
-//                    e("isWork2:" + sketchImageView.getZoomer().getBlockDisplayer().isWorking());
+                    e("isWork:" + sketchImageView.getZoomer().getBlockDisplayer().isReady() + "    position:" + i);
+                    sketchImageView.getZoomer().getBlockDisplayer().setPause(false);
+                    e("isWork2:" + sketchImageView.getZoomer().getBlockDisplayer().isReady() + "    position:" + i);
                 }
                 Drawable drawable = SketchUtils.getLastDrawable(sketchImageView.getDrawable());
                 if (drawable != null && drawable instanceof SketchGifDrawable) {
