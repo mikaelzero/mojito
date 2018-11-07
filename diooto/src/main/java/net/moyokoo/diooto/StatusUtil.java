@@ -11,11 +11,7 @@ public class StatusUtil {
     private StatusUtil() {
     }
 
-    public static HostLayout with(FragmentActivity activity) {
-        return with(activity, false);
-    }
-
-    public static HostLayout with(FragmentActivity activity, boolean isFullScreen) {
+    public static HostLayout with(Activity activity) {
         Window window = activity.getWindow();
         ViewGroup contentLayout = window.getDecorView().findViewById(Window.ID_ANDROID_CONTENT);
         if (contentLayout.getChildCount() > 0) {
@@ -24,6 +20,6 @@ public class StatusUtil {
                 return (HostLayout) contentView;
             }
         }
-        return new HostLayout(activity, isFullScreen);
+        return new HostLayout(activity);
     }
 }

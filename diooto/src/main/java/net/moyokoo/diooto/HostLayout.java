@@ -25,29 +25,17 @@ import net.moyokoo.drag.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HostLayout extends FrameLayout {
+public class HostLayout extends RelativeLayout {
 
 
-    private FragmentActivity mActivity;
+    private Activity mActivity;
     private FrameLayout mContentLayout;
-    private FixMultiViewPager viewPager;
-    private DragDiootoView singleView;
     private int activityStatusBarColor = Color.BLACK;
     private StatusView statusView;
-    boolean isFullScreen = false;
-
-    public FixMultiViewPager getViewPager() {
-        return viewPager;
-    }
 
 
-    public DragDiootoView getSingleView() {
-        return singleView;
-    }
-
-    HostLayout(FragmentActivity activity, boolean isFullScreen) {
+    HostLayout(Activity activity) {
         super(activity);
-        this.isFullScreen = isFullScreen;
         this.mActivity = activity;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             activityStatusBarColor = activity.getWindow().getStatusBarColor();
@@ -55,12 +43,11 @@ public class HostLayout extends FrameLayout {
         loadView();
         replaceContentView();
 
-        if (!isFullScreen) {
-            Utils.invasionStatusBar(mActivity);
-            Utils.invasionNavigationBar(mActivity);
-            Utils.setStatusBarColor(mActivity, Color.TRANSPARENT);
-            Utils.setNavigationBarColor(mActivity, Color.TRANSPARENT);
-        }
+        Utils.invasionStatusBar(mActivity);
+        Utils.invasionNavigationBar(mActivity);
+        Utils.setStatusBarColor(mActivity, Color.TRANSPARENT);
+        Utils.setNavigationBarColor(mActivity, Color.TRANSPARENT);
+
     }
 
     @Override
@@ -68,7 +55,7 @@ public class HostLayout extends FrameLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int paddingSize = insets.getSystemWindowInsetBottom();
             mContentLayout.setPaddingRelative(0, 0, 0, paddingSize);
-            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mContentLayout.getLayoutParams();
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mContentLayout.getLayoutParams();
             layoutParams.bottomMargin = 0;
             return super.onApplyWindowInsets(insets.replaceSystemWindowInsets(0, 0, 0, 0));
         } else {
@@ -79,12 +66,7 @@ public class HostLayout extends FrameLayout {
     private void loadView() {
         inflate(mActivity, R.layout.host_layout, this);
         mContentLayout = findViewById(R.id.content);
-        viewPager = findViewById(R.id.viewPager);
-        singleView = findViewById(R.id.singleView);
         statusView = findViewById(R.id.statusView);
-        if (isFullScreen) {
-            statusView.setVisibility(View.GONE);
-        }
     }
 
     private void replaceContentView() {
@@ -97,40 +79,15 @@ public class HostLayout extends FrameLayout {
             mContentLayout.addView(contentView, contentParams.width, contentParams.height);
         }
         contentLayout.addView(this, -1, -1);
-
-//        viewPager = new FixMultiViewPager(mActivity);
-//        viewPager.setId(R.id.dr_photo_dio_viewpager_id);
-//        mContentLayout.addView(viewPager);
     }
 
-    public HostLayout type(int type) {
-        if (type == DragDiooto.VIDEO) {
-            singleView.setVisibility(View.VISIBLE);
-            viewPager.setVisibility(View.GONE);
-        } else {
-            viewPager.setVisibility(View.VISIBLE);
-            singleView.setVisibility(View.GONE);
-        }
-        return this;
-    }
 
     public HostLayout hideStatus(Context context) {
-        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_FULLSCREEN;
-        uiFlags |= 0x00001000;
-        ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         statusView.setBackgroundColor(activityStatusBarColor);
         setColor((Activity) context, activityStatusBarColor, 0);
         setNavigationBarColor((Activity) context);
         return this;
     }
-
-    void showStatus(Context context) {
-        int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-        ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(uiFlags);
-        setNavigationBarColor((Activity) context);
-        setColor((Activity) context, activityStatusBarColor, 0);
-    }
-
 
     void setNavigationBarColor(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

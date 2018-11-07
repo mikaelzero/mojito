@@ -14,11 +14,10 @@ import android.widget.FrameLayout;
 public class LoadingView extends View {
     private Paint mPaint1;
     private Paint mPaint2;
-    private Context mContext;
+    private Paint circleBgPaint;
     private double percent = 0.083;
     private float interval;
     private float radius;
-    private int type = 1;
 
     public LoadingView(Context context) {
         this(context, null);
@@ -35,7 +34,6 @@ public class LoadingView extends View {
 
 
     private void initView(Context context, AttributeSet attrs) {
-        this.mContext = context;
         if (null == attrs) {
             if (!(getLayoutParams() instanceof FrameLayout.LayoutParams)) {
                 FrameLayout.LayoutParams layoutParams =
@@ -53,25 +51,31 @@ public class LoadingView extends View {
         mPaint2.setAntiAlias(true);
         mPaint2.setStyle(Paint.Style.STROKE);
         mPaint2.setColor(Color.WHITE);
+        circleBgPaint = new Paint();
+        circleBgPaint.setAntiAlias(true);
+        circleBgPaint.setStyle(Paint.Style.FILL);
+        circleBgPaint.setColor(Color.parseColor("#80000000"));
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        radius = (getWidth() >= getHeight() ? getHeight() : getWidth())*0.8f;
-        interval = (float) (radius * 0.06);
-        mPaint2.setStrokeWidth(interval / 3);
-        RectF localRect = new RectF(getWidth() / 2 - radius / 2 + interval, getHeight() / 2 - radius / 2 + interval, getWidth() / 2 + radius / 2 - interval, getHeight() / 2 + radius / 2 - interval);
-        float f1 = (float) (percent * 360);
-            canvas.drawArc(localRect, -90, f1, true, mPaint1);
-
-        canvas.save();
+        radius = (getWidth() >= getHeight() ? getHeight() : getWidth()) * 0.8f;
+        interval = (float) (radius * 0.2);
+        mPaint2.setStrokeWidth(interval / 6);
+        canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius / 2 - interval / 3, circleBgPaint);
         canvas.drawCircle(getWidth() / 2, getHeight() / 2, radius / 2 - interval / 3, mPaint2);
-        canvas.restore();
+        RectF localRect = new RectF(
+                getWidth() / 2 - radius / 2 + interval,
+                getHeight() / 2 - radius / 2 + interval,
+                getWidth() / 2 + radius / 2 - interval,
+                getHeight() / 2 + radius / 2 - interval);
+        float f1 = (float) (percent * 360);
+        canvas.drawArc(localRect, -90, f1, true, mPaint1);
     }
 
     public void setProgress(double progress) {
-        progress = progress/100f;
+        progress = progress / 100f;
         if (progress == 0) {
             progress = 0.083;
         }
@@ -82,11 +86,6 @@ public class LoadingView extends View {
 
     public void loadCompleted() {
         setVisibility(GONE);
-    }
-
-    public void loadCompleted(int type) {
-        this.type = type;
-        setProgress(1.0);
     }
 
     public void loadFaild() {

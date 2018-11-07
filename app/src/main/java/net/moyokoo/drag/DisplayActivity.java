@@ -19,8 +19,8 @@ import android.widget.ImageView;
 
 import com.miaoyongjun.administrator.mvideo.R;
 
+import net.moyokoo.diooto.ContentViewConfig;
 import net.moyokoo.diooto.DragDiooto;
-import net.moyokoo.diooto.DragDiooto2;
 import net.moyokoo.diooto.DragDiootoView;
 import net.moyokoo.diooto.FixMultiViewPager;
 import net.moyokoo.diooto.ImageFragment;
@@ -146,11 +146,11 @@ public class DisplayActivity extends AppCompatActivity {
                     // 会出现有些view无法通过mRecyclerView.getChildCount()得到,其余View大小请自行计算
                     if (activityPosition == 3) {
                         //加载视频
-                        dragDiooto = new DragDiooto(context)
+                        DragDiooto dragDiooto = new DragDiooto(context)
                                 .urls(normalImageUlr[position])
                                 .position(holder.getAdapterPosition())
                                 .views(holder.srcImageView)
-                                .type(DragDiooto.VIDEO)
+                                .type(ContentViewConfig.VIDEO)
                                 //提供视频View
                                 .onProvideVideoView(new DragDiooto.OnProvideVideoView() {
                                     @Override
@@ -187,9 +187,9 @@ public class DisplayActivity extends AppCompatActivity {
                                 .start();
                     } else if (activityPosition == 1) {
                         //加载单张图片
-                        dragDiooto = new DragDiooto(context)
+                        DragDiooto dragDiooto = new DragDiooto(context)
                                 .urls(normalImageUlr[position])
-                                .type(DragDiooto.PHOTO)
+                                .type(ContentViewConfig.PHOTO)
                                 .position(0)
                                 .views(views[holder.getAdapterPosition()])
                                 .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
@@ -201,19 +201,18 @@ public class DisplayActivity extends AppCompatActivity {
                                 })
                                 .start();
                     } else {
-                        DragDiooto2 dragDiooto = new DragDiooto2(context)
-//                                .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
-                                .urls(normalImageUlr)
-                                .type(DragDiooto.PHOTO)
+                        DragDiooto dragDiooto = new DragDiooto(context)
+                                .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
+                                .type(ContentViewConfig.PHOTO)
                                 .position(holder.getAdapterPosition())
                                 .views(views)
-                                .loadPhotoBeforeShowBigImage(new DragDiooto2.OnLoadPhotoBeforeShowBigImage() {
+                                .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
                                     @Override
                                     public void loadView(SketchImageView sketchImageView, int position) {
                                         sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]);
                                     }
                                 })
-                                .start(getSupportFragmentManager());
+                                .start();
                     }
                 }
             });
@@ -257,9 +256,4 @@ public class DisplayActivity extends AppCompatActivity {
         MediaPlayerManager.instance().releasePlayerAndView(this);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        return MediaPlayerManager.instance().backPress() || (dragDiooto != null && dragDiooto.handleKeyDown(keyCode))
-                || super.onKeyDown(keyCode, event);
-    }
 }

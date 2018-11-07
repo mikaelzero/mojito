@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import net.moyokoo.drag.R;
 
@@ -17,30 +17,13 @@ import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
     private FixMultiViewPager mViewPager;
-    private String[] imageUrls;
     List<ContentViewOriginModel> contentViewOriginModels;
-    private int currentPosition;
+    List<ImageFragment> fragmentList;
+    ContentViewConfig contentViewConfig;
 
-    public static void startImageActivity(Activity activity, ImageView[] imageViews, String[] imageUrls) {
-        startImageActivity(activity, imageViews, imageUrls, 0);
-    }
-
-    public static void startImageActivity(Activity activity, View[] views, String[] imageUrls, int currentPosition) {
+    public static void startImageActivity(Activity activity, ContentViewConfig contentViewConfig) {
         Intent intent = new Intent(activity, ImageActivity.class);
-        ArrayList<ContentViewOriginModel> contentViewOriginModels = new ArrayList<>();
-        for (View imageView : views) {
-            ContentViewOriginModel imageBean = new ContentViewOriginModel();
-            int location[] = new int[2];
-            imageView.getLocationOnScreen(location);
-            imageBean.left = location[0];
-            imageBean.top = location[1];
-            imageBean.width = imageView.getWidth();
-            imageBean.height = imageView.getHeight();
-            contentViewOriginModels.add(imageBean);
-        }
-        intent.putParcelableArrayListExtra("viewData", contentViewOriginModels);
-        intent.putExtra("currentPosition", currentPosition);
-        intent.putExtra("imageUrls", imageUrls);
+        intent.putExtra("config", contentViewConfig);
         activity.startActivity(intent);
         activity.overridePendingTransition(0, 0);
     }
@@ -53,14 +36,18 @@ public class ImageActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         setContentView(R.layout.activity_image);
         mViewPager = findViewById(R.id.viewPager);
-        currentPosition = getIntent().getIntExtra("currentPosition", 0);
-        imageUrls = getIntent().getStringArrayExtra("imageUrls");
-        contentViewOriginModels = getIntent().getParcelableArrayListExtra("viewData");
-        final List<Fragment> fragmentList = new ArrayList<>();
+        contentViewConfig = getIntent().getParcelableExtra("config");
+        int currentPosition = contentViewConfig.getPosition();
+        String[] imageUrls = contentViewConfig.getImageUrls();
+        contentViewOriginModels = contentViewConfig.getContentViewOriginModels();
+        fragmentList = new ArrayList<>();
         for (int i = 0; i < contentViewOriginModels.size(); i++) {
-            ImageFragment imageFragment = ImageFragment.newInstance(imageUrls[i], contentViewOriginModels.get(i));
+            ImageFragment imageFragment = ImageFragment.newInstance(
+                    imageUrls[i], i, contentViewConfig.getType(), contentViewOriginModels.get(i)
+            );
             fragmentList.add(imageFragment);
         }
+        mViewPager.setOffscreenPageLimit(contentViewOriginModels.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -73,5 +60,26 @@ public class ImageActivity extends AppCompatActivity {
             }
         });
         mViewPager.setCurrentItem(currentPosition);
+    }
+
+    public void finishView() {
+        if (DragDiooto.onFinish != null) {
+            DragDiooto.onFinish.finish(fragmentList.get(mViewPager.getCurrentItem()).getDragDiootoView());
+        }
+        DragDiooto.onLoadPhotoBeforeShowBigImage = null;
+        DragDiooto.onShowToMaxFinish = null;
+        DragDiooto.onProvideVideoView = null;
+        DragDiooto.onFinish = null;
+        finish();
+        overridePendingTransition(0, 0);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            fragmentList.get(mViewPager.getCurrentItem()).backToMin();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

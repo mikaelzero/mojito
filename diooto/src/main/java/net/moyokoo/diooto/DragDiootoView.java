@@ -223,11 +223,17 @@ public class DragDiootoView extends FrameLayout {
         changeBackgroundViewAlpha(true);
     }
 
-    public void notifySize(int width, int height) {
-        notifySize(width, height, false);
+
+    /**
+     * 配置更改后 重新更新大小  根据存储的原宽高进行更新
+     */
+    public void notifySizeConfig() {
+        screenWidth = getResources().getDisplayMetrics().widthPixels;
+        screenHeight = getResources().getDisplayMetrics().heightPixels;
+        notifySize(realWidth, realHeight);
     }
 
-    public void notifySize(int width, int height, boolean showRightNow) {
+    public void notifySize(int width, int height) {
         realWidth = width;
         realHeight = height;
 
@@ -240,7 +246,7 @@ public class DragDiootoView extends FrameLayout {
 
         int newWidth;
         int newHeight;
-        if (realHeight >= longImageSize || realWidth > realHeight) {
+        if (realHeight >= longImageSize || screenWidth / (float) screenHeight < realWidth / (float) realHeight) {
             isLongHeightImage = realHeight >= longImageSize && getContentView() instanceof SketchImageView;
             isLongWidthImage = realWidth >= longImageSize && getContentView() instanceof SketchImageView;
             newWidth = screenWidth;
@@ -262,38 +268,60 @@ public class DragDiootoView extends FrameLayout {
         if (isAnimating) {
             return;
         }
-        if (showRightNow) {
-            targetImageHeight = endHeight;
-            targetImageWidth = endWidth;
-            targetImageTop = (screenHeight - targetImageHeight) / 2;
-            imageWrapper.setHeight(targetImageHeight);
-            imageWrapper.setWidth(endWidth);
-            imageWrapper.setMarginTop(targetImageTop);
-            imageWrapper.setMarginLeft(endLeft);
-            return;
+
+        //如果Y轴不进行变化  则只变化宽高 该情况暂时发现用在屏幕旋转的情况下
+        if (targetImageTop == (screenHeight - endHeight) / 2) {
+            final int startLeft = imageWrapper.getMarginLeft();
+            ValueAnimator animator = ValueAnimator.ofInt(targetImageWidth, endWidth);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    isAnimating = true;
+                    int value = (int) valueAnimator.getAnimatedValue();
+                    float yPercent = (value - targetImageWidth) / (float) (endWidth - targetImageWidth);
+                    float xOffset = yPercent * (endLeft - startLeft);
+                    float widthOffset = yPercent * (endWidth - targetImageWidth);
+                    float heightOffset = yPercent * (endHeight - targetImageHeight);
+                    imageWrapper.setWidth(targetImageWidth + widthOffset);
+                    imageWrapper.setHeight(targetImageHeight + heightOffset);
+                    imageWrapper.setMarginLeft((int) (startLeft + xOffset));
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isAnimating = false;
+                    targetImageHeight = endHeight;
+                    targetImageWidth = endWidth;
+                    targetImageTop = (screenHeight - targetImageHeight) / 2;
+                }
+            });
+            animator.setDuration(animationDuration);
+            animator.start();
+        } else {
+            ValueAnimator animator = ValueAnimator.ofInt(targetImageTop, (screenHeight - endHeight) / 2);
+            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                    isAnimating = true;
+                    int value = (int) valueAnimator.getAnimatedValue();
+                    min2NormalAndDrag2Min(value, targetImageTop, (screenHeight - endHeight) / 2,
+                            0, endLeft, targetImageWidth, endWidth,
+                            targetImageHeight, endHeight);
+                }
+            });
+            animator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isAnimating = false;
+                    targetImageHeight = endHeight;
+                    targetImageWidth = endWidth;
+                    targetImageTop = (screenHeight - targetImageHeight) / 2;
+                }
+            });
+            animator.setDuration(animationDuration);
+            animator.start();
         }
-        ValueAnimator animator = ValueAnimator.ofInt(targetImageTop, (screenHeight - endHeight) / 2);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                isAnimating = true;
-                int value = (int) valueAnimator.getAnimatedValue();
-                min2NormalAndDrag2Min(value, targetImageTop, (screenHeight - endHeight) / 2,
-                        0, endLeft, targetImageWidth, endWidth,
-                        targetImageHeight, endHeight);
-            }
-        });
-        animator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isAnimating = false;
-                targetImageHeight = endHeight;
-                targetImageWidth = endWidth;
-                targetImageTop = (screenHeight - targetImageHeight) / 2;
-            }
-        });
-        animator.setDuration(animationDuration);
-        animator.start();
     }
 
     public void putData(View originView) {
@@ -321,9 +349,9 @@ public class DragDiootoView extends FrameLayout {
     }
 
     public void show(boolean showImmediately) {
-//        if (mOriginHeight == 0 || mOriginWidth == 0) {
-//            throw new RuntimeException("you must invoke putData first");
-//        }
+        if (mOriginHeight == 0 || mOriginWidth == 0) {
+            throw new RuntimeException("you must invoke putData first");
+        }
         setVisibility(View.VISIBLE);
         mAlpha = showImmediately ? mAlpha = 1 : 0;
         getLocation(mOriginWidth, mOriginHeight, showImmediately);
@@ -429,7 +457,7 @@ public class DragDiootoView extends FrameLayout {
                     if (sketchImageView.getZoomer().getZoomScale() > sketchImageView.getZoomer().getMinZoomScale()) {
                         return super.dispatchTouchEvent(event);
                     }
-                } else if ((float) (Math.round(sketchImageView.getZoomer().getSupportZoomScale() * 1000) / 1000) > 1) {
+                } else if ((Math.round(sketchImageView.getZoomer().getSupportZoomScale() * 1000) / 1000f) > 1) {
                     //如果对图片进行缩放或者缩小操作 则不给事件
                     return super.dispatchTouchEvent(event);
                 }

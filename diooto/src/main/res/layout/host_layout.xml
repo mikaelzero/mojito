@@ -16,18 +16,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/statusView" />
-
-    <net.moyokoo.diooto.DragDiootoView
-        android:id="@+id/singleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <net.moyokoo.diooto.FixMultiViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:background="@color/colorAccent"
-        tools:visibility="visible" />
 </merge>
