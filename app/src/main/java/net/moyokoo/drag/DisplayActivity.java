@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,13 +18,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.miaoyongjun.administrator.mvideo.R;
+
 import net.moyokoo.diooto.DragDiooto;
+import net.moyokoo.diooto.DragDiooto2;
 import net.moyokoo.diooto.DragDiootoView;
+import net.moyokoo.diooto.FixMultiViewPager;
+import net.moyokoo.diooto.ImageFragment;
 
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
 import org.salient.artplayer.ui.ControlPanel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -56,6 +64,7 @@ public class DisplayActivity extends AppCompatActivity {
     int activityPosition;
     DragDiooto dragDiooto;
     DragDiootoView drPhotoDioView;
+    FixMultiViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +73,7 @@ public class DisplayActivity extends AppCompatActivity {
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_display);
         drPhotoDioView = findViewById(R.id.drPhotoDioView);
+        viewPager = findViewById(R.id.viewPager);
         activityPosition = getIntent().getIntExtra("position", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Diooto");
@@ -84,6 +94,11 @@ public class DisplayActivity extends AppCompatActivity {
             }
         });
 
+        viewPager.setVisibility(View.GONE);
+        List<Fragment> mDragDiootoViews = new ArrayList<>();
+        for (int i = 0; i < 6; i++) {
+            mDragDiootoViews.add(new ImageFragment());
+        }
     }
 
     public static void newIntent(Activity activity, Bundle bundle) {
@@ -186,19 +201,19 @@ public class DisplayActivity extends AppCompatActivity {
                                 })
                                 .start();
                     } else {
-                        dragDiooto = new DragDiooto(context)
-                                .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
+                        DragDiooto2 dragDiooto = new DragDiooto2(context)
+//                                .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
+                                .urls(normalImageUlr)
                                 .type(DragDiooto.PHOTO)
                                 .position(holder.getAdapterPosition())
                                 .views(views)
-                                .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
+                                .loadPhotoBeforeShowBigImage(new DragDiooto2.OnLoadPhotoBeforeShowBigImage() {
                                     @Override
                                     public void loadView(SketchImageView sketchImageView, int position) {
                                         sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]);
                                     }
-
                                 })
-                                .start();
+                                .start(getSupportFragmentManager());
                     }
                 }
             });

@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -16,7 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import com.miaoyongjun.mdragvideo.R;
+import net.moyokoo.drag.R;
 
 import java.lang.reflect.Field;
 
@@ -94,6 +95,7 @@ public class DragDiootoView extends FrameLayout {
         screenHeight = getResources().getDisplayMetrics().heightPixels;
         MAX_TRANSLATE_Y = screenHeight / 6;
         MAX_Y = screenHeight - screenHeight / 8;
+
 
         addView(LayoutInflater.from(getContext()).inflate(R.layout.content_item, null), 0);
         contentLayout = findViewById(R.id.contentLayout);
@@ -298,33 +300,20 @@ public class DragDiootoView extends FrameLayout {
         putData(originView, 0, 0);
     }
 
-    public static int getStatusBarH(Context context) {
-        Class<?> c;
-        Object obj;
-        Field field;
-        int statusBarHeight = 0;
-        try {
-            c = Class.forName("com.android.internal.R$dimen");
-            obj = c.newInstance();
-            field = c.getField("status_bar_height");
-            int x = Integer.parseInt(field.get(obj).toString());
-            statusBarHeight = context.getResources().getDimensionPixelSize(x);
-        } catch (Exception e1) {
-            e1.printStackTrace();
-        }
-        return statusBarHeight;
-    }
-
     public void putData(View originView, int realWidth, int realHeight) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
         int location[] = new int[2];
         originView.getLocationOnScreen(location);
+        putData(location[0], location[1], originView.getMeasuredWidth(), originView.getMeasuredHeight());
 
-        mOriginLeft = location[0];
-        mOriginTop = location[1];
-        mOriginHeight = originView.getMeasuredHeight();
-        mOriginWidth = originView.getMeasuredWidth();
+    }
+
+    public void putData(int left, int top, int realWidth, int realHeight) {
+        mOriginLeft = left;
+        mOriginTop = top;
+        mOriginWidth = realWidth;
+        mOriginHeight = realHeight;
     }
 
     public void show() {
@@ -332,9 +321,9 @@ public class DragDiootoView extends FrameLayout {
     }
 
     public void show(boolean showImmediately) {
-        if (mOriginHeight == 0 || mOriginWidth == 0) {
-            throw new RuntimeException("you must invoke putData first");
-        }
+//        if (mOriginHeight == 0 || mOriginWidth == 0) {
+//            throw new RuntimeException("you must invoke putData first");
+//        }
         setVisibility(View.VISIBLE);
         mAlpha = showImmediately ? mAlpha = 1 : 0;
         getLocation(mOriginWidth, mOriginHeight, showImmediately);

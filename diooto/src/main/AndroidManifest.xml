@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.miaoyongjun.mdragvideo">
+    package="net.moyokoo.drag">
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
@@ -15,6 +15,10 @@
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:supportsRtl="true"/>
+        android:supportsRtl="true">
+        <activity
+            android:name="net.moyokoo.diooto.ImageActivity"
+            android:theme="@style/Transparent" />
+    </application>
 
 </manifest>

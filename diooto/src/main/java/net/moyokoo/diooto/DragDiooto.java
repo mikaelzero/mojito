@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -162,7 +163,7 @@ public class DragDiooto {
     private void initMultipleView() {
         mDragDiootoViews = new DragDiootoView[views.length];
         loadingViews = new LoadingView[views.length];
-        mViewPager = StatusUtil.with((Activity) mContext, isFullScreen).getViewPager();
+        mViewPager = StatusUtil.with((FragmentActivity) mContext, isFullScreen).getViewPager();
         for (int i = 0; i < mDragDiootoViews.length; i++) {
             final int position = i;
             mDragDiootoViews[i] = new DragDiootoView(mContext);
@@ -257,7 +258,7 @@ public class DragDiooto {
     }
 
     private void initSingleView() {
-        singleView = StatusUtil.with((Activity) mContext, isFullScreen).getSingleView();
+        singleView = StatusUtil.with((FragmentActivity) mContext, isFullScreen).getSingleView();
         if (contentType == VIDEO) {
             if (onProvideVideoView == null) {
                 throw new RuntimeException("you should set onProvideVideoView first if you use VIDEO");
@@ -330,10 +331,9 @@ public class DragDiooto {
             if (isSketchImageView(position)) {
                 SketchImageView sketchImageView = getSketchImageView(position);
                 if (sketchImageView.getZoomer() != null && sketchImageView.isZoomEnabled()) {
-                    //TODO BlockDisplayer的处理
-                    e("isWork:" + sketchImageView.getZoomer().getBlockDisplayer().isReady() + "    position:" + i);
-                    sketchImageView.getZoomer().getBlockDisplayer().setPause(false);
-                    e("isWork2:" + sketchImageView.getZoomer().getBlockDisplayer().isReady() + "    position:" + i);
+                    e("isWork:" + sketchImageView.getZoomer().getBlockDisplayer().isWorking() + "    position:" + i);
+                    sketchImageView.getZoomer().getBlockDisplayer().setPause(position!=i);
+                    e("isWork2:" + sketchImageView.getZoomer().getBlockDisplayer().isWorking() + "    position:" + i);
                 }
                 Drawable drawable = SketchUtils.getLastDrawable(sketchImageView.getDrawable());
                 if (drawable != null && drawable instanceof SketchGifDrawable) {
@@ -458,14 +458,14 @@ public class DragDiooto {
         if (isFullScreen) {
             return;
         }
-        StatusUtil.with((Activity) mContext, isFullScreen).hideStatus(context).type(contentType);
+        StatusUtil.with((FragmentActivity) mContext, isFullScreen).hideStatus(context).type(contentType);
     }
 
     private void showStatus(Context context) {
         if (isFullScreen) {
             return;
         }
-        StatusUtil.with((Activity) mContext, isFullScreen).showStatus(context);
+        StatusUtil.with((FragmentActivity) mContext, isFullScreen).showStatus(context);
     }
 
     public void e(String msg) {

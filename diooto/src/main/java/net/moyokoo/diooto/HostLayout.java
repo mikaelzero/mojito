@@ -6,20 +6,29 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.miaoyongjun.mdragvideo.R;
+import net.moyokoo.drag.R;
 
-class HostLayout extends RelativeLayout {
+import java.util.ArrayList;
+import java.util.List;
+
+public class HostLayout extends FrameLayout {
 
 
-    private Activity mActivity;
+    private FragmentActivity mActivity;
     private FrameLayout mContentLayout;
     private FixMultiViewPager viewPager;
     private DragDiootoView singleView;
@@ -36,7 +45,7 @@ class HostLayout extends RelativeLayout {
         return singleView;
     }
 
-    HostLayout(Activity activity, boolean isFullScreen) {
+    HostLayout(FragmentActivity activity, boolean isFullScreen) {
         super(activity);
         this.isFullScreen = isFullScreen;
         this.mActivity = activity;
@@ -59,7 +68,7 @@ class HostLayout extends RelativeLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int paddingSize = insets.getSystemWindowInsetBottom();
             mContentLayout.setPaddingRelative(0, 0, 0, paddingSize);
-            LayoutParams layoutParams = (LayoutParams) mContentLayout.getLayoutParams();
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) mContentLayout.getLayoutParams();
             layoutParams.bottomMargin = 0;
             return super.onApplyWindowInsets(insets.replaceSystemWindowInsets(0, 0, 0, 0));
         } else {
@@ -88,6 +97,10 @@ class HostLayout extends RelativeLayout {
             mContentLayout.addView(contentView, contentParams.width, contentParams.height);
         }
         contentLayout.addView(this, -1, -1);
+
+//        viewPager = new FixMultiViewPager(mActivity);
+//        viewPager.setId(R.id.dr_photo_dio_viewpager_id);
+//        mContentLayout.addView(viewPager);
     }
 
     public HostLayout type(int type) {
@@ -101,7 +114,7 @@ class HostLayout extends RelativeLayout {
         return this;
     }
 
-    HostLayout hideStatus(Context context) {
+    public HostLayout hideStatus(Context context) {
         int uiFlags = View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_FULLSCREEN;
         uiFlags |= 0x00001000;
         ((Activity) context).getWindow().getDecorView().setSystemUiVisibility(uiFlags);
