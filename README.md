@@ -1,5 +1,8 @@
 # DragDiooto 
-微博,微信图库效果,微信视频拖放效果  [![](https://jitpack.io/v/moyokoo/Diooto.svg)](https://jitpack.io/#moyokoo/Diooto)
+
+[![](https://jitpack.io/v/moyokoo/Diooto.svg)](https://jitpack.io/#moyokoo/Diooto)
+
+> 微博,微信图库效果,微信视频拖放效果,适配状态栏 、屏幕旋转 、全屏 、长图、GIF、视频
 
 
 <img src="https://github.com/moyokoo/Media/blob/master/diooto1.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto2.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto3.gif?raw=true" height="500"/>
@@ -16,22 +19,23 @@
 
 ##### 使用
 
-```
-	allprojects {
-		repositories {
-			...
-			maven { url 'https://jitpack.io' }
-		}
+```java
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
 	}
+}
 
-    dependencies {
-	        implementation 'com.github.moyokoo:Diooto:1.0'
-	}
+dependencies {
+	 implementation 'com.github.moyokoo:Diooto:1.10'
+}
 ```
 
 
 
 ```java
+//图片模式
 Diooto diooto = new Diooto(context)
         .urls(normalImageUlr)
         //图片或者视频
@@ -52,6 +56,7 @@ Diooto diooto = new Diooto(context)
 ##### 视频播放本身不提供自动识别大小的功能,视频部分全有开发者自己决定
 
 ```java
+//视频模式
 Diooto diooto = new Diooto(context)
         .urls(normalImageUlr[position])
         .position(holder.getAdapterPosition())
@@ -76,3 +81,12 @@ Diooto diooto = new Diooto(context)
         .onFinish(dragDiootoView -> MediaPlayerManager.instance().releasePlayerAndView(context))
         .start();
 ```
+
+长图/gif 等图片处理方案来自 [sketch](https://github.com/panpf/sketch)
+
+状态栏处理参考 [Sofia](https://github.com/yanzhenjie/Sofia)
+
+### 更新日志
+ > v1.10
+
+ - 修复没有取消请求导致的空指针问题

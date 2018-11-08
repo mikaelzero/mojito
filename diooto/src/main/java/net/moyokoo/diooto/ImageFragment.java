@@ -26,6 +26,7 @@ import me.panpf.sketch.request.DownloadProgressListener;
 import me.panpf.sketch.request.ErrorCause;
 import me.panpf.sketch.request.ImageFrom;
 import me.panpf.sketch.request.LoadListener;
+import me.panpf.sketch.request.LoadRequest;
 import me.panpf.sketch.request.LoadResult;
 import me.panpf.sketch.util.SketchUtils;
 
@@ -140,7 +141,7 @@ public class ImageFragment extends Fragment {
             //如果显示的点击的position  则进行动画处理
             dragDiootoView.show(!shouldShowAnimation);
         }
-        dragDiootoView.setOnFinishListener(new DragDiootoView.onFinishListener() {
+        dragDiootoView.setOnFinishListener(new DragDiootoView.OnFinishListener() {
             @Override
             public void callFinish() {
                 if (getContext() instanceof ImageActivity) {
@@ -151,7 +152,7 @@ public class ImageFragment extends Fragment {
                 }
             }
         });
-        dragDiootoView.setOnReleaseListener(new DragDiootoView.onReleaseListener() {
+        dragDiootoView.setOnReleaseListener(new DragDiootoView.OnReleaseListener() {
             @Override
             public void onRelease(boolean isToMax, boolean isToMin) {
                 if (ImageActivity.iIndicator != null) {
@@ -160,7 +161,7 @@ public class ImageFragment extends Fragment {
             }
         });
         if (type == DiootoConfig.PHOTO) {
-            dragDiootoView.setOnClickListener(new DragDiootoView.onClickListener() {
+            dragDiootoView.setOnClickListener(new DragDiootoView.OnClickListener() {
                 @Override
                 public void onClick(DragDiootoView dragDiootoView) {
                     dragDiootoView.backToMin();
@@ -243,8 +244,10 @@ public class ImageFragment extends Fragment {
         sketchImageView.displayImage(url);
     }
 
+    LoadRequest loadRequest;
+
     private void loadWithoutCache() {
-        Sketch.with(getContext()).load(url, new LoadListener() {
+        loadRequest = Sketch.with(getContext()).load(url, new LoadListener() {
             @Override
             public void onStarted() {
                 loadingLayout.setVisibility(View.VISIBLE);
@@ -289,6 +292,15 @@ public class ImageFragment extends Fragment {
                 }
             }
         }).commit();
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (loadRequest != null){
+            loadRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
+            loadRequest=null;
+        }
+        super.onDestroyView();
     }
 
     public void backToMin() {

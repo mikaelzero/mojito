@@ -21,6 +21,7 @@ import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
 import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
 import net.moyokoo.diooto.interfaces.DefaultProgress;
+import net.moyokoo.diooto.tools.StatusUtil;
 
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
@@ -163,7 +164,7 @@ public class DisplayActivity extends AppCompatActivity {
                             .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
                             .type(DiootoConfig.PHOTO)
                             .position(holder.getAdapterPosition())
-                            .views(mRecyclerView,R.id.srcImageView)
+                            .views(mRecyclerView, R.id.srcImageView)
                             .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
                             .start();
                 }

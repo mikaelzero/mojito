@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 
 import net.moyokoo.drag.R;
 
-import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.decode.ImageSizeCalculator;
 import me.panpf.sketch.zoom.ImageZoomer;
@@ -657,17 +656,17 @@ public class DragDiootoView extends FrameLayout {
         contentLayout.addView(view);
     }
 
-    private onFinishListener onFinishListener;
+    private OnFinishListener onFinishListener;
     private OnDragListener mDragListener;
     private OnShowFinishListener onShowFinishListener;
-    private onClickListener onClickListener;
-    private onReleaseListener onReleaseListener;
+    private OnClickListener onClickListener;
+    private OnReleaseListener onReleaseListener;
 
-    public void setOnReleaseListener(DragDiootoView.onReleaseListener onReleaseListener) {
+    public void setOnReleaseListener(OnReleaseListener onReleaseListener) {
         this.onReleaseListener = onReleaseListener;
     }
 
-    public void setOnClickListener(DragDiootoView.onClickListener onClickListener) {
+    public void setOnClickListener(OnClickListener onClickListener) {
         this.onClickListener = onClickListener;
     }
 
@@ -687,19 +686,19 @@ public class DragDiootoView extends FrameLayout {
         void showFinish(DragDiootoView dragDiootoView, boolean showImmediately);
     }
 
-    public void setOnFinishListener(DragDiootoView.onFinishListener onFinishListener) {
+    public void setOnFinishListener(OnFinishListener onFinishListener) {
         this.onFinishListener = onFinishListener;
     }
 
-    public interface onFinishListener {
+    public interface OnFinishListener {
         void callFinish();
     }
 
-    public interface onReleaseListener {
+    public interface OnReleaseListener {
         void onRelease(boolean isToMax, boolean isToMin);
     }
 
-    public interface onClickListener {
+    public interface OnClickListener {
         void onClick(DragDiootoView dragDiootoView);
     }
 

@@ -1,6 +1,7 @@
 package net.moyokoo.diooto.interfaces;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.widget.FrameLayout;
@@ -30,7 +31,9 @@ public class DefaultProgress implements IProgress {
     @Override
     public void onProgress(int position, int progress) {
         LoadingView loadingView = progressBarArray.get(position);
-        loadingView.setProgress(progress);
+        if (loadingView != null) {
+            loadingView.setProgress(progress);
+        }
     }
 
     @Override

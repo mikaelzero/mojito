@@ -46,7 +46,7 @@ public class HostLayout extends RelativeLayout {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             int paddingSize = insets.getSystemWindowInsetBottom();
             mContentLayout.setPaddingRelative(0, 0, 0, paddingSize);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mContentLayout.getLayoutParams();
+            LayoutParams layoutParams = (LayoutParams) mContentLayout.getLayoutParams();
             layoutParams.bottomMargin = 0;
             return super.onApplyWindowInsets(insets.replaceSystemWindowInsets(0, 0, 0, 0));
         } else {

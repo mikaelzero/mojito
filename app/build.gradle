@@ -29,9 +29,6 @@ dependencies {
     implementation androidDependencies.design
     api androidDependencies.cardview
     api project(':diooto')
-    testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     implementation 'org.salient.artvideoplayer:artplayer-java:0.6.0'
     implementation 'org.salient.artvideoplayer:artplayer-ui:0.6.0'
     implementation 'org.salient.artvideoplayer:artplayer-ijk:0.6.0'
