@@ -1,5 +1,5 @@
-# DragDiooto
-微信图库效果,微信视频拖放效果
+# DragDiooto 
+微博,微信图库效果,微信视频拖放效果  [![](https://jitpack.io/v/moyokoo/Diooto.svg)](https://jitpack.io/#moyokoo/Diooto)
 
 
 <img src="https://github.com/moyokoo/Media/blob/master/diooto1.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto2.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto3.gif?raw=true" height="500"/>
@@ -13,6 +13,23 @@
 - 适配长图
 - 适配GIF
 - 适配视频
+
+##### 使用
+
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+
+    dependencies {
+	        implementation 'com.github.moyokoo:Diooto:1.0'
+	}
+```
+
+
 
 ```java
 Diooto diooto = new Diooto(context)
