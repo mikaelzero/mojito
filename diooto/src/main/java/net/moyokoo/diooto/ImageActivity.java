@@ -9,21 +9,31 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 
+import net.moyokoo.diooto.config.DiootoConfig;
+import net.moyokoo.diooto.config.ContentViewOriginModel;
+import net.moyokoo.diooto.tools.NoScrollViewPager;
+import net.moyokoo.diooto.interfaces.IIndicator;
+import net.moyokoo.diooto.interfaces.IProgress;
 import net.moyokoo.drag.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ImageActivity extends AppCompatActivity {
-    private FixMultiViewPager mViewPager;
+    private NoScrollViewPager mViewPager;
     List<ContentViewOriginModel> contentViewOriginModels;
     List<ImageFragment> fragmentList;
-    ContentViewConfig contentViewConfig;
+    DiootoConfig diootoConfig;
+    FrameLayout indicatorLayout;
+    static IIndicator iIndicator;
+    static IProgress iProgress;
+    boolean isNeedAnimationForClickPosition = true;
 
-    public static void startImageActivity(Activity activity, ContentViewConfig contentViewConfig) {
+    public static void startImageActivity(Activity activity, DiootoConfig diootoConfig) {
         Intent intent = new Intent(activity, ImageActivity.class);
-        intent.putExtra("config", contentViewConfig);
+        intent.putExtra("config", diootoConfig);
         activity.startActivity(intent);
         activity.overridePendingTransition(0, 0);
     }
@@ -36,18 +46,19 @@ public class ImageActivity extends AppCompatActivity {
         getWindow().getDecorView().setSystemUiVisibility(uiFlags);
         setContentView(R.layout.activity_image);
         mViewPager = findViewById(R.id.viewPager);
-        contentViewConfig = getIntent().getParcelableExtra("config");
-        int currentPosition = contentViewConfig.getPosition();
-        String[] imageUrls = contentViewConfig.getImageUrls();
-        contentViewOriginModels = contentViewConfig.getContentViewOriginModels();
+        indicatorLayout = findViewById(R.id.indicatorLayout);
+        diootoConfig = getIntent().getParcelableExtra("config");
+        int currentPosition = diootoConfig.getPosition();
+        String[] imageUrls = diootoConfig.getImageUrls();
+        contentViewOriginModels = diootoConfig.getContentViewOriginModels();
         fragmentList = new ArrayList<>();
         for (int i = 0; i < contentViewOriginModels.size(); i++) {
             ImageFragment imageFragment = ImageFragment.newInstance(
-                    imageUrls[i], i, contentViewConfig.getType(), contentViewOriginModels.get(i)
+                    imageUrls[i], i, diootoConfig.getType(),
+                    contentViewOriginModels.size() == 1 || diootoConfig.getPosition() == i, contentViewOriginModels.get(i)
             );
             fragmentList.add(imageFragment);
         }
-        mViewPager.setOffscreenPageLimit(contentViewOriginModels.size());
         mViewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
@@ -60,16 +71,31 @@ public class ImageActivity extends AppCompatActivity {
             }
         });
         mViewPager.setCurrentItem(currentPosition);
+        if (iIndicator != null && contentViewOriginModels.size() != 1) {
+            iIndicator.attach(indicatorLayout);
+            iIndicator.onShow(mViewPager);
+        }
+    }
+
+    //用来判断第一次点击的时候是否需要动画  第一次需要动画  后续viewpager滑动回到该页面的时候  不做动画
+    public boolean isNeedAnimationForClickPosition(int position) {
+        return isNeedAnimationForClickPosition && diootoConfig.getPosition() == position;
+    }
+
+    public void refreshNeedAnimationForClickPosition() {
+        isNeedAnimationForClickPosition = false;
     }
 
     public void finishView() {
-        if (DragDiooto.onFinish != null) {
-            DragDiooto.onFinish.finish(fragmentList.get(mViewPager.getCurrentItem()).getDragDiootoView());
+        if (Diooto.onFinishListener != null) {
+            Diooto.onFinishListener.finish(fragmentList.get(mViewPager.getCurrentItem()).getDragDiootoView());
         }
-        DragDiooto.onLoadPhotoBeforeShowBigImage = null;
-        DragDiooto.onShowToMaxFinish = null;
-        DragDiooto.onProvideVideoView = null;
-        DragDiooto.onFinish = null;
+        Diooto.onLoadPhotoBeforeShowBigImageListener = null;
+        Diooto.onShowToMaxFinishListener = null;
+        Diooto.onProvideViewListener = null;
+        Diooto.onFinishListener = null;
+        iIndicator = null;
+        iProgress = null;
         finish();
         overridePendingTransition(0, 0);
     }

@@ -4,16 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <net.moyokoo.diooto.DragDiootoView
-        android:id="@+id/singleView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <net.moyokoo.diooto.FixMultiViewPager
+    <net.moyokoo.diooto.tools.NoScrollViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:background="@color/colorAccent"
         tools:visibility="visible" />
+
+    <FrameLayout
+        android:id="@+id/indicatorLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </FrameLayout>

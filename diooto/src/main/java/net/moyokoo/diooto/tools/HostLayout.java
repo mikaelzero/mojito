@@ -1,4 +1,4 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.tools;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,24 +6,15 @@ import android.graphics.Color;
 import android.os.Build;
 import android.support.annotation.ColorInt;
 import android.support.annotation.IntRange;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import net.moyokoo.drag.R;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class HostLayout extends RelativeLayout {
 

@@ -58,15 +58,4 @@
     </android.support.design.widget.CoordinatorLayout>
 
 
-    <net.moyokoo.diooto.FixMultiViewPager
-        android:id="@+id/viewPager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <net.moyokoo.diooto.DragDiootoView
-        android:id="@+id/drPhotoDioView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
 </FrameLayout>

@@ -26,6 +26,7 @@ android {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation androidDependencies.appcompat_v7
+    implementation androidDependencies.design
     implementation 'me.panpf:sketch:2.6.2-b1'
     implementation 'me.panpf:sketch-gif:2.6.2-b1'
 }

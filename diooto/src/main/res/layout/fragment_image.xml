@@ -8,13 +8,8 @@
         android:id="@+id/dragDiootoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
-    <net.moyokoo.diooto.LoadingView
-        android:id="@+id/loadingView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        tools:background="#000"
-        tools:visibility="visible" />
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </FrameLayout>

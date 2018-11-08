@@ -1,13 +1,13 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.config;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 public class ContentViewOriginModel implements Parcelable {
-    int left;
-    int top;
-    int width;
-    int height;
+    public int left;
+    public int top;
+    public int width;
+    public int height;
 
     public int getLeft() {
         return left;

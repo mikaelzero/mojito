@@ -1,8 +1,7 @@
 
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.tools;
 
 import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;

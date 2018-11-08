@@ -1,4 +1,4 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.tools;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -38,8 +38,8 @@ public class LoadingView extends View {
             if (!(getLayoutParams() instanceof FrameLayout.LayoutParams)) {
                 FrameLayout.LayoutParams layoutParams =
                         new FrameLayout.LayoutParams(
-                                dip2Px(50),
-                                dip2Px(50),
+                                dip2Px(getContext(),50),
+                                dip2Px(getContext(),50),
                                 Gravity.CENTER);
                 setLayoutParams(layoutParams);
             }
@@ -138,7 +138,7 @@ public class LoadingView extends View {
     /*
      * converts dip to px
      */
-    private int dip2Px(float dip) {
-        return (int) (dip * getContext().getResources().getDisplayMetrics().density + 0.5f);
+    public static int dip2Px(Context context,float dip) {
+        return (int) (dip * context.getResources().getDisplayMetrics().density + 0.5f);
     }
 }

@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,19 +17,15 @@ import android.widget.ImageView;
 
 import com.miaoyongjun.administrator.mvideo.R;
 
-import net.moyokoo.diooto.ContentViewConfig;
-import net.moyokoo.diooto.DragDiooto;
-import net.moyokoo.diooto.DragDiootoView;
-import net.moyokoo.diooto.FixMultiViewPager;
-import net.moyokoo.diooto.ImageFragment;
+import net.moyokoo.diooto.config.DiootoConfig;
+import net.moyokoo.diooto.Diooto;
+import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
+import net.moyokoo.diooto.interfaces.DefaultProgress;
 
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
 import org.salient.artplayer.ui.ControlPanel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -50,21 +44,18 @@ public class DisplayActivity extends AppCompatActivity {
             "https://wx4.sinaimg.cn/large/0075aoetgy1fwkmjmcl67j30b3cmchdw.jpg"
     };
     String[] normalImageUlr = new String[]{
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/98754a6a401d5c48806b2b3863e32bed.jpg",
-            "https://github.com/moyokoo/Media/blob/master/complete_android_fragment_lifecycle.png?raw=true",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/f387251e4038bf4380169a6c5e5d64f9.jpg",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/f387251e4038bf4380169a6c5e5d64f9.jpg",
-            "https://n.sinaimg.cn/tech/transform/520/w180h340/20181105/piAX-hnknmqw9902121.gif",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/98754a6a401d5c48806b2b3863e32bed.jpg",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/98754a6a401d5c48806b2b3863e32bed.jpg",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/98754a6a401d5c48806b2b3863e32bed.jpg",
-            "http://bmob-cdn-982.b0.upaiyun.com/2017/02/24/98754a6a401d5c48806b2b3863e32bed.jpg"
+            "https://github.com/moyokoo/Media/blob/master/diooto1.png?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto2.jpg?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto3.jpg?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto4.jpg?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto5.jpg?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto6.jpg?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto7.png?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto8.png?raw=true",
+            "https://github.com/moyokoo/Media/blob/master/diooto9.jpg?raw=true"
     };
     Context context;
     int activityPosition;
-    DragDiooto dragDiooto;
-    DragDiootoView drPhotoDioView;
-    FixMultiViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +63,7 @@ public class DisplayActivity extends AppCompatActivity {
         context = this;
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_display);
-        drPhotoDioView = findViewById(R.id.drPhotoDioView);
-        viewPager = findViewById(R.id.viewPager);
+
         activityPosition = getIntent().getIntExtra("position", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Diooto");
@@ -85,20 +75,12 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.setAdapter(new MainAdapter());
 
-        findViewById(R.id.backdrop).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Sketch.with(DisplayActivity.this).getConfiguration().getDiskCache().clear();
-                Sketch.with(DisplayActivity.this).getConfiguration().getBitmapPool().clear();
-                Sketch.with(DisplayActivity.this).getConfiguration().getMemoryCache().clear();
-            }
+        findViewById(R.id.backdrop).setOnClickListener(v -> {
+            Sketch.with(DisplayActivity.this).getConfiguration().getDiskCache().clear();
+            Sketch.with(DisplayActivity.this).getConfiguration().getBitmapPool().clear();
+            Sketch.with(DisplayActivity.this).getConfiguration().getMemoryCache().clear();
         });
 
-        viewPager.setVisibility(View.GONE);
-        List<Fragment> mDragDiootoViews = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
-            mDragDiootoViews.add(new ImageFragment());
-        }
     }
 
     public static void newIntent(Activity activity, Bundle bundle) {
@@ -128,92 +110,62 @@ public class DisplayActivity extends AppCompatActivity {
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             holder.srcImageView.displayImage(normalImageUlr[position]);
             holder.srcImageView.setShowGifFlagEnabled(R.drawable.ic_gif);
-            holder.srcImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(final View srcView) {
+            holder.srcImageView.setOnClickListener(srcView -> {
 
-                    int size = mRecyclerView.getChildCount();
-                    View[] views = new View[size];
-                    int[] realWidths = new int[size];
-                    int[] realHeights = new int[size];
-                    for (int i = 0; i < size; i++) {
-                        ImageView recyImageView = mRecyclerView.getChildAt(i).findViewById(R.id.srcImageView);
-                        views[i] = recyImageView;
-                        realWidths[i] = 1920;
-                        realHeights[i] = 720;
-                    }
-                    //显示的数量时根据提供的View数量来决定的,在recyclerView中
-                    // 会出现有些view无法通过mRecyclerView.getChildCount()得到,其余View大小请自行计算
-                    if (activityPosition == 3) {
-                        //加载视频
-                        DragDiooto dragDiooto = new DragDiooto(context)
-                                .urls(normalImageUlr[position])
-                                .position(holder.getAdapterPosition())
-                                .views(holder.srcImageView)
-                                .type(ContentViewConfig.VIDEO)
-                                //提供视频View
-                                .onProvideVideoView(new DragDiooto.OnProvideVideoView() {
-                                    @Override
-                                    public View provideView() {
-                                        return new VideoView(context);
-                                    }
-                                })
-                                //显示视频加载之前的缩略图
-                                .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
-                                    @Override
-                                    public void loadView(SketchImageView sketchImageView, int position) {
-                                        sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]);
-                                    }
-                                })
-                                //动画到最大化时的接口
-                                .onVideoLoadEnd(new DragDiooto.OnShowToMaxFinish() {
-                                    @Override
-                                    public void onShowToMax(DragDiootoView dragDiootoView) {
-                                        VideoView videoView = (VideoView) dragDiootoView.getContentView();
-                                        videoView.setControlPanel(new ControlPanel(context));
-                                        videoView.setUp("http://bmob-cdn-982.b0.upaiyun.com/2017/02/23/266454624066f2b680707492a0664a97.mp4");
-                                        videoView.start();
-                                        dragDiootoView.notifySize(1920, 1080);
-                                        MediaPlayerManager.instance().setScreenScale(ScaleType.SCALE_CENTER_CROP);
-                                    }
-                                })
-                                //到最小状态的接口
-                                .onFinish(new DragDiooto.OnFinish() {
-                                    @Override
-                                    public void finish(DragDiootoView dragDiootoView) {
-                                        MediaPlayerManager.instance().releasePlayerAndView(context);
-                                    }
-                                })
-                                .start();
-                    } else if (activityPosition == 1) {
-                        //加载单张图片
-                        DragDiooto dragDiooto = new DragDiooto(context)
-                                .urls(normalImageUlr[position])
-                                .type(ContentViewConfig.PHOTO)
-                                .position(0)
-                                .views(views[holder.getAdapterPosition()])
-                                .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
-                                    @Override
-                                    public void loadView(SketchImageView sketchImageView, int position) {
-                                        sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]);
-                                    }
-
-                                })
-                                .start();
-                    } else {
-                        DragDiooto dragDiooto = new DragDiooto(context)
-                                .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
-                                .type(ContentViewConfig.PHOTO)
-                                .position(holder.getAdapterPosition())
-                                .views(views)
-                                .loadPhotoBeforeShowBigImage(new DragDiooto.OnLoadPhotoBeforeShowBigImage() {
-                                    @Override
-                                    public void loadView(SketchImageView sketchImageView, int position) {
-                                        sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]);
-                                    }
-                                })
-                                .start();
-                    }
+                int size = mRecyclerView.getChildCount();
+                View[] views = new View[size];
+                int[] realWidths = new int[size];
+                int[] realHeights = new int[size];
+                for (int i = 0; i < size; i++) {
+                    ImageView recyImageView = mRecyclerView.getChildAt(i).findViewById(R.id.srcImageView);
+                    views[i] = recyImageView;
+                    realWidths[i] = 1920;
+                    realHeights[i] = 720;
+                }
+                //显示的数量时根据提供的View数量来决定的,在recyclerView中
+                // 会出现有些view无法通过mRecyclerView.getChildCount()得到,其余View大小请自行计算
+                if (activityPosition == 3) {
+                    //加载视频
+                    Diooto diooto = new Diooto(context)
+                            .urls(normalImageUlr[position])
+                            .position(holder.getAdapterPosition())
+                            .views(holder.srcImageView)
+                            .type(DiootoConfig.VIDEO)
+                            //提供视频View
+                            .onProvideVideoView(() -> new VideoView(context))
+                            //显示视频加载之前的缩略图
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            //动画到最大化时的接口
+                            .onVideoLoadEnd(dragDiootoView -> {
+                                VideoView videoView = (VideoView) dragDiootoView.getContentView();
+                                SimpleControlPanel simpleControlPanel = new SimpleControlPanel(context);
+                                simpleControlPanel.setOnClickListener(v -> dragDiootoView.backToMin());
+                                videoView.setControlPanel(simpleControlPanel);
+                                videoView.setUp("http://bmob-cdn-982.b0.upaiyun.com/2017/02/23/266454624066f2b680707492a0664a97.mp4");
+                                videoView.start();
+                                dragDiootoView.notifySize(1920, 1080);
+                                MediaPlayerManager.instance().setScreenScale(ScaleType.SCALE_CENTER_CROP);
+                            })
+                            //到最小状态的接口
+                            .onFinish(dragDiootoView -> MediaPlayerManager.instance().releasePlayerAndView(context))
+                            .start();
+                } else if (activityPosition == 1) {
+                    //加载单张图片
+                    Diooto diooto = new Diooto(context)
+                            .urls(normalImageUlr[position])
+                            .type(DiootoConfig.PHOTO)
+                            .position(0)
+                            .views(views[holder.getAdapterPosition()])
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            .start();
+                } else {
+                    Diooto diooto = new Diooto(context)
+                            .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
+                            .type(DiootoConfig.PHOTO)
+                            .position(holder.getAdapterPosition())
+                            .views(mRecyclerView,R.id.srcImageView)
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            .start();
                 }
             });
         }

@@ -1,4 +1,4 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.tools;
 
 import android.app.Activity;
 import android.content.Context;

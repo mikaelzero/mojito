@@ -1,11 +1,11 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.config;
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.List;
 
-public class ContentViewConfig implements Parcelable {
+public class DiootoConfig implements Parcelable {
 
     public static int PHOTO = 1;
     public static int VIDEO = 2;
@@ -69,10 +69,10 @@ public class ContentViewConfig implements Parcelable {
         dest.writeInt(this.position);
     }
 
-    public ContentViewConfig() {
+    public DiootoConfig() {
     }
 
-    protected ContentViewConfig(Parcel in) {
+    protected DiootoConfig(Parcel in) {
         this.type = in.readInt();
         this.imageUrls = in.createStringArray();
         this.isFullScreen = in.readByte() != 0;
@@ -80,15 +80,15 @@ public class ContentViewConfig implements Parcelable {
         this.position = in.readInt();
     }
 
-    public static final Parcelable.Creator<ContentViewConfig> CREATOR = new Parcelable.Creator<ContentViewConfig>() {
+    public static final Parcelable.Creator<DiootoConfig> CREATOR = new Parcelable.Creator<DiootoConfig>() {
         @Override
-        public ContentViewConfig createFromParcel(Parcel source) {
-            return new ContentViewConfig(source);
+        public DiootoConfig createFromParcel(Parcel source) {
+            return new DiootoConfig(source);
         }
 
         @Override
-        public ContentViewConfig[] newArray(int size) {
-            return new ContentViewConfig[size];
+        public DiootoConfig[] newArray(int size) {
+            return new DiootoConfig[size];
         }
     };
 }

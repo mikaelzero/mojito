@@ -1,4 +1,4 @@
-package net.moyokoo.diooto;
+package net.moyokoo.diooto.tools;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;
@@ -6,14 +6,14 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 
-public class FixMultiViewPager extends ViewPager {
-    private final String TAG = FixMultiViewPager.class.getSimpleName();
+public class NoScrollViewPager extends ViewPager {
+    private final String TAG = NoScrollViewPager.class.getSimpleName();
 
-    public FixMultiViewPager(Context context) {
+    public NoScrollViewPager(Context context) {
         super(context);
     }
 
-    public FixMultiViewPager(Context context, AttributeSet attrs) {
+    public NoScrollViewPager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 

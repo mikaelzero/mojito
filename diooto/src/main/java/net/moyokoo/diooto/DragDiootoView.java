@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -19,9 +18,9 @@ import android.widget.LinearLayout;
 
 import net.moyokoo.drag.R;
 
-import java.lang.reflect.Field;
-
+import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
+import me.panpf.sketch.decode.ImageSizeCalculator;
 import me.panpf.sketch.zoom.ImageZoomer;
 
 /**
@@ -44,7 +43,6 @@ public class DragDiootoView extends FrameLayout {
     View backgroundView;
 
     private final long DEFAULT_DURATION = 300;
-    private final int DEFAULT_LONG_HEIGHT = 2000;
     long animationDuration = DEFAULT_DURATION;
     private int mOriginLeft;
     private int mOriginTop;
@@ -70,15 +68,16 @@ public class DragDiootoView extends FrameLayout {
     int realWidth;
     int realHeight;
     int touchSlop = ViewConfiguration.getTouchSlop();
-    int longImageSize = DEFAULT_LONG_HEIGHT;
 
 
     MarginViewWrapper imageWrapper;
     boolean isMulitFinger = false;
     boolean isDrag = false;
-    boolean isMin2Normaling = false;
+    //是否是高度长图
     boolean isLongHeightImage = false;
+    //是否是宽度长图
     boolean isLongWidthImage = false;
+    //是否在动画中
     boolean isAnimating = false;
 
     public DragDiootoView(Context context) {
@@ -96,15 +95,10 @@ public class DragDiootoView extends FrameLayout {
         MAX_TRANSLATE_Y = screenHeight / 6;
         MAX_Y = screenHeight - screenHeight / 8;
 
-
         addView(LayoutInflater.from(getContext()).inflate(R.layout.content_item, null), 0);
         contentLayout = findViewById(R.id.contentLayout);
         backgroundView = findViewById(R.id.backgroundView);
         imageWrapper = new MarginViewWrapper(contentLayout);
-    }
-
-    public MarginViewWrapper getImageWrapper() {
-        return imageWrapper;
     }
 
     void dragAnd2Normal(float currentY, boolean isDrag) {
@@ -134,6 +128,7 @@ public class DragDiootoView extends FrameLayout {
     }
 
     void backToNormal() {
+
         isAnimating = true;
         releaseLeft = imageWrapper.getMarginLeft() - (screenWidth - targetImageWidth) / 2;
         releaseY = imageWrapper.getMarginTop();
@@ -152,6 +147,9 @@ public class DragDiootoView extends FrameLayout {
             }
         });
         valueAnimator.setDuration(animationDuration).start();
+        if (onReleaseListener != null) {
+            onReleaseListener.onRelease(true, false);
+        }
         changeBackgroundViewAlpha(false);
     }
 
@@ -220,6 +218,9 @@ public class DragDiootoView extends FrameLayout {
             }
         });
         valueAnimator.setDuration(animationDuration).start();
+        if (onReleaseListener != null) {
+            onReleaseListener.onRelease(false, true);
+        }
         changeBackgroundViewAlpha(true);
     }
 
@@ -234,24 +235,30 @@ public class DragDiootoView extends FrameLayout {
     }
 
     public void notifySize(int width, int height) {
+        notifySize(width, height, false);
+    }
+
+    public void notifySize(int width, int height, boolean showRightNow) {
         realWidth = width;
         realHeight = height;
 
-        if (isMin2Normaling) {
-            return;
-        }
+
         if (realWidth == 0 || realHeight == 0) {
             return;
         }
 
         int newWidth;
         int newHeight;
-        if (realHeight >= longImageSize || screenWidth / (float) screenHeight < realWidth / (float) realHeight) {
-            isLongHeightImage = realHeight >= longImageSize && getContentView() instanceof SketchImageView;
-            isLongWidthImage = realWidth >= longImageSize && getContentView() instanceof SketchImageView;
+        ImageSizeCalculator sizeCalculator = new ImageSizeCalculator();
+        if (sizeCalculator.canUseReadModeByHeight(realWidth, realHeight) ||
+                sizeCalculator.canUseReadModeByWidth(realWidth, realHeight) ||
+                screenWidth / (float) screenHeight < realWidth / (float) realHeight
+                ) {
+            isLongHeightImage = sizeCalculator.canUseReadModeByHeight(realWidth, realHeight) && getContentView() instanceof SketchImageView;
+            isLongWidthImage = sizeCalculator.canUseReadModeByWidth(realWidth, realHeight) && getContentView() instanceof SketchImageView;
             newWidth = screenWidth;
             newHeight = (int) (newWidth * (realHeight / (float) realWidth));
-            if (newHeight >= screenHeight || realWidth > longImageSize) {
+            if (newHeight >= screenHeight || sizeCalculator.canUseReadModeByWidth(realWidth, realHeight)) {
                 newHeight = screenHeight;
             }
         } else {
@@ -265,7 +272,18 @@ public class DragDiootoView extends FrameLayout {
         if (targetImageHeight == endHeight && targetImageWidth == endWidth) {
             return;
         }
-        if (isAnimating) {
+//        if (isAnimating) {
+//            return;
+//        }
+
+        if (showRightNow) {
+            targetImageHeight = endHeight;
+            targetImageWidth = endWidth;
+            targetImageTop = (screenHeight - targetImageHeight) / 2;
+            imageWrapper.setHeight(targetImageHeight);
+            imageWrapper.setWidth(endWidth);
+            imageWrapper.setMarginTop(targetImageTop);
+            imageWrapper.setMarginLeft(endLeft);
             return;
         }
 
@@ -324,34 +342,20 @@ public class DragDiootoView extends FrameLayout {
         }
     }
 
-    public void putData(View originView) {
-        putData(originView, 0, 0);
+    public void putData(int left, int top, int originWidth, int originHeight) {
+        putData(left, top, originWidth, originHeight, 0, 0);
     }
 
-    public void putData(View originView, int realWidth, int realHeight) {
+    public void putData(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
-        int location[] = new int[2];
-        originView.getLocationOnScreen(location);
-        putData(location[0], location[1], originView.getMeasuredWidth(), originView.getMeasuredHeight());
-
-    }
-
-    public void putData(int left, int top, int realWidth, int realHeight) {
         mOriginLeft = left;
         mOriginTop = top;
-        mOriginWidth = realWidth;
-        mOriginHeight = realHeight;
-    }
-
-    public void show() {
-        show(false);
+        mOriginWidth = originWidth;
+        mOriginHeight = originHeight;
     }
 
     public void show(boolean showImmediately) {
-        if (mOriginHeight == 0 || mOriginWidth == 0) {
-            throw new RuntimeException("you must invoke putData first");
-        }
         setVisibility(View.VISIBLE);
         mAlpha = showImmediately ? mAlpha = 1 : 0;
         getLocation(mOriginWidth, mOriginHeight, showImmediately);
@@ -364,12 +368,14 @@ public class DragDiootoView extends FrameLayout {
         float targetSize;
         targetImageWidth = screenWidth;
         if (realHeight != 0 && realWidth != 0) {
-            targetSize = realHeight / (float) realWidth;
+            notifySize(realWidth, realHeight, true);
+            return;
         } else {
             targetSize = minViewHeight / minViewWidth;
+            targetImageHeight = (int) (screenWidth * targetSize);
+            targetImageTop = (screenHeight - targetImageHeight) / 2;
         }
-        targetImageHeight = (int) (screenWidth * targetSize);
-        targetImageTop = (screenHeight - targetImageHeight) / 2;
+
 
         imageWrapper.setWidth(mOriginWidth);
         imageWrapper.setHeight(mOriginHeight);
@@ -383,12 +389,10 @@ public class DragDiootoView extends FrameLayout {
             mAlpha = 1f;
             backgroundView.setAlpha(mAlpha);
             min2NormalAndDrag2Min(targetImageTop, 0, targetImageWidth, targetImageHeight);
-            notifySize(realWidth, realHeight);
             if (onShowFinishListener != null) {
                 onShowFinishListener.showFinish(this, true);
             }
         } else {
-            isMin2Normaling = true;
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(mOriginTop, targetImageTop);
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
@@ -401,8 +405,6 @@ public class DragDiootoView extends FrameLayout {
             valueAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    isMin2Normaling = false;
-                    notifySize(realWidth, realHeight);
                     isAnimating = false;
                     if (onShowFinishListener != null) {
                         onShowFinishListener.showFinish(DragDiootoView.this, false);
@@ -444,7 +446,6 @@ public class DragDiootoView extends FrameLayout {
         valueAnimator.start();
     }
 
-
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         int y = (int) event.getY();
@@ -462,7 +463,6 @@ public class DragDiootoView extends FrameLayout {
                     return super.dispatchTouchEvent(event);
                 }
             }
-
         }
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -508,7 +508,7 @@ public class DragDiootoView extends FrameLayout {
                     break;
                 }
                 if (mDragListener != null) {
-                    mDragListener.onDrag(this, moveX, moveY);
+                    mDragListener.onDrag(this, mTranslateX, mTranslateY);
                 }
                 isDrag = true;
                 int dy = y - mLastY;
@@ -580,7 +580,6 @@ public class DragDiootoView extends FrameLayout {
                 ((LinearLayout.LayoutParams) params).gravity = Gravity.START;
             }
         }
-
 
         public int getWidth() {
             return params.width;
@@ -662,6 +661,11 @@ public class DragDiootoView extends FrameLayout {
     private OnDragListener mDragListener;
     private OnShowFinishListener onShowFinishListener;
     private onClickListener onClickListener;
+    private onReleaseListener onReleaseListener;
+
+    public void setOnReleaseListener(DragDiootoView.onReleaseListener onReleaseListener) {
+        this.onReleaseListener = onReleaseListener;
+    }
 
     public void setOnClickListener(DragDiootoView.onClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -691,10 +695,15 @@ public class DragDiootoView extends FrameLayout {
         void callFinish();
     }
 
+    public interface onReleaseListener {
+        void onRelease(boolean isToMax, boolean isToMin);
+    }
+
     public interface onClickListener {
         void onClick(DragDiootoView dragDiootoView);
     }
 
+    //获得可滑动view的布局中添加的子view
     public View getContentView() {
         return contentLayout.getChildAt(0);
     }
