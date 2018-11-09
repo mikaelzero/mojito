@@ -3,7 +3,6 @@ package net.moyokoo.drag;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,22 +13,16 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.miaoyongjun.administrator.mvideo.R;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
-import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
-import net.moyokoo.diooto.interfaces.DefaultProgress;
-import net.moyokoo.diooto.tools.StatusUtil;
 
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
-import org.salient.artplayer.ui.ControlPanel;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -65,7 +58,7 @@ public class DisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_display);
 
         activityPosition = getIntent().getIntExtra("position", 0);
@@ -126,16 +119,6 @@ public class DisplayActivity extends AppCompatActivity {
                     realWidths[i] = 1920;
                     realHeights[i] = 720;
                 }
-//                Window window = ((Activity) (context)).getWindow();
-//                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                    // 6+ 实现
-//                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//                    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-//                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//                }
-                //显示的数量时根据提供的View数量来决定的,在recyclerView中
-                // 会出现有些view无法通过mRecyclerView.getChildCount()得到,其余View大小请自行计算
                 if (activityPosition == 3) {
                     //加载视频
                     Diooto diooto = new Diooto(context)

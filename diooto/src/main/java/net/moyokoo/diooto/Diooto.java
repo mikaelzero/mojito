@@ -8,11 +8,9 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.config.ContentViewOriginModel;
@@ -20,11 +18,8 @@ import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
 import net.moyokoo.diooto.interfaces.DefaultProgress;
 import net.moyokoo.diooto.interfaces.IIndicator;
 import net.moyokoo.diooto.interfaces.IProgress;
-import net.moyokoo.diooto.tools.StatusUtil;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import me.panpf.sketch.Sketch;
@@ -118,7 +113,7 @@ public class Diooto {
         for (View imageView : views) {
             ContentViewOriginModel imageBean = new ContentViewOriginModel();
             if (imageView == null) {
-                imageBean.left =0;
+                imageBean.left = 0;
                 imageBean.top = 0;
                 imageBean.width = 0;
                 imageBean.height = 0;
@@ -138,21 +133,20 @@ public class Diooto {
 
 
     public Diooto start() {
-        if ((((Activity) (mContext)).getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        Window window = ((Activity) (mContext)).getWindow();
+        if ((window.getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
             diootoConfig.setFullScreen(true);
         }
-//        if (!diootoConfig.isFullScreen()) {
-//            StatusUtil.with((Activity) mContext).hideStatus(mContext);
-//        }
         if (!diootoConfig.isFullScreen()) {
-            Window window = ((Activity) (mContext)).getWindow();
+            window = ((Activity) (mContext)).getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                // 6+ 实现
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
                 window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
                 window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             }
         }
 
