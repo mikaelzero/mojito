@@ -2,6 +2,7 @@ package net.moyokoo.diooto;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
@@ -9,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
@@ -140,9 +142,20 @@ public class Diooto {
                 == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
             diootoConfig.setFullScreen(true);
         }
+//        if (!diootoConfig.isFullScreen()) {
+//            StatusUtil.with((Activity) mContext).hideStatus(mContext);
+//        }
         if (!diootoConfig.isFullScreen()) {
-            StatusUtil.with((Activity) mContext).hideStatus(mContext);
+            Window window = ((Activity) (mContext)).getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // 6+ 实现
+                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            }
         }
+
         if (ImageActivity.iIndicator == null) {
             setIndicator(new CircleIndexIndicator());
         }
