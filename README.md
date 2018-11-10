@@ -28,7 +28,7 @@ allprojects {
 }
 
 dependencies {
-	 implementation 'com.github.moyokoo:Diooto:1.11'
+	 implementation 'com.github.moyokoo:Diooto:1.12'
 }
 ```
 
@@ -85,11 +85,3 @@ Diooto diooto = new Diooto(context)
 长图/gif 等图片处理方案来自 [sketch](https://github.com/panpf/sketch)
 
 
-### 更新日志
- > v1.11
-
- - 修改状态栏处理方式
-
- > v1.10
-
- - 修复没有取消请求导致的空指针问题
