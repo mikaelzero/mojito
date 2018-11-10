@@ -158,7 +158,7 @@ public class Diooto {
         if (ImageActivity.iProgress == null) {
             setProgress(new DefaultProgress());
         }
-        ImageActivity.startImageActivity(getAppCompActivity(mContext), diootoConfig);
+        ImageActivity.startImageActivity(scanForActivity(mContext), diootoConfig);
         return this;
     }
 
