@@ -72,11 +72,11 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.setAdapter(new MainAdapter());
 
-        findViewById(R.id.backdrop).setOnClickListener(v -> {
-            Sketch.with(DisplayActivity.this).getConfiguration().getDiskCache().clear();
-            Sketch.with(DisplayActivity.this).getConfiguration().getBitmapPool().clear();
-            Sketch.with(DisplayActivity.this).getConfiguration().getMemoryCache().clear();
-        });
+//        findViewById(R.id.backdrop).setOnClickListener(v -> {
+//            Sketch.with(DisplayActivity.this).getConfiguration().getDiskCache().clear();
+//            Sketch.with(DisplayActivity.this).getConfiguration().getBitmapPool().clear();
+//            Sketch.with(DisplayActivity.this).getConfiguration().getMemoryCache().clear();
+//        });
 
     }
 
