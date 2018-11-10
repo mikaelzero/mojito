@@ -32,7 +32,7 @@ public class ImageActivity extends AppCompatActivity {
     static IProgress iProgress;
     boolean isNeedAnimationForClickPosition = true;
 
-    public static void startImageActivity(Activity activity, DiootoConfig diootoConfig) {
+    public static void startImageActivity(AppCompatActivity activity, DiootoConfig diootoConfig) {
         Intent intent = new Intent(activity, ImageActivity.class);
         intent.putExtra("config", diootoConfig);
         activity.startActivity(intent);
