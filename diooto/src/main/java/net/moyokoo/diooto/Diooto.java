@@ -2,12 +2,15 @@ package net.moyokoo.diooto;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.os.Build;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -133,13 +136,12 @@ public class Diooto {
 
 
     public Diooto start() {
-        Window window = ((Activity) (mContext)).getWindow();
+        Window window = getWindow(mContext);
         if ((window.getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN)
                 == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
             diootoConfig.setFullScreen(true);
         }
         if (!diootoConfig.isFullScreen()) {
-            window = ((Activity) (mContext)).getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -158,6 +160,35 @@ public class Diooto {
         }
         ImageActivity.startImageActivity((Activity) mContext, diootoConfig);
         return this;
+    }
+
+    Window getWindow(Context context) {
+        if (getAppCompActivity(context) != null) {
+            return getAppCompActivity(context).getWindow();
+        } else {
+            return scanForActivity(context).getWindow();
+        }
+    }
+
+    AppCompatActivity getAppCompActivity(Context context) {
+        if (context == null) return null;
+        if (context instanceof AppCompatActivity) {
+            return (AppCompatActivity) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            return getAppCompActivity(((ContextThemeWrapper) context).getBaseContext());
+        }
+        return null;
+    }
+
+    Activity scanForActivity(Context context) {
+        if (context == null) return null;
+
+        if (context instanceof Activity) {
+            return (Activity) context;
+        } else if (context instanceof ContextWrapper) {
+            return scanForActivity(((ContextWrapper) context).getBaseContext());
+        }
+        return null;
     }
 
     public Diooto setProgress(IProgress on) {

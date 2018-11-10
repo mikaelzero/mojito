@@ -28,7 +28,7 @@ allprojects {
 }
 
 dependencies {
-	 implementation 'com.github.moyokoo:Diooto:1.12'
+	 implementation 'com.github.moyokoo:Diooto:${version}'
 }
 ```
 
