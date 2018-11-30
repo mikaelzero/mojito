@@ -4,11 +4,16 @@ import android.content.Context;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import net.moyokoo.diooto.tools.LoadingView;
-
-public class DefaultProgress implements IProgress {
+/**
+ * Created by moyokoo.
+ * Date:  2018/10/17
+ * 进度加载
+ */
+public class DefaultPercentProgress implements IProgress {
     private SparseArray<LoadingView> progressBarArray = new SparseArray<>();
 
     @Override
@@ -46,5 +51,10 @@ public class DefaultProgress implements IProgress {
     public void onFailed(int position) {
         LoadingView loadingView = progressBarArray.get(position);
         loadingView.loadFaild();
+    }
+
+    @Override
+    public View getProgressView(int position) {
+        return progressBarArray.get(position);
     }
 }

@@ -1,5 +1,6 @@
 package net.moyokoo.diooto.interfaces;
 
+import android.view.View;
 import android.widget.FrameLayout;
 
 public interface IProgress {
@@ -13,5 +14,7 @@ public interface IProgress {
     void onFinish(int position);
 
     void onFailed(int position);
+
+    View getProgressView(int position);
 
 }

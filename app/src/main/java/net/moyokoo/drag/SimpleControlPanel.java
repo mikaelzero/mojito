@@ -19,6 +19,14 @@ public class SimpleControlPanel extends AbsControlPanel implements SeekBar.OnSee
 
     private ProgressBar loading;
     private ImageView video_cover;
+    public interface OnVideoPreparedListener{
+        void prepared();
+    }
+    OnVideoPreparedListener onVideoPreparedListener;
+
+    public void setOnVideoPreparedListener(OnVideoPreparedListener onVideoPreparedListener) {
+        this.onVideoPreparedListener = onVideoPreparedListener;
+    }
 
     public SimpleControlPanel(Context context) {
         super(context);
@@ -67,6 +75,9 @@ public class SimpleControlPanel extends AbsControlPanel implements SeekBar.OnSee
     @Override
     public void onStatePrepared() {
         hideUI(loading);
+        if (onVideoPreparedListener!=null){
+            onVideoPreparedListener.prepared();
+        }
     }
 
     @Override

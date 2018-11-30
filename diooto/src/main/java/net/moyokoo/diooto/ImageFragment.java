@@ -70,6 +70,7 @@ public class ImageFragment extends Fragment {
         }
         loadingLayout = view.findViewById(R.id.loadingLayout);
         dragDiootoView = view.findViewById(R.id.dragDiootoView);
+        dragDiootoView.setPhoto(type == DiootoConfig.PHOTO);
         if (ImageActivity.iProgress != null) {
             ImageActivity.iProgress.attach(position, loadingLayout);
         }
@@ -112,11 +113,14 @@ public class ImageFragment extends Fragment {
             @Override
             public void showFinish(DragDiootoView view, boolean showImmediately) {
                 if (type == DiootoConfig.VIDEO) {
-                    if (dragDiootoView.getContentParentView().getChildAt(1) instanceof SketchImageView) {
-                        dragDiootoView.getContentParentView().getChildAt(1).setVisibility(View.GONE);
+                    loadingLayout.setVisibility(View.VISIBLE);
+                    if (ImageActivity.iProgress != null) {
+                        ImageActivity.iProgress.onStart(position);
                     }
                     if (Diooto.onShowToMaxFinishListener != null) {
-                        Diooto.onShowToMaxFinishListener.onShowToMax(dragDiootoView);
+                        Diooto.onShowToMaxFinishListener.onShowToMax(dragDiootoView,
+                                (SketchImageView) dragDiootoView.getContentParentView().getChildAt(1),
+                                ImageActivity.iProgress.getProgressView(position));
                     }
                 } else if (type == DiootoConfig.PHOTO && view.getContentView() instanceof SketchImageView && !hasCache) {
                     loadImage();
@@ -160,14 +164,6 @@ public class ImageFragment extends Fragment {
                 }
             }
         });
-        if (type == DiootoConfig.PHOTO) {
-            dragDiootoView.setOnClickListener(new DragDiootoView.OnClickListener() {
-                @Override
-                public void onClick(DragDiootoView dragDiootoView) {
-                    dragDiootoView.backToMin();
-                }
-            });
-        }
     }
 
     @Override
@@ -296,9 +292,9 @@ public class ImageFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
-        if (loadRequest != null){
+        if (loadRequest != null) {
             loadRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
-            loadRequest=null;
+            loadRequest = null;
         }
         super.onDestroyView();
     }

@@ -18,7 +18,7 @@ import android.view.WindowManager;
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.config.ContentViewOriginModel;
 import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
-import net.moyokoo.diooto.interfaces.DefaultProgress;
+import net.moyokoo.diooto.interfaces.DefaultPercentProgress;
 import net.moyokoo.diooto.interfaces.IIndicator;
 import net.moyokoo.diooto.interfaces.IProgress;
 
@@ -156,7 +156,7 @@ public class Diooto {
             setIndicator(new CircleIndexIndicator());
         }
         if (ImageActivity.iProgress == null) {
-            setProgress(new DefaultProgress());
+            setProgress(new DefaultPercentProgress());
         }
         ImageActivity.startImageActivity(scanForActivity(mContext), diootoConfig);
         return this;
@@ -235,7 +235,7 @@ public class Diooto {
     }
 
     public interface OnShowToMaxFinishListener {
-        void onShowToMax(DragDiootoView dragDiootoView);
+        void onShowToMax(DragDiootoView dragDiootoView,SketchImageView sketchImageView,View progressView);
     }
 
     public interface OnFinishListener {

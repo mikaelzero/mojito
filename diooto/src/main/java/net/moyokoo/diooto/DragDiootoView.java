@@ -23,7 +23,7 @@ import me.panpf.sketch.decode.ImageSizeCalculator;
 import me.panpf.sketch.zoom.ImageZoomer;
 
 /**
- * Created by miaoyongjun.
+ * Created by moyokoo.
  * Date:  2017/2/17
  */
 public class DragDiootoView extends FrameLayout {
@@ -31,6 +31,7 @@ public class DragDiootoView extends FrameLayout {
 
     private float mDownX;
     private float mDownY;
+    private float mYDistanceTraveled;
     private float mTranslateY;
     private float mTranslateX;
 
@@ -68,6 +69,10 @@ public class DragDiootoView extends FrameLayout {
     int realHeight;
     int touchSlop = ViewConfiguration.getTouchSlop();
 
+    int imageLeftOfAnimatorEnd = 0;
+    int imageTopOfAnimatorEnd = 0;
+    int imageWidthOfAnimatorEnd = 0;
+    int imageHeightOfAnimatorEnd = 0;
 
     MarginViewWrapper imageWrapper;
     boolean isMulitFinger = false;
@@ -78,6 +83,8 @@ public class DragDiootoView extends FrameLayout {
     boolean isLongWidthImage = false;
     //是否在动画中
     boolean isAnimating = false;
+
+    boolean isPhoto = false;
 
     public DragDiootoView(Context context) {
         this(context, null);
@@ -187,10 +194,40 @@ public class DragDiootoView extends FrameLayout {
         if (isAnimating) {
             return;
         }
-        releaseLeft = imageWrapper.getMarginLeft();
-        releaseY = imageWrapper.getMarginTop();
-        releaseWidth = imageWrapper.getWidth();
-        releaseHeight = imageWrapper.getHeight();
+        //到最小时,先把imageView的大小设置为imageView可见的大小,而不是包含黑色空隙部分
+        if (isPhoto) {
+            float draggingToReleaseScale = imageWrapper.getHeight() / (float) screenHeight;
+            if (imageWrapper.getHeight() != imageHeightOfAnimatorEnd) {
+                releaseHeight = (int) (draggingToReleaseScale * imageHeightOfAnimatorEnd);
+            } else {
+                releaseHeight = imageWrapper.getHeight();
+            }
+            if (imageWrapper.getWidth() != imageWidthOfAnimatorEnd) {
+                releaseWidth = (int) (draggingToReleaseScale * imageWidthOfAnimatorEnd);
+            } else {
+                releaseWidth = imageWrapper.getWidth();
+            }
+            if (imageWrapper.getMarginTop() != imageTopOfAnimatorEnd) {
+                releaseY = imageWrapper.getMarginTop() + (int) (draggingToReleaseScale * imageTopOfAnimatorEnd);
+            } else {
+                releaseY = imageWrapper.getMarginTop();
+            }
+            if (imageWrapper.getMarginLeft() != imageLeftOfAnimatorEnd) {
+                releaseLeft = imageWrapper.getMarginLeft() + (int) (draggingToReleaseScale * imageLeftOfAnimatorEnd);
+            } else {
+                releaseLeft = imageWrapper.getMarginLeft();
+            }
+            imageWrapper.setWidth(releaseWidth);
+            imageWrapper.setHeight(releaseHeight);
+            imageWrapper.setMarginTop((int) releaseY);
+            imageWrapper.setMarginLeft(releaseLeft);
+        } else {
+            releaseLeft = imageWrapper.getMarginLeft();
+            releaseY = imageWrapper.getMarginTop();
+            releaseWidth = imageWrapper.getWidth();
+            releaseHeight = imageWrapper.getHeight();
+        }
+
         if ((isLongHeightImage || isLongWidthImage) && getContentView() instanceof SketchImageView) {
             SketchImageView sketchImageView = (SketchImageView) getContentView();
             if (sketchImageView.getZoomer() != null) {
@@ -205,9 +242,10 @@ public class DragDiootoView extends FrameLayout {
                     releaseY = releaseY + (releaseHeight - tempHeight) / 2;
                     releaseHeight = tempHeight;
                 }
-                sketchImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                changeImageViewToCenterCrop();
             }
         }
+        changeImageViewToCenterCrop();
         ValueAnimator valueAnimator = ValueAnimator.ofFloat(releaseY, mOriginTop);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -271,9 +309,6 @@ public class DragDiootoView extends FrameLayout {
         if (targetImageHeight == endHeight && targetImageWidth == endWidth) {
             return;
         }
-//        if (isAnimating) {
-//            return;
-//        }
 
         if (showRightNow) {
             targetImageHeight = endHeight;
@@ -283,6 +318,10 @@ public class DragDiootoView extends FrameLayout {
             imageWrapper.setWidth(endWidth);
             imageWrapper.setMarginTop(targetImageTop);
             imageWrapper.setMarginLeft(endLeft);
+            if (isPhoto) {
+                setImageDataOfAnimatorEnd();
+                changeContentViewToFullscreen();
+            }
             return;
         }
 
@@ -308,9 +347,14 @@ public class DragDiootoView extends FrameLayout {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     isAnimating = false;
-                    targetImageHeight = endHeight;
-                    targetImageWidth = endWidth;
-                    targetImageTop = (screenHeight - targetImageHeight) / 2;
+                    setImageDataOfAnimatorEnd();
+                    if (isPhoto) {
+                        changeContentViewToFullscreen();
+                    } else {
+                        targetImageHeight = endHeight;
+                        targetImageWidth = endWidth;
+                        targetImageTop = (screenHeight - targetImageHeight) / 2;
+                    }
                 }
             });
             animator.setDuration(animationDuration);
@@ -331,15 +375,21 @@ public class DragDiootoView extends FrameLayout {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     isAnimating = false;
-                    targetImageHeight = endHeight;
-                    targetImageWidth = endWidth;
-                    targetImageTop = (screenHeight - targetImageHeight) / 2;
+                    setImageDataOfAnimatorEnd();
+                    if (isPhoto) {
+                        changeContentViewToFullscreen();
+                    } else {
+                        targetImageHeight = endHeight;
+                        targetImageWidth = endWidth;
+                        targetImageTop = (screenHeight - targetImageHeight) / 2;
+                    }
                 }
             });
             animator.setDuration(animationDuration);
             animator.start();
         }
     }
+
 
     public void putData(int left, int top, int originWidth, int originHeight) {
         putData(left, top, originWidth, originHeight, 0, 0);
@@ -480,6 +530,11 @@ public class DragDiootoView extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                float moveX = event.getX();
+                float moveY = event.getY();
+                mTranslateX = moveX - mDownX;
+                mTranslateY = moveY - mDownY;
+                mYDistanceTraveled = mYDistanceTraveled + Math.abs(mTranslateY);
 
                 if (isAnimating) {
                     break;
@@ -487,20 +542,19 @@ public class DragDiootoView extends FrameLayout {
                 if (view instanceof SketchImageView && (isLongHeightImage || isLongWidthImage)) {
                     //长图缩放到最小比例  拖动时显示方式需要更新  并且不能启用阅读模式
                     SketchImageView sketchImageView = (SketchImageView) view;
-                    if (sketchImageView.getZoomer() != null)
+                    if (sketchImageView.getZoomer() != null) {
                         sketchImageView.getZoomer().setReadMode(false);
-                    sketchImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                    }
+                    changeImageViewToFitCenter();
                 }
                 if (event.getPointerCount() != 1 || isMulitFinger) {
                     isMulitFinger = true;
                     break;
                 }
-                float moveX = event.getX();
-                float moveY = event.getY();
-                mTranslateX = moveX - mDownX;
-                mTranslateY = moveY - mDownY;
+
                 //如果滑动距离不足,则不需要事件
-                if (Math.abs(mTranslateY) < touchSlop || (Math.abs(mTranslateX) > Math.abs(mTranslateY) && !isDrag)) {
+                if (Math.abs(mYDistanceTraveled) < touchSlop || (Math.abs(mTranslateX) > Math.abs(mYDistanceTraveled) && !isDrag)) {
+                    mYDistanceTraveled = 0;
                     if (isTouchPointInContentLayout(contentLayout, event)) {
                         break;
                     }
@@ -522,8 +576,9 @@ public class DragDiootoView extends FrameLayout {
                 if (isAnimating) {
                     break;
                 }
+
                 //如果滑动距离不足,则不需要事件
-                if (Math.abs(mTranslateY) < touchSlop || (Math.abs(mTranslateX) > Math.abs(mTranslateY) && !isDrag)) {
+                if (Math.abs(mYDistanceTraveled) < touchSlop || (Math.abs(mYDistanceTraveled) > Math.abs(mYDistanceTraveled) && !isDrag)) {
                     if (!isMulitFinger && onClickListener != null) {
                         onClickListener.onClick(DragDiootoView.this);
                     }
@@ -545,6 +600,7 @@ public class DragDiootoView extends FrameLayout {
                     backToNormal();
                 }
                 isDrag = false;
+                mYDistanceTraveled = 0;
                 break;
         }
 
@@ -644,16 +700,45 @@ public class DragDiootoView extends FrameLayout {
             SketchImageView sketchImageView = (SketchImageView) view;
             if (sketchImageView.getZoomer() != null) {
                 sketchImageView.getZoomer().setReadMode(true);
-                sketchImageView.getZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+                sketchImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onViewTap(@NonNull View view, float x, float y) {
-                        if (onClickListener != null) onClickListener.onClick(DragDiootoView.this);
+                    public void onClick(View v) {
+                        backToMin();
                     }
                 });
             }
             sketchImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
         contentLayout.addView(view);
+    }
+
+    private void changeContentViewToFullscreen() {
+        targetImageHeight = screenHeight;
+        targetImageWidth = screenWidth;
+        targetImageTop = 0;
+        changeImageViewToFitCenter();
+        imageWrapper.setHeight(screenHeight);
+        imageWrapper.setWidth(screenWidth);
+        imageWrapper.setMarginTop(0);
+        imageWrapper.setMarginLeft(0);
+    }
+    private void setImageDataOfAnimatorEnd(){
+        imageLeftOfAnimatorEnd = imageWrapper.getMarginLeft();
+        imageTopOfAnimatorEnd = imageWrapper.getMarginTop();
+        imageWidthOfAnimatorEnd = imageWrapper.getWidth();
+        imageHeightOfAnimatorEnd = imageWrapper.getHeight();
+    }
+
+    private void changeImageViewToFitCenter() {
+        if (getContentView() instanceof SketchImageView) {
+            ((SketchImageView) getContentView()).setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
+    }
+
+    private void changeImageViewToCenterCrop() {
+        if (getContentView() instanceof SketchImageView) {
+            ((SketchImageView) getContentView()).setScaleType(ImageView.ScaleType.CENTER_CROP);
+        }
     }
 
     private OnFinishListener onFinishListener;
@@ -711,4 +796,11 @@ public class DragDiootoView extends FrameLayout {
         return contentLayout;
     }
 
+    public boolean isPhoto() {
+        return isPhoto;
+    }
+
+    public void setPhoto(boolean photo) {
+        isPhoto = photo;
+    }
 }

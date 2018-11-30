@@ -17,8 +17,10 @@ import android.widget.ImageView;
 
 import com.miaoyongjun.administrator.mvideo.R;
 
+import net.moyokoo.diooto.DragDiootoView;
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
+import net.moyokoo.diooto.interfaces.DefaultCircleProgress;
 
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
@@ -126,15 +128,20 @@ public class DisplayActivity extends AppCompatActivity {
                             .position(holder.getAdapterPosition())
                             .views(holder.srcImageView)
                             .type(DiootoConfig.VIDEO)
+                            .setProgress(new DefaultCircleProgress())
                             //提供视频View
                             .onProvideVideoView(() -> new VideoView(context))
                             //显示视频加载之前的缩略图
                             .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
                             //动画到最大化时的接口
-                            .onVideoLoadEnd(dragDiootoView -> {
+                            .onVideoLoadEnd((dragDiootoView, sketchImageView,progressView) -> {
                                 VideoView videoView = (VideoView) dragDiootoView.getContentView();
                                 SimpleControlPanel simpleControlPanel = new SimpleControlPanel(context);
                                 simpleControlPanel.setOnClickListener(v -> dragDiootoView.backToMin());
+                                simpleControlPanel.setOnVideoPreparedListener(() -> {
+                                    sketchImageView.setVisibility(View.GONE);
+                                    progressView.setVisibility(View.GONE);
+                                });
                                 videoView.setControlPanel(simpleControlPanel);
                                 videoView.setUp("http://bmob-cdn-982.b0.upaiyun.com/2017/02/23/266454624066f2b680707492a0664a97.mp4");
                                 videoView.start();
