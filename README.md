@@ -42,7 +42,7 @@ Diooto diooto = new Diooto(context)
         .urls(normalImageUlr)
         //图片或者视频
         .type(DiootoConfig.PHOTO)
-        //点击的位置
+        //点击的位置 如果你的RecyclerView有头部View  则使用 .position(holder.getAdapterPosition(),headSize) headSize为头部布局数量
         .position(holder.getAdapterPosition())
         //可以传recylcerview自动识别(需要传在item布局中的viewId)  也可以手动传view数组
         .views(mRecyclerView,R.id.srcImageView)

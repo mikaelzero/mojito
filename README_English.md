@@ -40,7 +40,7 @@ Diooto diooto = new Diooto(context)
         .urls(normalImageUlr)
         //Picture or video
         .type(DiootoConfig.PHOTO)
-        //position of click
+        //position of click ,if you have headerView，you should call .position(holder.getAdapterPosition(),headSize) headSize : headView size
         .position(holder.getAdapterPosition())
         //use recylcerview automatic recognition(need viewId of item layout)  use view array by yourself
         .views(mRecyclerView,R.id.srcImageView)
