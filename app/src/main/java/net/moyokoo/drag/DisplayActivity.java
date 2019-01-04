@@ -43,7 +43,7 @@ public class DisplayActivity extends AppCompatActivity {
             "https://wx4.sinaimg.cn/large/0075aoetgy1fwkmjmcl67j30b3cmchdw.jpg"
     };
     String[] normalImageUlr = new String[]{
-            "https://github.com/moyokoo/Media/blob/master/diooto1.png?raw=true",
+            "http://img1.juimg.com/140908/330608-140ZP1531651.jpg",
             "https://github.com/moyokoo/Media/blob/master/diooto2.jpg?raw=true",
             "https://github.com/moyokoo/Media/blob/master/diooto3.jpg?raw=true",
             "https://github.com/moyokoo/Media/blob/master/diooto4.jpg?raw=true",

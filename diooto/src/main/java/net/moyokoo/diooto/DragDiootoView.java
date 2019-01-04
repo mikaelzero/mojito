@@ -196,6 +196,7 @@ public class DragDiootoView extends FrameLayout {
         }
         //到最小时,先把imageView的大小设置为imageView可见的大小,而不是包含黑色空隙部分
         if (isPhoto) {
+            // 注意:这里 imageWrapper.getHeight() 获取的高度 是经过拖动缩放后的
             float draggingToReleaseScale = imageWrapper.getHeight() / (float) screenHeight;
             if (imageWrapper.getHeight() != imageHeightOfAnimatorEnd) {
                 releaseHeight = (int) (draggingToReleaseScale * imageHeightOfAnimatorEnd);
@@ -306,9 +307,9 @@ public class DragDiootoView extends FrameLayout {
         final int endLeft = (screenWidth - newWidth) / 2;
         final int endHeight = newHeight;
         final int endWidth = newWidth;
-        if (targetImageHeight == endHeight && targetImageWidth == endWidth) {
-            return;
-        }
+//        if (targetImageHeight == endHeight && targetImageWidth == endWidth) {
+//            return;
+//        }
 
         if (showRightNow) {
             targetImageHeight = endHeight;
@@ -325,7 +326,7 @@ public class DragDiootoView extends FrameLayout {
             return;
         }
 
-        //如果Y轴不进行变化  则只变化宽高 该情况暂时发现用在屏幕旋转的情况下
+        //如果Y轴不进行变化  则只变化宽高 该情况暂时发现用在屏幕旋转的情况下 正方形图片
         if (targetImageTop == (screenHeight - endHeight) / 2) {
             final int startLeft = imageWrapper.getMarginLeft();
             ValueAnimator animator = ValueAnimator.ofInt(targetImageWidth, endWidth);
@@ -334,13 +335,19 @@ public class DragDiootoView extends FrameLayout {
                 public void onAnimationUpdate(ValueAnimator valueAnimator) {
                     isAnimating = true;
                     int value = (int) valueAnimator.getAnimatedValue();
-                    float yPercent = (value - targetImageWidth) / (float) (endWidth - targetImageWidth);
-                    float xOffset = yPercent * (endLeft - startLeft);
-                    float widthOffset = yPercent * (endWidth - targetImageWidth);
-                    float heightOffset = yPercent * (endHeight - targetImageHeight);
-                    imageWrapper.setWidth(targetImageWidth + widthOffset);
-                    imageWrapper.setHeight(targetImageHeight + heightOffset);
-                    imageWrapper.setMarginLeft((int) (startLeft + xOffset));
+                    if (endWidth - targetImageWidth == 0) {
+                        imageWrapper.setWidth(targetImageWidth);
+                        imageWrapper.setHeight(targetImageHeight);
+                        imageWrapper.setMarginLeft((int) (startLeft));
+                    } else {
+                        float yPercent = (value - targetImageWidth) / (float) (endWidth - targetImageWidth);
+                        float xOffset = yPercent * (endLeft - startLeft);
+                        float widthOffset = yPercent * (endWidth - targetImageWidth);
+                        float heightOffset = yPercent * (endHeight - targetImageHeight);
+                        imageWrapper.setWidth(targetImageWidth + widthOffset);
+                        imageWrapper.setHeight(targetImageHeight + heightOffset);
+                        imageWrapper.setMarginLeft((int) (startLeft + xOffset));
+                    }
                 }
             });
             animator.addListener(new AnimatorListenerAdapter() {
@@ -722,7 +729,8 @@ public class DragDiootoView extends FrameLayout {
         imageWrapper.setMarginTop(0);
         imageWrapper.setMarginLeft(0);
     }
-    private void setImageDataOfAnimatorEnd(){
+
+    private void setImageDataOfAnimatorEnd() {
         imageLeftOfAnimatorEnd = imageWrapper.getMarginLeft();
         imageTopOfAnimatorEnd = imageWrapper.getMarginTop();
         imageWidthOfAnimatorEnd = imageWrapper.getWidth();
