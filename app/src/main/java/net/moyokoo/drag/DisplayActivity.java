@@ -9,12 +9,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseViewHolder;
 import com.miaoyongjun.administrator.mvideo.R;
 
 import net.moyokoo.diooto.DragDiootoView;
@@ -26,11 +29,15 @@ import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
 
 public class DisplayActivity extends AppCompatActivity {
-    RecyclerView mRecyclerView;
+    WrapRecyclerView mRecyclerView;
     String[] longImageUrl = new String[]{
             "https://ww4.sinaimg.cn/bmiddle/61e7945bly1fwnpjo7er0j215o6u77o1.jpg",
             "http://wx3.sinaimg.cn/large/9f780829ly1fwvwhq9cg3j2cn40e2npj.jpg",
@@ -73,6 +80,8 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.setAdapter(new MainAdapter());
+        mRecyclerView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.adapter_header,null ));
+        mRecyclerView.addFooterView(LayoutInflater.from(this).inflate(R.layout.adapter_footer,null ));
 
 //        findViewById(R.id.backdrop).setOnClickListener(v -> {
 //            Sketch.with(DisplayActivity.this).getConfiguration().getDiskCache().clear();
@@ -134,7 +143,7 @@ public class DisplayActivity extends AppCompatActivity {
                             //显示视频加载之前的缩略图
                             .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
                             //动画到最大化时的接口
-                            .onVideoLoadEnd((dragDiootoView, sketchImageView,progressView) -> {
+                            .onVideoLoadEnd((dragDiootoView, sketchImageView, progressView) -> {
                                 VideoView videoView = (VideoView) dragDiootoView.getContentView();
                                 SimpleControlPanel simpleControlPanel = new SimpleControlPanel(context);
                                 simpleControlPanel.setOnClickListener(v -> dragDiootoView.backToMin());
@@ -158,15 +167,15 @@ public class DisplayActivity extends AppCompatActivity {
                             .type(DiootoConfig.PHOTO)
                             .position(0)
                             .views(views[holder.getAdapterPosition()])
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> sketchImageView.displayImage(normalImageUlr[position1]))
                             .start();
                 } else {
                     Diooto diooto = new Diooto(context)
                             .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
                             .type(DiootoConfig.PHOTO)
-                            .position(holder.getAdapterPosition())
+                            .position(holder.getAdapterPosition(),1)
                             .views(mRecyclerView, R.id.srcImageView)
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> sketchImageView.displayImage(normalImageUlr[position12]))
                             .start();
                 }
             });

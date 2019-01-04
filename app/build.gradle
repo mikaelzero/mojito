@@ -35,4 +35,5 @@ dependencies {
     implementation "org.salient.artvideoplayer:artplayer-armv7a:0.6.0"
     implementation 'me.panpf:sketch-gif:2.6.2-b1'
     implementation 'me.panpf:sketch:2.6.2-b1'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
 }

@@ -58,9 +58,12 @@ public class Diooto {
         return this;
     }
 
-
     public Diooto position(int position) {
-        this.diootoConfig.setPosition(position);
+        return position(position, 0);
+    }
+
+    public Diooto position(int position, int headerSize) {
+        this.diootoConfig.setPosition(position - headerSize);
         return this;
     }
 
@@ -70,13 +73,16 @@ public class Diooto {
         return views(views);
     }
 
+
     public Diooto views(RecyclerView recyclerView, @IdRes int viewId) {
         List<View> originImageList = new ArrayList<>();
         int childCount = recyclerView.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View originImage = (recyclerView.getChildAt(i)
                     .findViewById(viewId));
-            originImageList.add(originImage);
+            if (originImage != null) {
+                originImageList.add(originImage);
+            }
         }
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int firstPos = 0, lastPos = 0;
@@ -90,7 +96,7 @@ public class Diooto {
             firstPos = linLayMan.findFirstVisibleItemPosition();
             lastPos = linLayMan.findLastVisibleItemPosition();
         }
-        fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
+//        fillPlaceHolder(originImageList, totalCount, firstPos , lastPos );
         View[] views = new View[originImageList.size()];
         for (int i = 0; i < originImageList.size(); i++) {
             views[i] = originImageList.get(i);
@@ -235,7 +241,7 @@ public class Diooto {
     }
 
     public interface OnShowToMaxFinishListener {
-        void onShowToMax(DragDiootoView dragDiootoView,SketchImageView sketchImageView,View progressView);
+        void onShowToMax(DragDiootoView dragDiootoView, SketchImageView sketchImageView, View progressView);
     }
 
     public interface OnFinishListener {
