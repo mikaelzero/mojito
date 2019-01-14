@@ -13,7 +13,7 @@ import android.widget.FrameLayout;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.config.ContentViewOriginModel;
-import net.moyokoo.drag.R;
+import net.moyokoo.dio.R;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;

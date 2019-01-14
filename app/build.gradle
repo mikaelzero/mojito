@@ -5,15 +5,15 @@ android {
     compileSdkVersion globalConfiguration.androidCompileSdkVersion
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "net.moyokoo.drag"
+        applicationId "net.moyokoo.dio"
         minSdkVersion globalConfiguration.androidMinSdkVersion
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 118
+        versionName "1.18"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

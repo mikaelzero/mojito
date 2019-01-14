@@ -1,4 +1,4 @@
-package net.moyokoo.drag;
+package net.moyokoo.dio;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

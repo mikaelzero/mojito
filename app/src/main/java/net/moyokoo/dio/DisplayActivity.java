@@ -1,4 +1,4 @@
-package net.moyokoo.drag;
+package net.moyokoo.dio;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,18 +9,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
 import com.miaoyongjun.administrator.mvideo.R;
 
-import net.moyokoo.diooto.DragDiootoView;
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
 import net.moyokoo.diooto.interfaces.DefaultCircleProgress;
@@ -29,11 +25,6 @@ import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
 
 public class DisplayActivity extends AppCompatActivity {

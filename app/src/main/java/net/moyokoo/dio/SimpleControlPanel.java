@@ -1,9 +1,8 @@
-package net.moyokoo.drag;
+package net.moyokoo.dio;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewParent;

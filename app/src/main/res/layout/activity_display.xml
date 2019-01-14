@@ -45,7 +45,7 @@
         </android.support.design.widget.AppBarLayout>
 
 
-        <net.moyokoo.drag.WrapRecyclerView
+        <net.moyokoo.dio.WrapRecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

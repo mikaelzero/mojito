@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -16,11 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import net.moyokoo.drag.R;
+import net.moyokoo.dio.R;
 
 import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.decode.ImageSizeCalculator;
-import me.panpf.sketch.zoom.ImageZoomer;
 
 /**
  * Created by moyokoo.
