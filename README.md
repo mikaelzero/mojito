@@ -2,8 +2,6 @@
 
 [![](https://jitpack.io/v/moyokoo/Diooto.svg)](https://jitpack.io/#moyokoo/Diooto)
 
-[English](https://github.com/moyokoo/Diooto/blob/master/README_English.md)
-
 > 微博,微信图库效果,微信视频拖放效果,适配状态栏 、屏幕旋转 、全屏 、长图、GIF、视频
 
 [中文文档](https://www.moyokoo.com/diooto/)
