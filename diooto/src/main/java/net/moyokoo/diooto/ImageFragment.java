@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -127,6 +128,15 @@ public class ImageFragment extends Fragment {
                 }
             }
         });
+        if (Diooto.onLongClickListener != null) {
+            dragDiootoView.setOnDiootoLongClickListener(new DragDiootoView.OnDiootoLongClickListener() {
+                @Override
+                public void longClick() {
+                    Log.e("1", "onLongClickListener position:" + position);
+                    Diooto.onLongClickListener.longClick(dragDiootoView, position);
+                }
+            });
+        }
         dragDiootoView.setOnDragListener(new DragDiootoView.OnDragListener() {
             @Override
             public void onDrag(DragDiootoView view, float moveX, float moveY) {

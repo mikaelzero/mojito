@@ -95,6 +95,7 @@ public class ImageActivity extends AppCompatActivity {
         Diooto.onShowToMaxFinishListener = null;
         Diooto.onProvideViewListener = null;
         Diooto.onFinishListener = null;
+        Diooto.onLongClickListener = null;
         iIndicator = null;
         iProgress = null;
         finish();
