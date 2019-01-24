@@ -16,7 +16,6 @@ import net.moyokoo.diooto.config.ContentViewOriginModel;
 import net.moyokoo.diooto.tools.NoScrollViewPager;
 import net.moyokoo.diooto.interfaces.IIndicator;
 import net.moyokoo.diooto.interfaces.IProgress;
-import net.moyokoo.dio.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,7 +94,6 @@ public class ImageActivity extends AppCompatActivity {
         Diooto.onShowToMaxFinishListener = null;
         Diooto.onProvideViewListener = null;
         Diooto.onFinishListener = null;
-        Diooto.onLongClickListener = null;
         iIndicator = null;
         iProgress = null;
         finish();

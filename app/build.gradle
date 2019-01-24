@@ -5,13 +5,19 @@ android {
     compileSdkVersion globalConfiguration.androidCompileSdkVersion
     buildToolsVersion '28.0.3'
     defaultConfig {
-        applicationId "net.moyokoo.dio"
+        applicationId "net.moyokoo.app"
         minSdkVersion globalConfiguration.androidMinSdkVersion
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
         versionCode 119
         versionName "1.19"
     }
     buildTypes {
+        debug{
+            release {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            }
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

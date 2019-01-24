@@ -1,4 +1,4 @@
-package net.moyokoo.dio;
+package net.moyokoo.app;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -12,7 +12,6 @@ import android.widget.SeekBar;
 
 import org.salient.artplayer.AbsControlPanel;
 import org.salient.artplayer.MediaPlayerManager;
-import com.miaoyongjun.administrator.mvideo.R;
 
 public class SimpleControlPanel extends AbsControlPanel implements SeekBar.OnSeekBarChangeListener {
 

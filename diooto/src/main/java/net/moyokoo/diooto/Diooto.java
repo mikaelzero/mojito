@@ -227,16 +227,10 @@ public class Diooto {
         return this;
     }
 
-    public Diooto onLongClick(OnDiootoLongClickListener on) {
-        onLongClickListener = on;
-        return this;
-    }
-
     public static OnLoadPhotoBeforeShowBigImageListener onLoadPhotoBeforeShowBigImageListener;
     public static OnShowToMaxFinishListener onShowToMaxFinishListener;
     public static OnProvideViewListener onProvideViewListener;
     public static OnFinishListener onFinishListener;
-    public static OnDiootoLongClickListener onLongClickListener;
 
     public interface OnLoadPhotoBeforeShowBigImageListener {
         void loadView(SketchImageView sketchImageView, int position);
@@ -252,10 +246,6 @@ public class Diooto {
 
     public interface OnFinishListener {
         void finish(DragDiootoView dragDiootoView);
-    }
-
-    public interface OnDiootoLongClickListener {
-        void longClick(DragDiootoView dragDiootoView,int position);
     }
 
     public static void cleanMemory(@NonNull Context context) {

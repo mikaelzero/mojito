@@ -15,7 +15,8 @@ import android.view.View;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
-import net.moyokoo.dio.R;
+
+import net.moyokoo.diooto.R;
 
 import static android.support.v4.view.ViewPager.OnPageChangeListener;
 

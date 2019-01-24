@@ -4,6 +4,8 @@
 
 > 微博,微信图库效果,微信视频拖放效果,适配状态栏 、屏幕旋转 、全屏 、长图、GIF、视频
 
+![](http://www.moyokoo.com/img/project/diooto_scan.png)
+
 [中文文档](https://www.moyokoo.com/diooto/)
 
 [EnglishDoc](https://www.moyokoo.com/diootoEnglish/)

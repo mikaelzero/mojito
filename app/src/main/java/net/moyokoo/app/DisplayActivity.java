@@ -1,4 +1,4 @@
-package net.moyokoo.dio;
+package net.moyokoo.app;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,9 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.miaoyongjun.administrator.mvideo.R;
 
-import net.moyokoo.diooto.DragDiootoView;
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
 import net.moyokoo.diooto.interfaces.DefaultCircleProgress;
@@ -162,19 +161,6 @@ public class DisplayActivity extends AppCompatActivity {
                             .views(views[holder.getAdapterPosition()])
                             .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> {
                                 sketchImageView.displayImage(normalImageUlr[position1]);
-                                sketchImageView.setOnClickListener(new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View v) {
-                                        Toast.makeText(DisplayActivity.this, "setOnClickListener", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                                sketchImageView.setOnLongClickListener(new View.OnLongClickListener() {
-                                    @Override
-                                    public boolean onLongClick(View v) {
-                                        Toast.makeText(DisplayActivity.this, "setOnLongClickListener", Toast.LENGTH_LONG).show();
-                                        return false;
-                                    }
-                                });
                             })
                             .start();
                 } else {
@@ -183,9 +169,12 @@ public class DisplayActivity extends AppCompatActivity {
                             .type(DiootoConfig.PHOTO)
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> sketchImageView.displayImage(normalImageUlr[position12]))
-                            .onLongClick((dragDiootoView, position14) -> {
-                                Toast.makeText(DisplayActivity.this, "Long click", Toast.LENGTH_SHORT).show();
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> {
+                                sketchImageView.displayImage(normalImageUlr[position12]);
+                                sketchImageView.setOnLongClickListener(v -> {
+                                    Toast.makeText(DisplayActivity.this, "Long click", Toast.LENGTH_SHORT).show();
+                                    return false;
+                                });
                             })
                             .start();
                 }

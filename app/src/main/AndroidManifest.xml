@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.miaoyongjun.administrator.mvideo">
+          package="net.moyokoo.app">
 
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,19 +16,19 @@
 
     <application
         android:allowBackup="true"
-        android:name="net.moyokoo.dio.App"
+        android:name="net.moyokoo.app.App"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="net.moyokoo.dio.MainActivity">
+        <activity android:name="net.moyokoo.app.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name="net.moyokoo.dio.DisplayActivity"
+        <activity android:name="net.moyokoo.app.DisplayActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"/>
     </application>

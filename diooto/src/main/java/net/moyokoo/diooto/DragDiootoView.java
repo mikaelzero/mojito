@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -15,7 +17,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
-import net.moyokoo.dio.R;
 
 import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.decode.ImageSizeCalculator;
@@ -78,8 +79,6 @@ public class DragDiootoView extends FrameLayout {
     boolean isLongWidthImage = false;//是否是宽度长图
     boolean isAnimating = false;//是否在动画中
     boolean isPhoto = false;
-    boolean mIsLongPressed = false;
-    boolean longClickable = false;
 
     public DragDiootoView(Context context) {
         this(context, null);
@@ -524,9 +523,6 @@ public class DragDiootoView extends FrameLayout {
                 mDownY = event.getY();
                 mTranslateX = 0;
                 mTranslateY = 0;
-                if (longClickable) {
-                    postDelayed(mLongPressedRunable, ViewConfiguration.getLongPressTimeout());
-                }
                 //触摸背景需要捕捉事件
                 if (!isTouchPointInContentLayout(contentLayout, event)) {
                     mLastY = y;
@@ -558,10 +554,6 @@ public class DragDiootoView extends FrameLayout {
                     break;
                 }
 
-                //如果X移动超过最小距离  则不给长按事件
-                if (Math.abs(mXDistanceTraveled) > touchSlop || (Math.abs(mTranslateX) < Math.abs(mXDistanceTraveled))) {
-                    mIsLongPressed = false;
-                }
                 //如果滑动距离不足,则不需要事件
                 if (Math.abs(mYDistanceTraveled) < touchSlop || (Math.abs(mTranslateX) > Math.abs(mYDistanceTraveled) && !isDrag)) {
                     mYDistanceTraveled = 0;
@@ -570,8 +562,6 @@ public class DragDiootoView extends FrameLayout {
                     }
                     break;
                 }
-
-                mIsLongPressed = false;
                 if (mDragListener != null) {
                     mDragListener.onDrag(this, mTranslateX, mTranslateY);
                 }
@@ -588,7 +578,6 @@ public class DragDiootoView extends FrameLayout {
                 if (isAnimating) {
                     break;
                 }
-                removeCallbacks(mLongPressedRunable);
                 //如果滑动距离不足,则不需要事件
                 if (Math.abs(mYDistanceTraveled) < touchSlop || (Math.abs(mYDistanceTraveled) > Math.abs(mYDistanceTraveled) && !isDrag)) {
                     if (!isMulitFinger && onClickListener != null) {
@@ -636,17 +625,12 @@ public class DragDiootoView extends FrameLayout {
                 && x <= right;
     }
 
-    Runnable mLongPressedRunable = new Runnable() {
-        public void run() {
-            if (longClickable && mIsLongPressed) {
-                if (onDiootoLongClickListener != null) {
-                    onDiootoLongClickListener.longClick();
-                }
-            }else{
-                mIsLongPressed = longClickable;
-            }
-        }
-    };
+
+    @Override
+    protected void onDetachedFromWindow() {
+
+        super.onDetachedFromWindow();
+    }
 
 
     public class MarginViewWrapper {
@@ -772,13 +756,6 @@ public class DragDiootoView extends FrameLayout {
     private OnShowFinishListener onShowFinishListener;
     private OnClickListener onClickListener;
     private OnReleaseListener onReleaseListener;
-    private OnDiootoLongClickListener onDiootoLongClickListener;
-
-    public void setOnDiootoLongClickListener(OnDiootoLongClickListener onDiootoLongClickListener) {
-        this.onDiootoLongClickListener = onDiootoLongClickListener;
-        longClickable = true;
-        mIsLongPressed = true;
-    }
 
     public void setOnReleaseListener(OnReleaseListener onReleaseListener) {
         this.onReleaseListener = onReleaseListener;
@@ -820,9 +797,6 @@ public class DragDiootoView extends FrameLayout {
         void onClick(DragDiootoView dragDiootoView);
     }
 
-    public interface OnDiootoLongClickListener {
-        void longClick();
-    }
 
     //获得可滑动view的布局中添加的子view
     public View getContentView() {

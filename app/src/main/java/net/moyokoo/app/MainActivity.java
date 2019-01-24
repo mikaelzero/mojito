@@ -1,4 +1,4 @@
-package net.moyokoo.dio;
+package net.moyokoo.app;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.miaoyongjun.administrator.mvideo.R;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView mRecyclerView;

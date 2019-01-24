@@ -1,4 +1,4 @@
-package net.moyokoo.dio;
+package net.moyokoo.app;
 
 import android.app.Application;
 

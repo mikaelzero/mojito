@@ -14,7 +14,6 @@ import android.widget.FrameLayout;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.config.ContentViewOriginModel;
-import net.moyokoo.dio.R;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -128,15 +127,6 @@ public class ImageFragment extends Fragment {
                 }
             }
         });
-        if (Diooto.onLongClickListener != null) {
-            dragDiootoView.setOnDiootoLongClickListener(new DragDiootoView.OnDiootoLongClickListener() {
-                @Override
-                public void longClick() {
-                    Log.e("1", "onLongClickListener position:" + position);
-                    Diooto.onLongClickListener.longClick(dragDiootoView, position);
-                }
-            });
-        }
         dragDiootoView.setOnDragListener(new DragDiootoView.OnDragListener() {
             @Override
             public void onDrag(DragDiootoView view, float moveX, float moveY) {
