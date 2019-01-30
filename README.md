@@ -6,9 +6,9 @@
 
 ![](http://www.moyokoo.com/img/project/diooto_scan.png)
 
-[中文文档](https://www.moyokoo.com/p/50/)
+[中文文档](https://www.yuque.com/elune/blog/mdf88x)
 
-[EnglishDoc](https://www.moyokoo.com/p/51/)
+[EnglishDoc](https://www.yuque.com/elune/blog/gkmy59)
 
 <img src="https://github.com/moyokoo/Media/blob/master/diooto1.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto2.gif?raw=true" height="500"/><img src="https://github.com/moyokoo/Media/blob/master/diooto3.gif?raw=true" height="500"/>
 
