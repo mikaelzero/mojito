@@ -19,7 +19,7 @@
         <activity
             android:name="net.moyokoo.diooto.ImageActivity"
             android:configChanges="orientation|screenSize|keyboardHidden"
-            android:theme="@style/Transparent" />
+            android:theme="@style/Transparent"/>
     </application>
 
 </manifest>

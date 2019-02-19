@@ -21,6 +21,8 @@ import net.moyokoo.diooto.interfaces.CircleIndexIndicator;
 import net.moyokoo.diooto.interfaces.DefaultPercentProgress;
 import net.moyokoo.diooto.interfaces.IIndicator;
 import net.moyokoo.diooto.interfaces.IProgress;
+import net.moyokoo.diooto.tools.Fucking;
+import net.moyokoo.diooto.tools.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +132,7 @@ public class Diooto {
                 int location[] = new int[2];
                 imageView.getLocationOnScreen(location);
                 imageBean.left = location[0];
-                imageBean.top = location[1];
+                imageBean.top = location[1] - Fucking.getFuckHeight(getWindow(imageView.getContext()));
                 imageBean.width = imageView.getWidth();
                 imageBean.height = imageView.getHeight();
             }

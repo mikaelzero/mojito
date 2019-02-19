@@ -1,8 +1,10 @@
 package net.moyokoo.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,10 +12,12 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.DisplayCutout;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -25,6 +29,8 @@ import net.moyokoo.diooto.interfaces.DefaultCircleProgress;
 import org.salient.artplayer.MediaPlayerManager;
 import org.salient.artplayer.ScaleType;
 import org.salient.artplayer.VideoView;
+
+import java.util.List;
 
 import me.panpf.sketch.SketchImageView;
 
@@ -80,8 +86,8 @@ public class DisplayActivity extends AppCompatActivity {
 //            Sketch.with(DisplayActivity.this).getConfiguration().getBitmapPool().clear();
 //            Sketch.with(DisplayActivity.this).getConfiguration().getMemoryCache().clear();
 //        });
-
     }
+
 
     public static void newIntent(Activity activity, Bundle bundle) {
         Intent intent = new Intent(activity, DisplayActivity.class);
@@ -195,6 +201,7 @@ public class DisplayActivity extends AppCompatActivity {
                 srcImageView = view.findViewById(R.id.srcImageView);
             }
         }
+
     }
 
     @Override
