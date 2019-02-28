@@ -60,6 +60,11 @@ public class Diooto {
         return this;
     }
 
+    public Diooto immersive(boolean immersive) {
+        this.diootoConfig.setImmersive(immersive);
+        return this;
+    }
+
     public Diooto position(int position) {
         return position(position, 0);
     }
@@ -98,7 +103,7 @@ public class Diooto {
             firstPos = linLayMan.findFirstVisibleItemPosition();
             lastPos = linLayMan.findLastVisibleItemPosition();
         }
-//        fillPlaceHolder(originImageList, totalCount, firstPos , lastPos );
+        fillPlaceHolder(originImageList, totalCount, firstPos , lastPos );
         View[] views = new View[originImageList.size()];
         for (int i = 0; i < originImageList.size(); i++) {
             views[i] = originImageList.get(i);
@@ -144,19 +149,21 @@ public class Diooto {
 
 
     public Diooto start() {
-        Window window = getWindow(mContext);
-        if ((window.getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
-            diootoConfig.setFullScreen(true);
-        }
-        if (!diootoConfig.isFullScreen()) {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (!diootoConfig.isImmersive()) {
+            Window window = getWindow(mContext);
+            if ((window.getAttributes().flags & WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                    == WindowManager.LayoutParams.FLAG_FULLSCREEN) {
+                diootoConfig.setFullScreen(true);
+            }
+            if (!diootoConfig.isFullScreen()) {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                }
             }
         }
 

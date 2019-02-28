@@ -14,6 +14,15 @@ public class DiootoConfig implements Parcelable {
     private boolean isFullScreen = false;
     private List<ContentViewOriginModel> contentViewOriginModels;
     private int position;
+    private boolean immersive;
+
+    public boolean isImmersive() {
+        return immersive;
+    }
+
+    public void setImmersive(boolean immersive) {
+        this.immersive = immersive;
+    }
 
     public int getPosition() {
         return position;
@@ -55,6 +64,9 @@ public class DiootoConfig implements Parcelable {
         this.contentViewOriginModels = contentViewOriginModels;
     }
 
+    public DiootoConfig() {
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -67,9 +79,7 @@ public class DiootoConfig implements Parcelable {
         dest.writeByte(this.isFullScreen ? (byte) 1 : (byte) 0);
         dest.writeTypedList(this.contentViewOriginModels);
         dest.writeInt(this.position);
-    }
-
-    public DiootoConfig() {
+        dest.writeByte(this.immersive ? (byte) 1 : (byte) 0);
     }
 
     protected DiootoConfig(Parcel in) {
@@ -78,9 +88,10 @@ public class DiootoConfig implements Parcelable {
         this.isFullScreen = in.readByte() != 0;
         this.contentViewOriginModels = in.createTypedArrayList(ContentViewOriginModel.CREATOR);
         this.position = in.readInt();
+        this.immersive = in.readByte() != 0;
     }
 
-    public static final Parcelable.Creator<DiootoConfig> CREATOR = new Parcelable.Creator<DiootoConfig>() {
+    public static final Creator<DiootoConfig> CREATOR = new Creator<DiootoConfig>() {
         @Override
         public DiootoConfig createFromParcel(Parcel source) {
             return new DiootoConfig(source);

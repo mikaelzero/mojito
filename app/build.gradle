@@ -42,4 +42,6 @@ dependencies {
     implementation 'me.panpf:sketch-gif:2.6.2-b1'
     implementation 'me.panpf:sketch:2.6.2-b1'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
+    implementation 'com.yanzhenjie:sofia:1.0.5'
+    implementation 'com.gyf.immersionbar:immersionbar:2.3.3'
 }

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -21,6 +22,8 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.gyf.barlibrary.ImmersionBar;
+import com.yanzhenjie.sofia.Sofia;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.Diooto;
@@ -60,6 +63,7 @@ public class DisplayActivity extends AppCompatActivity {
     };
     Context context;
     int activityPosition;
+    boolean isImmersive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +71,7 @@ public class DisplayActivity extends AppCompatActivity {
         context = this;
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_display);
-
+        ImmersionBar.with(this).init();
         activityPosition = getIntent().getIntExtra("position", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("Diooto");
@@ -135,11 +139,12 @@ public class DisplayActivity extends AppCompatActivity {
                             .position(holder.getAdapterPosition())
                             .views(holder.srcImageView)
                             .type(DiootoConfig.VIDEO)
+                            .immersive(isImmersive)
                             .setProgress(new DefaultCircleProgress())
                             //提供视频View
                             .onProvideVideoView(() -> new VideoView(context))
                             //显示视频加载之前的缩略图
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[holder.getAdapterPosition()]))
+                            .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[position]))
                             //动画到最大化时的接口
                             .onVideoLoadEnd((dragDiootoView, sketchImageView, progressView) -> {
                                 VideoView videoView = (VideoView) dragDiootoView.getContentView();
@@ -163,20 +168,22 @@ public class DisplayActivity extends AppCompatActivity {
                     Diooto diooto = new Diooto(context)
                             .urls(normalImageUlr[position])
                             .type(DiootoConfig.PHOTO)
+                            .immersive(isImmersive)
                             .position(0)
                             .views(views[holder.getAdapterPosition()])
                             .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> {
-                                sketchImageView.displayImage(normalImageUlr[position1]);
+                                sketchImageView.displayImage(normalImageUlr[position]);
                             })
                             .start();
                 } else {
                     Diooto diooto = new Diooto(context)
                             .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
                             .type(DiootoConfig.PHOTO)
+                            .immersive(isImmersive)
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
                             .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> {
-                                sketchImageView.displayImage(normalImageUlr[position12]);
+                                sketchImageView.displayImage(normalImageUlr[position]);
                                 sketchImageView.setOnLongClickListener(v -> {
                                     Toast.makeText(DisplayActivity.this, "Long click", Toast.LENGTH_SHORT).show();
                                     return false;

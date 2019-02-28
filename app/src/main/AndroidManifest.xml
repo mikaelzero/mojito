@@ -29,7 +29,6 @@
             </intent-filter>
         </activity>
         <activity android:name="net.moyokoo.app.DisplayActivity"
-            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="orientation"/>
     </application>
 
