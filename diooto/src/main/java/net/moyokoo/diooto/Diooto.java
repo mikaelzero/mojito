@@ -50,6 +50,11 @@ public class Diooto {
         return this;
     }
 
+    public Diooto indicatorVisibility(int visibility) {
+        this.diootoConfig.setIndicatorVisibility(visibility);
+        return this;
+    }
+
     public Diooto urls(String[] imageUrls) {
         this.diootoConfig.setImageUrls(imageUrls);
         return this;
@@ -70,6 +75,7 @@ public class Diooto {
     }
 
     public Diooto position(int position, int headerSize) {
+        this.diootoConfig.setHeaderSize(headerSize);
         this.diootoConfig.setPosition(position - headerSize);
         return this;
     }
@@ -93,7 +99,7 @@ public class Diooto {
         }
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         int firstPos = 0, lastPos = 0;
-        int totalCount = layoutManager.getItemCount();
+        int totalCount = layoutManager.getItemCount() - diootoConfig.getHeaderSize();
         if (layoutManager instanceof GridLayoutManager) {
             GridLayoutManager gridLayMan = (GridLayoutManager) layoutManager;
             firstPos = gridLayMan.findFirstVisibleItemPosition();
@@ -103,7 +109,7 @@ public class Diooto {
             firstPos = linLayMan.findFirstVisibleItemPosition();
             lastPos = linLayMan.findLastVisibleItemPosition();
         }
-        fillPlaceHolder(originImageList, totalCount, firstPos , lastPos );
+        fillPlaceHolder(originImageList, totalCount, firstPos, lastPos);
         View[] views = new View[originImageList.size()];
         for (int i = 0; i < originImageList.size(); i++) {
             views[i] = originImageList.get(i);

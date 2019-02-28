@@ -48,6 +48,7 @@ public class ImageActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.viewPager);
         indicatorLayout = findViewById(R.id.indicatorLayout);
         diootoConfig = getIntent().getParcelableExtra("config");
+        indicatorLayout.setVisibility(diootoConfig.getIndicatorVisibility());
         int currentPosition = diootoConfig.getPosition();
         String[] imageUrls = diootoConfig.getImageUrls();
         contentViewOriginModels = diootoConfig.getContentViewOriginModels();

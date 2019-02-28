@@ -15,6 +15,24 @@ public class DiootoConfig implements Parcelable {
     private List<ContentViewOriginModel> contentViewOriginModels;
     private int position;
     private boolean immersive;
+    private int headerSize;
+    private int indicatorVisibility;
+
+    public int getIndicatorVisibility() {
+        return indicatorVisibility;
+    }
+
+    public void setIndicatorVisibility(int indicatorVisibility) {
+        this.indicatorVisibility = indicatorVisibility;
+    }
+
+    public int getHeaderSize() {
+        return headerSize;
+    }
+
+    public void setHeaderSize(int headerSize) {
+        this.headerSize = headerSize;
+    }
 
     public boolean isImmersive() {
         return immersive;
@@ -80,6 +98,8 @@ public class DiootoConfig implements Parcelable {
         dest.writeTypedList(this.contentViewOriginModels);
         dest.writeInt(this.position);
         dest.writeByte(this.immersive ? (byte) 1 : (byte) 0);
+        dest.writeInt(this.headerSize);
+        dest.writeInt(this.indicatorVisibility);
     }
 
     protected DiootoConfig(Parcel in) {
@@ -89,6 +109,8 @@ public class DiootoConfig implements Parcelable {
         this.contentViewOriginModels = in.createTypedArrayList(ContentViewOriginModel.CREATOR);
         this.position = in.readInt();
         this.immersive = in.readByte() != 0;
+        this.headerSize = in.readInt();
+        this.indicatorVisibility = in.readInt();
     }
 
     public static final Creator<DiootoConfig> CREATOR = new Creator<DiootoConfig>() {

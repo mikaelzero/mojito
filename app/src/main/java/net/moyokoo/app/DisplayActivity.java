@@ -59,7 +59,7 @@ public class DisplayActivity extends AppCompatActivity {
             "https://github.com/moyokoo/Media/blob/master/diooto6.jpg?raw=true",
             "https://github.com/moyokoo/Media/blob/master/diooto7.png?raw=true",
             "https://github.com/moyokoo/Media/blob/master/diooto8.png?raw=true",
-            "https://github.com/moyokoo/Media/blob/master/diooto9.jpg?raw=true"
+            "https://github.com/moyokoo/Media/blob/master/diooto9.jpg?raw=true",
     };
     Context context;
     int activityPosition;
@@ -177,6 +177,7 @@ public class DisplayActivity extends AppCompatActivity {
                             .start();
                 } else {
                     Diooto diooto = new Diooto(context)
+                            .indicatorVisibility(View.GONE)
                             .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
                             .type(DiootoConfig.PHOTO)
                             .immersive(isImmersive)
