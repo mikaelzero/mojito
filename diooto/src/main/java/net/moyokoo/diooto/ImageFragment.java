@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +13,7 @@ import android.widget.FrameLayout;
 
 import net.moyokoo.diooto.config.DiootoConfig;
 import net.moyokoo.diooto.config.ContentViewOriginModel;
+import net.moyokoo.diooto.tools.DisplayListenerAdapter;
 
 import me.panpf.sketch.Sketch;
 import me.panpf.sketch.SketchImageView;
@@ -39,7 +39,8 @@ public class ImageFragment extends Fragment {
     int type = DiootoConfig.PHOTO;
     FrameLayout loadingLayout;
     boolean shouldShowAnimation = false;
-    boolean hasCache;
+    boolean unClickPosHasCache;
+    boolean clickPosHasCache;
 
     public DragDiootoView getDragDiootoView() {
         return dragDiootoView;
@@ -122,8 +123,8 @@ public class ImageFragment extends Fragment {
                                 (SketchImageView) dragDiootoView.getContentParentView().getChildAt(1),
                                 ImageActivity.iProgress.getProgressView(position));
                     }
-                } else if (type == DiootoConfig.PHOTO && view.getContentView() instanceof SketchImageView && !hasCache) {
-                    loadImage();
+                } else if (type == DiootoConfig.PHOTO && view.getContentView() instanceof SketchImageView && !unClickPosHasCache) {
+                    loadImage(true);
                 }
             }
         });
@@ -136,10 +137,10 @@ public class ImageFragment extends Fragment {
             }
         });
         DiskCache diskCache = Sketch.with(getContext()).getConfiguration().getDiskCache();
-        hasCache = type == DiootoConfig.PHOTO && !((ImageActivity) getActivity()).isNeedAnimationForClickPosition(position) && diskCache.exist(url);
-        if (hasCache) {
+        unClickPosHasCache = type == DiootoConfig.PHOTO && !((ImageActivity) getActivity()).isNeedAnimationForClickPosition(position) && diskCache.exist(url);
+        if (unClickPosHasCache) {
             ((ImageActivity) getActivity()).refreshNeedAnimationForClickPosition();
-            loadImage();
+            loadImage(false);
         } else {
             dragDiootoView.putData(contentViewOriginModel.getLeft(), contentViewOriginModel.getTop(), contentViewOriginModel.getWidth(), contentViewOriginModel.getHeight());
             //如果显示的点击的position  则进行动画处理
@@ -178,33 +179,22 @@ public class ImageFragment extends Fragment {
      * 如果有缓存  直接可显示
      * 如果没缓存 则需要等待加载完毕  才能够将图片显示在view上
      */
-    private void loadImage() {
+    private void loadImage(boolean needReCheckCache) {
         if (getContext() == null || sketchImageView == null) {
             return;
         }
-        if (hasCache) {
+
+        if (unClickPosHasCache) {
             loadWithCache();
         } else {
-            loadWithoutCache();
+            loadWithoutCache(needReCheckCache);
         }
     }
 
     private void loadWithCache() {
-        sketchImageView.setDisplayListener(new DisplayListener() {
-            @Override
-            public void onStarted() {
-                loadingLayout.setVisibility(View.VISIBLE);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onStart(position);
-                }
-            }
-
+        sketchImageView.setDisplayListener(new DisplayListenerAdapter() {
             @Override
             public void onCompleted(@NonNull Drawable drawable, @NonNull ImageFrom imageFrom, @NonNull ImageAttrs imageAttrs) {
-                loadingLayout.setVisibility(View.GONE);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onFinish(position);
-                }
                 int w = drawable.getIntrinsicWidth();
                 int h = drawable.getIntrinsicHeight();
                 //如果有缓存  直接将大小变为最终大小而不是去调用notifySize来更新 并且是直接显示不进行动画
@@ -214,49 +204,32 @@ public class ImageFragment extends Fragment {
                         w, h);
                 dragDiootoView.show(true);
             }
-
-            @Override
-            public void onError(@NonNull ErrorCause cause) {
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onFailed(position);
-                }
-            }
-
-            @Override
-            public void onCanceled(@NonNull CancelCause cause) {
-
-            }
-        });
-        sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
-            @Override
-            public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-                loadingLayout.setVisibility(View.VISIBLE);
-                int ratio = (int) (completedLength / (float) totalLength * 100);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onProgress(position, ratio);
-                }
-            }
         });
         sketchImageView.displayImage(url);
     }
 
     LoadRequest loadRequest;
 
-    private void loadWithoutCache() {
+    private void loadWithoutCache(final boolean needReCheckCache) {
         loadRequest = Sketch.with(getContext()).load(url, new LoadListener() {
             @Override
             public void onStarted() {
-                loadingLayout.setVisibility(View.VISIBLE);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onStart(position);
+                if (!needReCheckCache) {
+                    loadingLayout.setVisibility(View.VISIBLE);
+                    if (ImageActivity.iProgress != null) {
+                        ImageActivity.iProgress.onStart(position);
+                    }
                 }
+
             }
 
             @Override
             public void onCompleted(@NonNull LoadResult result) {
-                loadingLayout.setVisibility(View.GONE);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onFinish(position);
+                if (!needReCheckCache) {
+                    loadingLayout.setVisibility(View.GONE);
+                    if (ImageActivity.iProgress != null) {
+                        ImageActivity.iProgress.onFinish(position);
+                    }
                 }
                 if (result.getGifDrawable() != null) {
                     result.getGifDrawable().followPageVisible(true, true);
@@ -265,13 +238,15 @@ public class ImageFragment extends Fragment {
                 int h = result.getBitmap().getHeight();
                 dragDiootoView.notifySize(w, h);
                 sketchImageView.displayImage(url);
-                hasCache = true;
+                unClickPosHasCache = true;
             }
 
             @Override
             public void onError(@NonNull ErrorCause cause) {
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onFailed(position);
+                if (!needReCheckCache) {
+                    if (ImageActivity.iProgress != null) {
+                        ImageActivity.iProgress.onFailed(position);
+                    }
                 }
             }
 
@@ -281,10 +256,12 @@ public class ImageFragment extends Fragment {
         }).downloadProgressListener(new DownloadProgressListener() {
             @Override
             public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-                loadingLayout.setVisibility(View.VISIBLE);
-                int ratio = (int) (completedLength / (float) totalLength * 100);
-                if (ImageActivity.iProgress != null) {
-                    ImageActivity.iProgress.onProgress(position, ratio);
+                if (!needReCheckCache) {
+                    loadingLayout.setVisibility(View.VISIBLE);
+                    int ratio = (int) (completedLength / (float) totalLength * 100);
+                    if (ImageActivity.iProgress != null) {
+                        ImageActivity.iProgress.onProgress(position, ratio);
+                    }
                 }
             }
         }).commit();

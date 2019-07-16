@@ -4,9 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -16,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-
 
 import me.panpf.sketch.SketchImageView;
 import me.panpf.sketch.decode.ImageSizeCalculator;
@@ -285,7 +282,7 @@ public class DragDiootoView extends FrameLayout {
         if (sizeCalculator.canUseReadModeByHeight(realWidth, realHeight) ||
                 sizeCalculator.canUseReadModeByWidth(realWidth, realHeight) ||
                 screenWidth / (float) screenHeight < realWidth / (float) realHeight
-                ) {
+        ) {
             isLongHeightImage = sizeCalculator.canUseReadModeByHeight(realWidth, realHeight) && getContentView() instanceof SketchImageView;
             isLongWidthImage = sizeCalculator.canUseReadModeByWidth(realWidth, realHeight) && getContentView() instanceof SketchImageView;
             newWidth = screenWidth;

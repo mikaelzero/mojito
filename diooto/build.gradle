@@ -1,4 +1,6 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'net.github.moyokoo'
@@ -33,4 +35,8 @@ dependencies {
     implementation androidDependencies.design
     implementation 'me.panpf:sketch:2.6.2-b1'
     implementation 'me.panpf:sketch-gif:2.6.2-b1'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
