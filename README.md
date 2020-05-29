@@ -6,8 +6,6 @@
 
 ![](http://www.moyokoo.com/img/project/diooto_scan.png)
 
-QQ群:[470160953](http://qm.qq.com/cgi-bin/qm/qr?k=PfTIlZp3p1_VBZwOMq_iFRBE6Xn89uz8)
-
 [中文文档](https://www.yuque.com/elune/blog/mdf88x)
 
 [EnglishDoc](https://www.yuque.com/elune/blog/gkmy59)
