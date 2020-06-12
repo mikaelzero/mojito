@@ -4,13 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <net.moyokoo.diooto.DragDiootoView
+    <net.mikaelzero.diooto.MojitoView
         android:id="@+id/dragDiootoView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
     <FrameLayout
-        android:visibility="gone"
         android:id="@+id/loadingLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
 </FrameLayout>

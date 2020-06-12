@@ -4,11 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <net.moyokoo.diooto.tools.NoScrollViewPager
+    <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:background="@color/colorAccent"
         tools:visibility="visible" />
 
     <FrameLayout

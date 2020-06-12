@@ -27,5 +27,5 @@
 # 实现了 Initializer 接口的类需要在 AndroidManifest 中配置，然后在运行时实例化，因此不能混淆
 -keep public class * implements me.panpf.sketch.Initializer
 
--keep class net.moyokoo.diooto.config.* {*;}
--keep class net.moyokoo.diooto.interfaces.* {*;}
+-keep class net.mikaelzero.diooto.config.* {*;}
+-keep class net.mikaelzero.diooto.interfaces.* {*;}

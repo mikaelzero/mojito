@@ -4,10 +4,10 @@
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <me.panpf.sketch.SketchImageView
+    <ImageView
         android:id="@+id/srcImageView"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
+        android:layout_height="wrap_content"
         android:scaleType="centerCrop"/>
 
 </FrameLayout>
