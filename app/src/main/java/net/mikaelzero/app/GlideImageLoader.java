@@ -35,8 +35,8 @@ import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 
-import net.mikaelzero.diooto.loader.ImageInfoExtractor;
-import net.mikaelzero.diooto.loader.ImageLoader;
+import net.mikaelzero.mojito.loader.ImageInfoExtractor;
+import net.mikaelzero.mojito.loader.ImageLoader;
 
 import java.io.File;
 import java.util.ArrayList;

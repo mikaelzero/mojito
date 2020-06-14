@@ -8,8 +8,9 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.gyf.barlibrary.ImmersionBar;
 
-import net.mikaelzero.diooto.Mojito;
-import net.mikaelzero.diooto.interfaces.DefaultCircleProgress;
+import net.mikaelzero.mojito.Mojito;
+import net.mikaelzero.mojito.interfaces.CircleIndexIndicator;
 
 import org.salient.artplayer.MediaPlayerManager;
-import org.salient.artplayer.VideoView;
+
+import java.util.Arrays;
 
 public class DisplayActivity extends AppCompatActivity {
     WrapRecyclerView mRecyclerView;
@@ -40,29 +42,32 @@ public class DisplayActivity extends AppCompatActivity {
             "https://wx4.sinaimg.cn/large/0075aoetgy1fwkmjmcl67j30b3cmchdw.jpg"
     };
     String[] normalImageUlr = new String[]{
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg",
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591710912974-assets/web-upload/1e6325b7-4e26-443f-98f8-aa3925222ea1.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg",
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333257-assets/web-upload/dfe8a4eb-9872-444b-b2a5-83378f467915.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg",
-            "https://youimg1.c-ctrip.com/target/tg/773/732/734/7ca19416b8cd423f8f6ef2d08366b7dc.jpg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg"
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333210-assets/web-upload/8d20ed3d-1472-47c9-a2e6-da96e6019299.jpeg",
+//            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg",
+//            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
     };
     Context context;
     int activityPosition;
-    boolean isImmersive = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        ImmersionBar.with(this).fullScreen(true).init();
         setContentView(R.layout.activity_display);
-//        ImmersionBar.with(this).init();
         activityPosition = getIntent().getIntExtra("position", 0);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Diooto");
+        toolbar.setTitle("Mojito");
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null)
@@ -72,6 +77,7 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new MainAdapter());
         mRecyclerView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.adapter_header, null));
         mRecyclerView.addFooterView(LayoutInflater.from(this).inflate(R.layout.adapter_footer, null));
+        Mojito.Companion.prefetch(normalImageUlr);
     }
 
 
@@ -86,9 +92,7 @@ public class DisplayActivity extends AppCompatActivity {
         @Override
         public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             MyViewHolder holder = null;
-            View view = LayoutInflater.from(
-                    DisplayActivity.this).inflate(R.layout.item_grid, parent,
-                    false);
+            View view = LayoutInflater.from(DisplayActivity.this).inflate(R.layout.item_grid, parent, false);
             int size = getResources().getDisplayMetrics().widthPixels / 3 - 16;
             RecyclerView.LayoutParams lp = new RecyclerView.LayoutParams(size, size);
             int padding = 16;
@@ -101,7 +105,6 @@ public class DisplayActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             Glide.with(context).load(normalImageUlr[position]).into(holder.srcImageView);
-//            holder.srcImageView.setShowGifFlagEnabled(R.drawable.ic_gif);
             holder.srcImageView.setOnClickListener(srcView -> {
 
                 int size = mRecyclerView.getChildCount();
@@ -115,60 +118,20 @@ public class DisplayActivity extends AppCompatActivity {
                     realHeights[i] = 720;
                 }
                 if (activityPosition == 3) {
-                    //加载视频
-                    Mojito mojito = new Mojito(context)
-                            .urls(normalImageUlr[position])
-                            .position(holder.getAdapterPosition())
-                            .views(holder.srcImageView)
-                            .immersive(isImmersive)
-                            .setProgress(new DefaultCircleProgress())
-                            //提供视频View
-                            .onProvideVideoView(() -> new VideoView(context))
-                            //显示视频加载之前的缩略图
-//                            .loadPhotoBeforeShowBigImage((sketchImageView, position13) -> sketchImageView.displayImage(normalImageUlr[position]))
-                            //动画到最大化时的接口
-                            .onVideoLoadEnd((dragDiootoView, sketchImageView, progressView) -> {
-//                                VideoView videoView = (VideoView) dragDiootoView.getContentView();
-//                                SimpleControlPanel simpleControlPanel = new SimpleControlPanel(context);
-//                                simpleControlPanel.setOnClickListener(v -> dragDiootoView.backToMin());
-//                                simpleControlPanel.setOnVideoPreparedListener(() -> {
-//                                    sketchImageView.setVisibility(View.GONE);
-//                                    progressView.setVisibility(View.GONE);
-//                                });
-//                                videoView.setControlPanel(simpleControlPanel);
-//                                videoView.setUp("http://bmob-cdn-982.b0.upaiyun.com/2017/02/23/266454624066f2b680707492a0664a97.mp4");
-//                                videoView.start();
-////                                dragDiootoView.notifySize(1920, 1080);
-//                                MediaPlayerManager.instance().setScreenScale(ScaleType.SCALE_CENTER_CROP);
-                            })
-                            //到最小状态的接口
-                            .onFinish(dragDiootoView -> MediaPlayerManager.instance().releasePlayerAndView(context))
-                            .start();
+                    // TODO 加载视频
                 } else if (activityPosition == 1) {
                     //加载单张图片
                     Mojito mojito = new Mojito(context)
                             .urls(normalImageUlr[position])
-                            .immersive(isImmersive)
                             .position(0)
                             .views(views[holder.getAdapterPosition()])
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position1) -> {
-//                                sketchImageView.setImage(ImageSource.resource(R.mipmap.bg));
-                            })
                             .start();
                 } else {
                     Mojito mojito = new Mojito(context)
-                            .indicatorVisibility(View.GONE)
-                            .urls(activityPosition == 2 ? longImageUrl : normalImageUlr)
-                            .immersive(isImmersive)
+                            .setIndicator(new CircleIndexIndicator())
+                            .urls(Arrays.asList(activityPosition == 2 ? longImageUrl : normalImageUlr))
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
-                            .loadPhotoBeforeShowBigImage((sketchImageView, position12) -> {
-//                                sketchImageView.setImage(ImageSource.resource(R.mipmap.bg));
-                                sketchImageView.setOnLongClickListener(v -> {
-                                    Toast.makeText(DisplayActivity.this, "Long click", Toast.LENGTH_SHORT).show();
-                                    return false;
-                                });
-                            })
                             .start();
                 }
             });
