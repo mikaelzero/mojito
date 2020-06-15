@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'net.mikaelzero.mojito:GlideImageLoader'
+group = 'net.mikaelzero.mojito'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")

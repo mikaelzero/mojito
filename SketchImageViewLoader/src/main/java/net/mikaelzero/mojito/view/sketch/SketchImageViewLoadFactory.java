@@ -4,12 +4,12 @@ import android.net.Uri;
 import android.view.View;
 
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory;
+import net.mikaelzero.mojito.view.sketch.core.SketchImageView;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 
-import me.panpf.sketch.SketchImageView;
 
 public class SketchImageViewLoadFactory implements ImageViewLoadFactory {
 

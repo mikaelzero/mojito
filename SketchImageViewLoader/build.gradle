@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'net.mikaelzero.mojito:SketchImageViewLoader'
+group = 'net.mikaelzero.mojito'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -37,7 +37,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'me.panpf:sketch:2.7.1'
+//    implementation 'me.panpf:sketch:2.7.1'
     implementation 'me.panpf:sketch-gif:2.7.1'
     implementation project(':mojito')
 }
