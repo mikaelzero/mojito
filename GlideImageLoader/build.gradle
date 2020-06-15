@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'net.mikaelzero.mojito:CoreView'
+group = 'net.mikaelzero.mojito:GlideImageLoader'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -12,18 +12,15 @@ android {
     defaultConfig {
         minSdkVersion globalConfiguration.androidMinSdkVersion
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
-        versionCode 15
-        versionName "1.5"
-
+        versionCode 1
+        versionName "1.0"
+        consumerProguardFiles "consumer-rules.pro"
     }
+
     buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
@@ -36,13 +33,11 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.gyf.immersionbar:immersionbar:2.3.3'
-}
-repositories {
-    mavenCentral()
+    implementation "com.squareup.okhttp3:okhttp:4.3.1"
+    api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
+    implementation project(':mojito')
 }

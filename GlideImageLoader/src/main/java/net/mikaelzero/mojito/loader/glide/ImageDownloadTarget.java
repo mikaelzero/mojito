@@ -1,4 +1,4 @@
-package net.mikaelzero.app;
+package net.mikaelzero.mojito.loader.glide;
 
 import android.graphics.drawable.Drawable;
 
@@ -12,28 +12,44 @@ import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.util.Util;
 
 import java.io.File;
+public abstract class ImageDownloadTarget implements Target<File>,
+        GlideProgressSupport.ProgressListener {
 
-public class PrefetchTarget implements Target<File> {
+    private Request request;
 
     private final int width;
     private final int height;
 
-    private Request request;
+    private final String mUrl;
 
-    @SuppressWarnings("WeakerAccess")
-    public PrefetchTarget() {
-        this(SIZE_ORIGINAL, SIZE_ORIGINAL);
+    protected ImageDownloadTarget(String url) {
+        this(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL, url);
     }
 
-    @SuppressWarnings("WeakerAccess")
-    private PrefetchTarget(int width, int height) {
+    private ImageDownloadTarget(int width, int height, String url) {
         this.width = width;
         this.height = height;
+        mUrl = url;
     }
 
     @Override
-    public void onResourceReady(@NonNull File resource, @Nullable Transition<? super File> transition) {
-        // not interested in result
+    public void onResourceReady(@NonNull File resource, Transition<? super File> transition) {
+        GlideProgressSupport.forget(mUrl);
+    }
+
+    @Override
+    public void onLoadCleared(Drawable placeholder) {
+        GlideProgressSupport.forget(mUrl);
+    }
+
+    @Override
+    public void onLoadStarted(Drawable placeholder) {
+        GlideProgressSupport.expect(mUrl, this);
+    }
+
+    @Override
+    public void onLoadFailed(Drawable errorDrawable) {
+        GlideProgressSupport.forget(mUrl);
     }
 
     /**
@@ -66,21 +82,6 @@ public class PrefetchTarget implements Target<File> {
     @Nullable
     public Request getRequest() {
         return request;
-    }
-
-    @Override
-    public void onLoadCleared(@Nullable Drawable placeholder) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onLoadStarted(@Nullable Drawable placeholder) {
-        // Do nothing.
-    }
-
-    @Override
-    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-        // Do nothing.
     }
 
     @Override

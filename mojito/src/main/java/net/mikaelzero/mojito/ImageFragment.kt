@@ -15,9 +15,7 @@ import net.mikaelzero.mojito.Mojito.Companion.imageLoader
 import net.mikaelzero.mojito.Mojito.Companion.imageViewFactory
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
-import net.mikaelzero.mojito.loader.ContentLoader
-import net.mikaelzero.mojito.loader.DefaultImageCallback
-import net.mikaelzero.mojito.loader.ImageLoader
+import net.mikaelzero.mojito.loader.*
 import net.mikaelzero.mojito.tools.ScreenUtils
 import java.io.File
 
@@ -34,7 +32,11 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
     private var contentLoader: ContentLoader? = null
     private var mainHandler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_image, container, false)
     }
 
@@ -59,7 +61,11 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
         showView = contentLoader?.providerRealView()
         mojitoView?.setOnShowFinishListener { mojitoView, showImmediately ->
             if (targetUrl != null) {
-                mImageLoader?.loadImage(showView.hashCode(), Uri.parse(targetUrl), this@ImageFragment)
+                mImageLoader?.loadImage(
+                    showView.hashCode(),
+                    Uri.parse(targetUrl),
+                    this@ImageFragment
+                )
             }
         }
         mojitoView?.setOnDragListener { view1: MojitoView?, moveX: Float, moveY: Float ->
@@ -78,31 +84,45 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
         mojitoView?.setOnReleaseListener { isToMax: Boolean, isToMin: Boolean ->
             Mojito.iIndicator?.fingerRelease(isToMax, isToMin)
         }
-        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(originUrl), object : DefaultImageCallback() {
-            override fun onSuccess(image: File) {
-                mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
-                BitmapFactory.decodeFile(image.absolutePath, options)
-                var h = options.outHeight
-                var w = options.outWidth
-                if (targetUrl == null) {
-                    val isLongImage = contentLoader?.isLongImage(w, h)
-                    if (isLongImage != null && isLongImage) {
-                        w = ScreenUtils.getScreenWidth(context)
-                        h = ScreenUtils.getScreenHeight(context)
-                    }
-                }
-                mojitoView?.putData(
-                    contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
-                    contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
-                    w, h
-                )
-                mojitoView?.show(showImmediately && !Mojito.showImmediatelyFlag)
-                Mojito.showImmediatelyFlag = false
-
+        contentLoader?.onTapCallback(object : OnTapCallback {
+            override fun onTap(view: View, x: Float, y: Float) {
+                mojitoView?.backToMin()
+                Mojito.instance.clickListener()?.onClick(view, x, y, position)
             }
         })
+        contentLoader?.onLongTapCallback(object : OnLongTapCallback {
+            override fun onLongTap(view: View, x: Float, y: Float) {
+                Mojito.instance.longPressListener()?.onClick(view, x, y, position)
+            }
+        })
+        mImageLoader?.loadImage(
+            showView.hashCode(),
+            Uri.parse(originUrl),
+            object : DefaultImageCallback() {
+                override fun onSuccess(image: File) {
+                    mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
+                    val options = BitmapFactory.Options()
+                    options.inJustDecodeBounds = true
+                    BitmapFactory.decodeFile(image.absolutePath, options)
+                    var h = options.outHeight
+                    var w = options.outWidth
+                    if (targetUrl == null) {
+                        val isLongImage = contentLoader?.isLongImage(w, h)
+                        if (isLongImage != null && isLongImage) {
+                            w = ScreenUtils.getScreenWidth(context)
+                            h = ScreenUtils.getScreenHeight(context)
+                        }
+                    }
+                    mojitoView?.putData(
+                        contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
+                        contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
+                        w, h
+                    )
+                    mojitoView?.show(showImmediately && !Mojito.showImmediatelyFlag)
+                    Mojito.showImmediatelyFlag = false
+
+                }
+            })
     }
 
     fun backToMin() {

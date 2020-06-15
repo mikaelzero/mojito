@@ -1,4 +1,4 @@
-package net.mikaelzero.app;
+package net.mikaelzero.mojito.loader.glide;
 
 import android.graphics.drawable.Drawable;
 

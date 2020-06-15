@@ -1,4 +1,4 @@
-package net.mikaelzero.app;
+package net.mikaelzero.mojito.loader.glide;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader;

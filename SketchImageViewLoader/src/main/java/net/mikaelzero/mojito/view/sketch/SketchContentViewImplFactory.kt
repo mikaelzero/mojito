@@ -1,4 +1,4 @@
-package net.mikaelzero.app
+package net.mikaelzero.mojito.view.sketch
 
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.IContentViewImplFactory

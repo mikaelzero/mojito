@@ -1,4 +1,4 @@
-package net.mikaelzero.app;
+package net.mikaelzero.mojito.view.sketch;
 
 import android.net.Uri;
 import android.view.View;

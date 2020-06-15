@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,9 +22,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.gyf.barlibrary.ImmersionBar;
 
+import net.mikaelzero.mojito.ImageActivity;
 import net.mikaelzero.mojito.Mojito;
 import net.mikaelzero.mojito.interfaces.CircleIndexIndicator;
 
+import org.jetbrains.annotations.NotNull;
 import org.salient.artplayer.MediaPlayerManager;
 
 import java.util.Arrays;
@@ -48,11 +51,11 @@ public class DisplayActivity extends AppCompatActivity {
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333257-assets/web-upload/dfe8a4eb-9872-444b-b2a5-83378f467915.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333210-assets/web-upload/8d20ed3d-1472-47c9-a2e6-da96e6019299.jpeg",
-//            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
+            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg",
 //            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
+//            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
     };
     Context context;
     int activityPosition;
@@ -77,7 +80,7 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new MainAdapter());
         mRecyclerView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.adapter_header, null));
         mRecyclerView.addFooterView(LayoutInflater.from(this).inflate(R.layout.adapter_footer, null));
-        Mojito.Companion.prefetch(normalImageUlr);
+        Mojito.prefetch(normalImageUlr);
     }
 
 
@@ -121,17 +124,19 @@ public class DisplayActivity extends AppCompatActivity {
                     // TODO 加载视频
                 } else if (activityPosition == 1) {
                     //加载单张图片
-                    Mojito mojito = new Mojito(context)
+                    Mojito.with(context)
                             .urls(normalImageUlr[position])
                             .position(0)
                             .views(views[holder.getAdapterPosition()])
                             .start();
                 } else {
-                    Mojito mojito = new Mojito(context)
-                            .setIndicator(new CircleIndexIndicator())
+                    Mojito.with(context)
                             .urls(Arrays.asList(activityPosition == 2 ? longImageUrl : normalImageUlr))
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
+                            .setOnLongPressListener((view, x, y, position1) -> {
+                                Toast.makeText(context, "长按长按长按", Toast.LENGTH_SHORT).show();
+                            })
                             .start();
                 }
             });

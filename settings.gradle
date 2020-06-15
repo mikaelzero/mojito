@@ -1,1 +1,3 @@
+include ':SketchImageViewLoader'
+include ':GlideImageLoader'
 include ':app', ':mojito'

@@ -1,9 +1,8 @@
-package net.mikaelzero.app
+package net.mikaelzero.mojito.view.sketch
 
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import me.panpf.sketch.SketchImageView
@@ -12,6 +11,8 @@ import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.interfaces.ContentType
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.IMojitoConfig
+import net.mikaelzero.mojito.loader.OnLongTapCallback
+import net.mikaelzero.mojito.loader.OnTapCallback
 import net.mikaelzero.mojito.tools.ScreenUtils
 
 
@@ -43,11 +44,17 @@ class SketchImageContentLoaderImpl : ContentLoader {
     override fun init(context: Context) {
         sketchImageView = SketchImageView(context)
         sketchImageView.isZoomEnabled = true
+        sketchImageView.options.isDecodeGifImage = true
     }
 
     override val contentType: ContentType = ContentType.IMAGE
 
-    override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean {
+    override fun dispatchTouchEvent(
+        isDrag: Boolean,
+        isActionUp: Boolean,
+        isDown: Boolean,
+        isRight: Boolean
+    ): Boolean {
         return when {
             isLongHeightImage -> {
                 val result =
@@ -61,7 +68,9 @@ class SketchImageContentLoaderImpl : ContentLoader {
                         else -> {
                             val rectF = Rect()
                             sketchImageView.zoomer?.getVisibleRect(rectF)
-                            if (Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_ONLY_BOTTOM) {
+                            if (Mojito.mojitoConfig()
+                                    .dragMode() == IMojitoConfig.DRAG_ONLY_BOTTOM
+                            ) {
                                 //长图处于顶部  并且有向下滑动的趋势
                                 (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
                                         && rectF.top == 0 && isDown)
@@ -82,7 +91,9 @@ class SketchImageContentLoaderImpl : ContentLoader {
                                         //长图不处于顶部和底部的时候
                                         sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
                                         && rectF.top != 0
-                                        && rectF.bottom < ScreenUtils.getScreenHeight(sketchImageView.context)
+                                        && rectF.bottom < ScreenUtils.getScreenHeight(
+                                    sketchImageView.context
+                                )
                                         ||
                                         //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
                                         sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
@@ -115,7 +126,7 @@ class SketchImageContentLoaderImpl : ContentLoader {
                 result
             }
             else -> {
-                sketchImageView.zoomer!!.zoomScale > 1f
+                sketchImageView.zoomer!!.zoomScale > sketchImageView.zoomer!!.fullZoomScale
             }
         }
     }
@@ -124,18 +135,19 @@ class SketchImageContentLoaderImpl : ContentLoader {
 
     }
 
-    override fun beginBackToMin() {
+    override fun beginBackToMin(isResetSize: Boolean) {
         if (isLongHeightImage || isLongWidthImage) {
 
         } else {
             if (needReBuildSize()) {
                 val currentScale = sketchImageView.zoomer!!.zoomScale
-//                sketchImageView.scaleType = ImageView.ScaleType.MATRIX
-//                sketchImageView.zoomer?.zoom(currentScale)
-//                sketchImageView.zoomer?.zoom(sketchImageView.zoomer!!.fullZoomScale,true)
-                sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                if (isResetSize) {
+                    sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                }
             } else {
-                sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                if (isResetSize) {
+                    sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
+                }
             }
         }
     }
@@ -143,10 +155,6 @@ class SketchImageContentLoaderImpl : ContentLoader {
     override fun loadAnimFinish() {
         if (isLongHeightImage || isLongWidthImage) {
 //            sketchImageView.scaleType = ImageView.ScaleType.FIT_CENTER
-//            sketchImageView.post {
-//                sketchImageView.zoomer?.zoom(sketchImageView.zoomer!!.maxZoomScale, 0f, 0f, false)
-//            }
-//            sketchImageView.zoomer?.isReadMode = true
         } else {
             sketchImageView.zoomer?.setScaleType(ImageView.ScaleType.FIT_CENTER)
         }
@@ -158,8 +166,14 @@ class SketchImageContentLoaderImpl : ContentLoader {
 
     override fun isLongImage(width: Int, height: Int): Boolean {
         val sizeCalculator = ImageSizeCalculator()
-        isLongHeightImage = sizeCalculator.canUseReadModeByHeight(width, height) && height > (ScreenUtils.getScreenHeight(sketchImageView.context) * 1.5)
-        isLongWidthImage = sizeCalculator.canUseReadModeByWidth(width, height) && width > (ScreenUtils.getScreenWidth(sketchImageView.context) * 1.5)
+        isLongHeightImage = sizeCalculator.canUseReadModeByHeight(
+            width,
+            height
+        ) && height > (ScreenUtils.getScreenHeight(sketchImageView.context) * 1.5)
+        isLongWidthImage = sizeCalculator.canUseReadModeByWidth(
+            width,
+            height
+        ) && width > (ScreenUtils.getScreenWidth(sketchImageView.context) * 1.5)
         sketchImageView.zoomer?.isReadMode = isLongHeightImage || isLongWidthImage
         if (isLongHeightImage || isLongWidthImage) {
 
@@ -167,5 +181,17 @@ class SketchImageContentLoaderImpl : ContentLoader {
             sketchImageView.zoomer!!.setScaleType(ImageView.ScaleType.CENTER_CROP)
         }
         return isLongHeightImage || isLongWidthImage
+    }
+
+    override fun onTapCallback(onTapCallback: OnTapCallback) {
+        sketchImageView.zoomer?.setOnViewTapListener { view, x, y ->
+            onTapCallback.onTap(view, x, y)
+        }
+    }
+
+    override fun onLongTapCallback(onLongTapCallback: OnLongTapCallback) {
+        sketchImageView.zoomer?.setOnViewLongPressListener { view, x, y ->
+            onLongTapCallback.onLongTap(view, x, y)
+        }
     }
 }

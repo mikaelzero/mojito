@@ -25,7 +25,10 @@ class ImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
         ImmersionBar.with(this).fullScreen(true).init()
         setContentView(R.layout.activity_image)
         configBean = intent.getParcelableExtra("config")!!
@@ -63,12 +66,7 @@ class ImageActivity : AppCompatActivity() {
                 }
             }
 
-            override fun instantiateItem(container: ViewGroup, position: Int): Any {
-                return super.instantiateItem(container, position)
-            }
-
             override fun getCount(): Int = viewPagerBeans.size
-
         }
         viewPager.adapter = imageViewPagerAdapter
         viewPager.setCurrentItem(currentPosition, false)
@@ -84,8 +82,7 @@ class ImageActivity : AppCompatActivity() {
     }
 
     fun finishView() {
-        Mojito.iIndicator = null
-        Mojito.iProgress = null
+        Mojito.clean()
         finish()
         overridePendingTransition(0, 0)
     }

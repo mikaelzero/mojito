@@ -13,44 +13,112 @@ import net.mikaelzero.mojito.ImageActivity.Companion.startImageActivity
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.bean.ConfigBean
 import net.mikaelzero.mojito.interfaces.*
-import net.mikaelzero.mojito.loader.DefaultMojitoConfig
-import net.mikaelzero.mojito.loader.IContentViewImplFactory
-import net.mikaelzero.mojito.loader.IMojitoConfig
-import net.mikaelzero.mojito.loader.ImageLoader
+import net.mikaelzero.mojito.loader.*
 
 //TODO 旋转屏幕没有做处理  使用场景不多 暂时不考虑
 class Mojito {
-    var mContext: Context? = null
+
+    private object SingletonHolder {
+        val holder = Mojito()
+    }
+
+
+    companion object {
+        var showImmediatelyFlag = true
+
+        val instance = SingletonHolder.holder
+
+        @JvmStatic
+        fun with(context: Context?): Mojito {
+            instance.mContext = context
+            instance.configBean = ConfigBean()
+            return instance
+        }
+
+        @JvmStatic
+        fun initialize(
+            imageLoader: ImageLoader,
+            contentLoader: IContentViewImplFactory,
+            imageViewLoadFactory: ImageViewLoadFactory
+        ) {
+            instance.mImageLoader = imageLoader
+            instance.contentLoader = contentLoader
+            instance.imageViewLoadFactory = imageViewLoadFactory
+        }
+
+        @JvmStatic
+        fun initialize(
+            imageLoader: ImageLoader,
+            contentLoader: IContentViewImplFactory,
+            imageViewLoadFactory: ImageViewLoadFactory,
+            mojitoConfig: IMojitoConfig
+        ) {
+            instance.mImageLoader = imageLoader
+            instance.contentLoader = contentLoader
+            instance.imageViewLoadFactory = imageViewLoadFactory
+            instance.mojitoConfig = mojitoConfig
+        }
+
+        @JvmStatic
+        fun imageLoader(): ImageLoader? {
+            return instance.mImageLoader
+        }
+
+        @JvmStatic
+        fun contentLoader(): IContentViewImplFactory? {
+            return instance.contentLoader
+        }
+
+        @JvmStatic
+        fun imageViewFactory(): ImageViewLoadFactory? {
+            return instance.imageViewLoadFactory
+        }
+
+        @JvmStatic
+        fun mojitoConfig(): IMojitoConfig {
+            if (instance.mojitoConfig == null) {
+                instance.mojitoConfig = DefaultMojitoConfig()
+            }
+            return instance.mojitoConfig!!
+        }
+
+        @JvmStatic
+        fun prefetch(vararg uris: Uri?) {
+            val imageLoader = imageLoader()
+            for (uri in uris) {
+                imageLoader?.prefetch(uri)
+            }
+        }
+
+        @JvmStatic
+        fun prefetch(vararg uris: String?) {
+            val imageLoader = imageLoader()
+            for (uri in uris) {
+                imageLoader?.prefetch(Uri.parse(uri))
+            }
+        }
+
+        var iIndicator: IIndicator? = null
+        var iProgress: IProgress? = null
+
+        fun clean() {
+            instance.onClickListener = null
+            instance.onLongPressListener = null
+            iIndicator = null
+            iProgress = null
+        }
+    }
+
+
+    private var mContext: Context? = null
     private var mImageLoader: ImageLoader? = null
     private var contentLoader: IContentViewImplFactory? = null
     private var imageViewLoadFactory: ImageViewLoadFactory? = null
+    private var onLongPressListener: OnLongPressListener? = null
+    private var onClickListener: OnClickListener? = null
     private var mojitoConfig: IMojitoConfig? = null
-
-    private constructor(
-        imageLoader: ImageLoader, contentLoader: IContentViewImplFactory,
-        imageViewLoadFactory: ImageViewLoadFactory
-    ) {
-        mImageLoader = imageLoader
-        this.contentLoader = contentLoader
-        this.imageViewLoadFactory = imageViewLoadFactory
-    }
-
-    private constructor(
-        imageLoader: ImageLoader, contentLoader: IContentViewImplFactory,
-        imageViewLoadFactory: ImageViewLoadFactory, mojitoConfig: IMojitoConfig
-    ) {
-        mImageLoader = imageLoader
-        this.contentLoader = contentLoader
-        this.imageViewLoadFactory = imageViewLoadFactory
-        this.mojitoConfig = mojitoConfig
-    }
-
-    constructor(context: Context?) {
-        mContext = context
-        configBean = ConfigBean()
-    }
-
     private var configBean: ConfigBean? = null
+
     fun urls(imageUrl: String): Mojito {
         configBean?.originImageUrls = listOf(imageUrl)
         return this
@@ -146,6 +214,17 @@ class Mojito {
         return this
     }
 
+    fun setOnClickListener(onClickListener: OnClickListener): Mojito {
+        this.onClickListener = onClickListener
+        return this
+    }
+
+
+    fun setOnLongPressListener(onLongPressListener: OnLongPressListener): Mojito {
+        this.onLongPressListener = onLongPressListener
+        return this
+    }
+
     fun start(): Mojito {
         startImageActivity(scanForActivity(mContext), configBean)
         return this
@@ -161,6 +240,7 @@ class Mojito {
         return null
     }
 
+
     fun setProgress(on: IProgress?): Mojito {
         iProgress = on
         return this
@@ -171,80 +251,24 @@ class Mojito {
         return this
     }
 
-
     fun setMojitoConfig(on: IMojitoConfig?) {
         mojitoConfig = on
     }
 
+    fun clickListener(): OnClickListener? {
+        return instance.onClickListener
+    }
 
-    companion object {
-        var showImmediatelyFlag = true
+    fun longPressListener(): OnLongPressListener? {
+        return instance.onLongPressListener
+    }
 
-        @Volatile
-        private var sInstance: Mojito? = null
 
-        @JvmStatic
-        fun initialize(
-            imageLoader: ImageLoader,
-            contentLoader: IContentViewImplFactory,
-            imageViewLoadFactory: ImageViewLoadFactory
-        ) {
-            sInstance = Mojito(imageLoader, contentLoader, imageViewLoadFactory)
-        }
+    interface OnClickListener {
+        fun onClick(view: View, x: Float, y: Float, position: Int)
+    }
 
-        @JvmStatic
-        fun initialize(
-            imageLoader: ImageLoader,
-            contentLoader: IContentViewImplFactory,
-            imageViewLoadFactory: ImageViewLoadFactory,
-            mojitoConfig: IMojitoConfig
-        ) {
-            sInstance = Mojito(imageLoader, contentLoader, imageViewLoadFactory, mojitoConfig)
-        }
-
-        @JvmStatic
-        fun imageLoader(): ImageLoader? {
-            checkNotNull(sInstance) { "You must initialize Mojito before use it!" }
-            return sInstance!!.mImageLoader
-        }
-
-        @JvmStatic
-        fun contentLoader(): IContentViewImplFactory? {
-            checkNotNull(sInstance) { "You must initialize Mojito before use it!" }
-            return sInstance!!.contentLoader
-        }
-
-        @JvmStatic
-        fun imageViewFactory(): ImageViewLoadFactory? {
-            checkNotNull(sInstance) { "You must initialize Mojito before use it!" }
-            return sInstance!!.imageViewLoadFactory
-        }
-
-        @JvmStatic
-        fun mojitoConfig(): IMojitoConfig {
-            if (sInstance!!.mojitoConfig == null) {
-                sInstance!!.mojitoConfig = DefaultMojitoConfig()
-            }
-            return sInstance!!.mojitoConfig!!
-        }
-
-        fun prefetch(vararg uris: Uri?) {
-            val imageLoader = imageLoader()
-            for (uri in uris) {
-                imageLoader!!.prefetch(uri)
-            }
-        }
-
-        fun prefetch(vararg uris: String?) {
-            val imageLoader = imageLoader()
-            for (uri in uris) {
-                imageLoader!!.prefetch(Uri.parse(uri))
-            }
-        }
-
-        var iIndicator: IIndicator? = null
-
-        var iProgress: IProgress? = null
-
+    interface OnLongPressListener {
+        fun onClick(view: View, x: Float, y: Float, position: Int)
     }
 }
