@@ -5,6 +5,8 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.view.View
 import android.widget.ImageView
+import me.panpf.sketch.SketchImageView
+import me.panpf.sketch.decode.ImageSizeCalculator
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.interfaces.ContentType
 import net.mikaelzero.mojito.loader.ContentLoader
@@ -12,8 +14,6 @@ import net.mikaelzero.mojito.loader.IMojitoConfig
 import net.mikaelzero.mojito.loader.OnLongTapCallback
 import net.mikaelzero.mojito.loader.OnTapCallback
 import net.mikaelzero.mojito.tools.ScreenUtils
-import net.mikaelzero.mojito.view.sketch.core.SketchImageView
-import net.mikaelzero.mojito.view.sketch.core.decode.ImageSizeCalculator
 
 
 /**
