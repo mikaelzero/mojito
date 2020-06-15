@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.dcendents.android-maven'
 
-group = 'com.github.mikaelzero'
+group = 'com.github.MikaelZero'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
