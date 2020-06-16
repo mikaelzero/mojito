@@ -23,7 +23,6 @@ import java.io.File
 class ImageFragment : Fragment(), ImageLoader.Callback {
     var contentViewOriginModel: ContentViewOriginModel? = null
     var originUrl: String? = null
-    var targetUrl: String? = null
     var showView: View? = null
     var position = 0
     var showImmediately = false
@@ -32,11 +31,7 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
     private var contentLoader: ContentLoader? = null
     private var mainHandler = Handler(Looper.getMainLooper())
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_image, container, false)
     }
 
@@ -49,7 +44,6 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
         mViewLoadFactory = imageViewFactory()
         if (arguments != null) {
             originUrl = arguments!!.getString("originUrl")
-            targetUrl = arguments!!.getString("targetUrl")
             position = arguments!!.getInt("position")
             showImmediately = arguments!!.getBoolean("showImmediately")
             contentViewOriginModel = arguments!!.getParcelable("model")
@@ -59,29 +53,25 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
         contentLoader = contentLoader()?.newInstance()
         mojitoView?.setContentLoader(contentLoader)
         showView = contentLoader?.providerRealView()
-        mojitoView?.setOnShowFinishListener { mojitoView, showImmediately ->
-            if (targetUrl != null) {
-                mImageLoader?.loadImage(
-                    showView.hashCode(),
-                    Uri.parse(targetUrl),
-                    this@ImageFragment
-                )
-            }
+        mojitoView?.setOnShowFinishCallback { mojitoView, showImmediately ->
+            Mojito.instance.showFinishListener()?.onFinish(mojitoView, showImmediately)
         }
-        mojitoView?.setOnDragListener { view1: MojitoView?, moveX: Float, moveY: Float ->
+        mojitoView?.setOnDragListener { view1: MojitoView, moveX: Float, moveY: Float ->
             Mojito.iIndicator?.move(moveX, moveY)
+            Mojito.instance.dragListener()?.onDrag(view1, moveX, moveY)
         }
-        mojitoView?.setOnFinishListener {
+        mojitoView?.setOnFinishCallback {
+            Mojito.instance.mojitoFinishListener()?.onFinish()
             if (context is ImageActivity) {
                 (context as ImageActivity).finishView()
             }
         }
-        mojitoView?.setOnLockListener {
+        mojitoView?.setOnLockCallback {
             if (context is ImageActivity) {
                 (context as ImageActivity).setViewPagerLock(it)
             }
         }
-        mojitoView?.setOnReleaseListener { isToMax: Boolean, isToMin: Boolean ->
+        mojitoView?.setOnReleaseCallback { isToMax: Boolean, isToMin: Boolean ->
             Mojito.iIndicator?.fingerRelease(isToMax, isToMin)
         }
         contentLoader?.onTapCallback(object : OnTapCallback {
@@ -95,34 +85,28 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
                 Mojito.instance.longPressListener()?.onClick(view, x, y, position)
             }
         })
-        mImageLoader?.loadImage(
-            showView.hashCode(),
-            Uri.parse(originUrl),
-            object : DefaultImageCallback() {
-                override fun onSuccess(image: File) {
-                    mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
-                    val options = BitmapFactory.Options()
-                    options.inJustDecodeBounds = true
-                    BitmapFactory.decodeFile(image.absolutePath, options)
-                    var h = options.outHeight
-                    var w = options.outWidth
-                    if (targetUrl == null) {
-                        val isLongImage = contentLoader?.isLongImage(w, h)
-                        if (isLongImage != null && isLongImage) {
-                            w = ScreenUtils.getScreenWidth(context)
-                            h = ScreenUtils.getScreenHeight(context)
-                        }
-                    }
-                    mojitoView?.putData(
-                        contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
-                        contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
-                        w, h
-                    )
-                    mojitoView?.show(showImmediately && !Mojito.showImmediatelyFlag)
-                    Mojito.showImmediatelyFlag = false
-
+        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(originUrl), object : DefaultImageCallback() {
+            override fun onSuccess(image: File) {
+                mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
+                val options = BitmapFactory.Options()
+                options.inJustDecodeBounds = true
+                BitmapFactory.decodeFile(image.absolutePath, options)
+                var h = options.outHeight
+                var w = options.outWidth
+                val isLongImage = contentLoader?.isLongImage(w, h)
+                if (isLongImage != null && isLongImage) {
+                    w = ScreenUtils.getScreenWidth(context)
+                    h = ScreenUtils.getScreenHeight(context)
                 }
-            })
+                mojitoView?.putData(
+                    contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
+                    contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
+                    w, h
+                )
+                mojitoView?.show(showImmediately && !Mojito.showImmediatelyFlag)
+                Mojito.showImmediatelyFlag = false
+            }
+        })
     }
 
     fun backToMin() {
@@ -132,14 +116,12 @@ class ImageFragment : Fragment(), ImageLoader.Callback {
     companion object {
         fun newInstance(
             originUrl: String?,
-            targetUrl: String?,
             position: Int,
             shouldShowAnimation: Boolean,
             contentViewOriginModel: ContentViewOriginModel?
         ): ImageFragment {
             val args = Bundle()
             args.putString("originUrl", originUrl)
-            args.putString("targetUrl", targetUrl)
             args.putInt("position", position)
             args.putBoolean("showImmediately", shouldShowAnimation)
             args.putParcelable("model", contentViewOriginModel)

@@ -1,0 +1,105 @@
+package net.mikaelzero.mojito.loader.glide
+
+import android.content.Context
+import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.util.Log
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestManager
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
+import net.mikaelzero.mojito.loader.ImageInfoExtractor
+import net.mikaelzero.mojito.loader.ImageLoader
+import okhttp3.OkHttpClient
+import java.io.File
+import java.util.*
+
+class GlideImageLoader protected constructor(context: Context?, okHttpClient: OkHttpClient?) : ImageLoader {
+    protected val mRequestManager: RequestManager
+    private val mFlyingRequestTargets: MutableMap<Int, ImageDownloadTarget> = HashMap(3)
+
+    override fun loadImage(requestId: Int, uri: Uri, callback: ImageLoader.Callback) {
+        val cacheMissed = BooleanArray(1)
+        val target: ImageDownloadTarget = object : ImageDownloadTarget(uri.toString()) {
+            override fun onResourceReady(resource: File, transition: Transition<in File>?) {
+                super.onResourceReady(resource, transition)
+                if (cacheMissed[0]) {
+                    callback.onCacheMiss(ImageInfoExtractor.getImageType(resource), resource)
+                } else {
+                    callback.onCacheHit(ImageInfoExtractor.getImageType(resource), resource)
+                }
+                callback.onSuccess(resource)
+            }
+
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                super.onLoadFailed(errorDrawable)
+                callback.onFail(GlideLoaderException(errorDrawable))
+            }
+
+            override fun onDownloadStart() {
+                cacheMissed[0] = true
+                callback.onStart()
+            }
+
+            override fun onProgress(progress: Int) {
+                callback.onProgress(progress)
+            }
+
+            override fun onDownloadFinish() {
+                callback.onFinish()
+            }
+        }
+        cancel(requestId)
+        rememberTarget(requestId, target)
+        downloadImageInto(uri, target)
+    }
+
+    override fun prefetch(uri: Uri) {
+        downloadImageInto(uri, PrefetchTarget())
+    }
+
+    @Synchronized
+    override fun cancel(requestId: Int) {
+        clearTarget(mFlyingRequestTargets.remove(requestId))
+    }
+
+    @Synchronized
+    override fun cancelAll() {
+        val targets: List<ImageDownloadTarget> = ArrayList(mFlyingRequestTargets.values)
+        for (target in targets) {
+            clearTarget(target)
+        }
+    }
+
+    protected fun downloadImageInto(uri: Uri?, target: Target<File>) {
+        mRequestManager
+            .downloadOnly()
+            .load(uri)
+            .into(target)
+    }
+
+
+    @Synchronized
+    private fun rememberTarget(requestId: Int, target: ImageDownloadTarget) {
+        mFlyingRequestTargets[requestId] = target
+    }
+
+    private fun clearTarget(target: ImageDownloadTarget?) {
+        if (target != null) {
+            mRequestManager.clear(target)
+        }
+    }
+
+    companion object {
+        @JvmOverloads
+        fun with(context: Context?, okHttpClient: OkHttpClient? = null): GlideImageLoader {
+            return GlideImageLoader(context, okHttpClient)
+        }
+    }
+
+    init {
+        GlideProgressSupport.init(Glide.get(context!!), okHttpClient)
+        mRequestManager = Glide.with(context)
+    }
+}

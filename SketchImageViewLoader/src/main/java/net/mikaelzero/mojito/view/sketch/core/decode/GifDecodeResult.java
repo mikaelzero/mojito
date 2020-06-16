@@ -1,0 +1,89 @@
+/*
+ * Copyright (C) 2019 Peng fei Pan <panpfpanpf@outlook.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.mikaelzero.mojito.view.sketch.core.decode;
+
+import androidx.annotation.NonNull;
+
+import net.mikaelzero.mojito.view.sketch.core.cache.BitmapPool;
+import net.mikaelzero.mojito.view.sketch.core.drawable.SketchGifDrawable;
+import net.mikaelzero.mojito.view.sketch.core.request.ImageFrom;
+
+public class GifDecodeResult implements DecodeResult {
+    private SketchGifDrawable gifDrawable;
+    private ImageAttrs imageAttrs;
+    private ImageFrom imageFrom;
+
+    private boolean banProcess;
+    private boolean processed;
+
+    public GifDecodeResult(@NonNull ImageAttrs imageAttrs, @NonNull SketchGifDrawable gifDrawable) {
+        this.imageAttrs = imageAttrs;
+        this.gifDrawable = gifDrawable;
+    }
+
+    @NonNull
+    @Override
+    public ImageAttrs getImageAttrs() {
+        return imageAttrs;
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    @Override
+    public void setImageFrom(@NonNull ImageFrom imageFrom) {
+        this.imageFrom = imageFrom;
+    }
+
+    @Override
+    public boolean isBanProcess() {
+        return banProcess;
+    }
+
+    @NonNull
+    @Override
+    public GifDecodeResult setBanProcess(boolean banProcess) {
+        this.banProcess = banProcess;
+        return this;
+    }
+
+    @Override
+    public boolean isProcessed() {
+        return processed;
+    }
+
+    @NonNull
+    @Override
+    public GifDecodeResult setProcessed(boolean processed) {
+        this.processed = processed;
+        return this;
+    }
+
+    @Override
+    public void recycle(@NonNull BitmapPool bitmapPool) {
+        if (gifDrawable != null) {
+            gifDrawable.recycle();
+        }
+    }
+
+    @NonNull
+    public SketchGifDrawable getGifDrawable() {
+        return gifDrawable;
+    }
+}

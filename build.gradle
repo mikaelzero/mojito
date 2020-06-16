@@ -8,27 +8,22 @@ buildscript {
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url 'https://maven.google.com' }
-        maven {
-            url  "http://dl.bintray.com/piasy/maven"
-        }
+        maven { url 'https://dl.bintray.com/mikaelzero/maven'}
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath 'com.android.tools.build:gradle:3.5.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath 'com.novoda:bintray-release:0.9.2'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
 allprojects {
     repositories {
-        maven {
-            url  "http://dl.bintray.com/piasy/maven"
-        }
         mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url 'https://maven.google.com' }
+        maven { url 'https://dl.bintray.com/mikaelzero/maven'}
         jcenter()
         google()
     }
@@ -43,10 +38,4 @@ ext {
     androidMinSdkVersion = 16
     androidTargetSdkVersion = 29
     androidCompileSdkVersion = 29
-
-    glide = '3.7.0'
-
-    imageDependencies = [
-            glide: "com.github.bumptech.glide:glide:${glide}",
-    ]
 }

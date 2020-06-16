@@ -1,10 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.github.MikaelZero'
-version = 1.5
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -41,4 +37,14 @@ dependencies {
     implementation "com.squareup.okhttp3:okhttp:4.3.1"
     api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
     implementation project(':mojito')
+}
+
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = "mikaelzero"
+    groupId = "net.mikaelzero.mojito"
+    artifactId = "GlideImageViewFactory"
+    publishVersion = "0.0.1"
+    desc = "mojito"
+    website = "https://github.com/MikaelZero/Mojito"
 }

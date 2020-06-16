@@ -10,10 +10,15 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import net.mikaelzero.mojito.ImageActivity.Companion.startImageActivity
-import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.bean.ConfigBean
-import net.mikaelzero.mojito.interfaces.*
-import net.mikaelzero.mojito.loader.*
+import net.mikaelzero.mojito.bean.ContentViewOriginModel
+import net.mikaelzero.mojito.interfaces.IIndicator
+import net.mikaelzero.mojito.interfaces.IProgress
+import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
+import net.mikaelzero.mojito.loader.DefaultMojitoConfig
+import net.mikaelzero.mojito.loader.IContentViewImplFactory
+import net.mikaelzero.mojito.loader.IMojitoConfig
+import net.mikaelzero.mojito.loader.ImageLoader
 
 //TODO 旋转屏幕没有做处理  使用场景不多 暂时不考虑
 class Mojito {
@@ -104,6 +109,9 @@ class Mojito {
         fun clean() {
             instance.onClickListener = null
             instance.onLongPressListener = null
+            instance.onShowFinishListener = null
+            instance.onDragListener = null
+            instance.onMojitoFinishListener = null
             iIndicator = null
             iProgress = null
         }
@@ -114,10 +122,9 @@ class Mojito {
     private var mImageLoader: ImageLoader? = null
     private var contentLoader: IContentViewImplFactory? = null
     private var imageViewLoadFactory: ImageViewLoadFactory? = null
-    private var onLongPressListener: OnLongPressListener? = null
-    private var onClickListener: OnClickListener? = null
     private var mojitoConfig: IMojitoConfig? = null
     private var configBean: ConfigBean? = null
+
 
     fun urls(imageUrl: String): Mojito {
         configBean?.originImageUrls = listOf(imageUrl)
@@ -214,16 +221,6 @@ class Mojito {
         return this
     }
 
-    fun setOnClickListener(onClickListener: OnClickListener): Mojito {
-        this.onClickListener = onClickListener
-        return this
-    }
-
-
-    fun setOnLongPressListener(onLongPressListener: OnLongPressListener): Mojito {
-        this.onLongPressListener = onLongPressListener
-        return this
-    }
 
     fun start(): Mojito {
         startImageActivity(scanForActivity(mContext), configBean)
@@ -255,12 +252,43 @@ class Mojito {
         mojitoConfig = on
     }
 
+
+    private var onLongPressListener: OnLongPressListener? = null
+    private var onClickListener: OnClickListener? = null
+    private var onShowFinishListener: OnShowFinishListener? = null
+    private var onMojitoFinishListener: OnMojitoFinishListener? = null
+    private var onDragListener: OnDragListener? = null
+
+
+    fun setOnClickListener(onClickListener: OnClickListener): Mojito {
+        this.onClickListener = onClickListener
+        return this
+    }
+
+
+    fun setOnLongPressListener(onLongPressListener: OnLongPressListener): Mojito {
+        this.onLongPressListener = onLongPressListener
+        return this
+    }
+
     fun clickListener(): OnClickListener? {
         return instance.onClickListener
     }
 
     fun longPressListener(): OnLongPressListener? {
         return instance.onLongPressListener
+    }
+
+    fun showFinishListener(): OnShowFinishListener? {
+        return instance.onShowFinishListener
+    }
+
+    fun mojitoFinishListener(): OnMojitoFinishListener? {
+        return instance.onMojitoFinishListener
+    }
+
+    fun dragListener(): OnDragListener? {
+        return instance.onDragListener
     }
 
 
@@ -270,5 +298,17 @@ class Mojito {
 
     interface OnLongPressListener {
         fun onClick(view: View, x: Float, y: Float, position: Int)
+    }
+
+    interface OnShowFinishListener {
+        fun onFinish(mojitoView: MojitoView, showImmediately: Boolean)
+    }
+
+    interface OnMojitoFinishListener {
+        fun onFinish()
+    }
+
+    interface OnDragListener {
+        fun onDrag(view: MojitoView, moveX: Float, moveY: Float)
     }
 }

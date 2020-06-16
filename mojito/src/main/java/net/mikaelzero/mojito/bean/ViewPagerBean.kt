@@ -7,7 +7,6 @@ package net.mikaelzero.mojito.bean
  */
 data class ViewPagerBean(
     val url: String,
-    val targetUrl: String? = null,
     val position: Int,
     val showImmediately: Boolean,
     val contentViewOriginModel: ContentViewOriginModel

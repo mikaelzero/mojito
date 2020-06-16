@@ -1,11 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group = 'com.github.MikaelZero'
-version = 1.5
-
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
     compileSdkVersion globalConfiguration.androidCompileSdkVersion
@@ -13,8 +8,8 @@ android {
     defaultConfig {
         minSdkVersion globalConfiguration.androidMinSdkVersion
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
-        versionCode 15
-        versionName "1.5"
+        versionCode 1
+        versionName "1"
 
     }
     buildTypes {
@@ -36,6 +31,10 @@ android {
     }
 }
 
+subprojects {
+    tasks.withType(Javadoc).all { enabled = false }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -47,3 +46,14 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'com.novoda.bintray-release'
+publish {
+    userOrg = "mikaelzero"
+    groupId = "net.mikaelzero.mojito"
+    artifactId = "core"
+    publishVersion = "0.0.1"
+    desc = "mojito"
+    website = "https://github.com/MikaelZero/Mojito"
+}
+//  ./gradlew clean build bintrayUpload -PbintrayUser=USERNAME -PbintrayKey=KEY -PdryRun=false

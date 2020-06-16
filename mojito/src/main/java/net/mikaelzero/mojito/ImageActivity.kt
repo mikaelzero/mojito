@@ -41,8 +41,7 @@ class ImageActivity : AppCompatActivity() {
         for (i in contentViewOriginModels!!.indices) {
             viewPagerBeans.add(
                 ViewPagerBean(
-                    configBean.originImageUrls!![i],
-                    configBean.targetImageUrls?.get(i), i,
+                    configBean.originImageUrls!![i], i,
                     contentViewOriginModels!!.size > 1 || configBean.position != i,
                     contentViewOriginModels!![i]
                 )
@@ -54,7 +53,6 @@ class ImageActivity : AppCompatActivity() {
                 return if (fragment == null) {
                     val imageFragment = ImageFragment.newInstance(
                         viewPagerBeans[position].url,
-                        viewPagerBeans[position].targetUrl,
                         position,
                         viewPagerBeans[position].showImmediately,
                         viewPagerBeans[position].contentViewOriginModel

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -52,4 +52,8 @@ dependencies {
     implementation project(':mojito')
     implementation project(':GlideImageLoader')
     implementation project(':SketchImageViewLoader')
+
+//    implementation 'net.mikaelzero.mojito:core:0.0.1'
+//    implementation 'net.mikaelzero.mojito:GlideImageViewFactory:0.0.1'
+//    implementation 'net.mikaelzero.mojito:SketchImageViewLoader:0.0.1'
 }

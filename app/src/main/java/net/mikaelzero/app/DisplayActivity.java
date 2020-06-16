@@ -51,11 +51,11 @@ public class DisplayActivity extends AppCompatActivity {
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333257-assets/web-upload/dfe8a4eb-9872-444b-b2a5-83378f467915.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333210-assets/web-upload/8d20ed3d-1472-47c9-a2e6-da96e6019299.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
+//            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg",
 //            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
-//            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
     };
     Context context;
     int activityPosition;
@@ -69,18 +69,13 @@ public class DisplayActivity extends AppCompatActivity {
         ImmersionBar.with(this).fullScreen(true).init();
         setContentView(R.layout.activity_display);
         activityPosition = getIntent().getIntExtra("position", 0);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Mojito");
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null)
-            actionBar.setDisplayHomeAsUpEnabled(true);
+
         mRecyclerView = findViewById(R.id.recyclerView);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 3));
         mRecyclerView.setAdapter(new MainAdapter());
         mRecyclerView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.adapter_header, null));
         mRecyclerView.addFooterView(LayoutInflater.from(this).inflate(R.layout.adapter_footer, null));
-        Mojito.prefetch(normalImageUlr);
+//        Mojito.prefetch(normalImageUlr);
     }
 
 
@@ -109,16 +104,11 @@ public class DisplayActivity extends AppCompatActivity {
         public void onBindViewHolder(final MyViewHolder holder, final int position) {
             Glide.with(context).load(normalImageUlr[position]).into(holder.srcImageView);
             holder.srcImageView.setOnClickListener(srcView -> {
-
                 int size = mRecyclerView.getChildCount();
                 View[] views = new View[size];
-                int[] realWidths = new int[size];
-                int[] realHeights = new int[size];
                 for (int i = 0; i < size; i++) {
                     ImageView recyImageView = mRecyclerView.getChildAt(i).findViewById(R.id.srcImageView);
                     views[i] = recyImageView;
-                    realWidths[i] = 1920;
-                    realHeights[i] = 720;
                 }
                 if (activityPosition == 3) {
                     // TODO 加载视频
