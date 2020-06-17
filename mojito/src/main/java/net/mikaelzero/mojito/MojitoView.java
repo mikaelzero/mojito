@@ -7,15 +7,15 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 
+import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback;
 import net.mikaelzero.mojito.loader.ContentLoader;
-import net.mikaelzero.mojito.loader.IMojitoConfig;
+import net.mikaelzero.mojito.interfaces.IMojitoConfig;
 import net.mikaelzero.mojito.tools.MarginViewWrapper;
 import net.mikaelzero.mojito.tools.ScreenUtils;
 
@@ -41,8 +41,7 @@ public class MojitoView extends FrameLayout {
     FrameLayout contentLayout;
     View backgroundView;
 
-    private final long DEFAULT_DURATION = 300;
-    long animationDuration = DEFAULT_DURATION;
+    long animationDuration = Mojito.mojitoConfig().duration();
     private int mOriginLeft;
     private int mOriginTop;
     private int mOriginHeight;
@@ -149,8 +148,8 @@ public class MojitoView extends FrameLayout {
             setImageDataOfAnimatorEnd();
             changeContentViewToFullscreen();
             contentLoader.loadAnimFinish();
-            if (onShowFinishCallback != null) {
-                onShowFinishCallback.showFinish(this, true);
+            if (onMojitoViewCallback != null) {
+                onMojitoViewCallback.showFinish(this, true);
             }
         } else {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(mOriginTop, targetImageTop);
@@ -170,8 +169,8 @@ public class MojitoView extends FrameLayout {
                     setImageDataOfAnimatorEnd();
                     changeContentViewToFullscreen();
                     contentLoader.loadAnimFinish();
-                    if (onShowFinishCallback != null) {
-                        onShowFinishCallback.showFinish(MojitoView.this, false);
+                    if (onMojitoViewCallback != null) {
+                        onMojitoViewCallback.showFinish(MojitoView.this, false);
                     }
 
                 }
@@ -272,8 +271,8 @@ public class MojitoView extends FrameLayout {
             }
         });
         valueAnimator.setDuration(animationDuration).start();
-        if (onReleaseCallback != null) {
-            onReleaseCallback.onRelease(true, false);
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.onRelease(true, false);
         }
         changeBackgroundViewAlpha(false);
     }
@@ -296,8 +295,8 @@ public class MojitoView extends FrameLayout {
             }
         });
         valueAnimator.setDuration(animationDuration).start();
-        if (onReleaseCallback != null) {
-            onReleaseCallback.onRelease(false, true);
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.onRelease(false, true);
         }
         changeBackgroundViewAlpha(true);
     }
@@ -395,8 +394,8 @@ public class MojitoView extends FrameLayout {
                 isAnimating = false;
                 if (isToZero) {
                     setVisibility(View.GONE);
-                    if (onFinishCallback != null) {
-                        onFinishCallback.callFinish();
+                    if (onMojitoViewCallback != null) {
+                        onMojitoViewCallback.onMojitoViewFinish();
                     }
                 }
             }
@@ -451,9 +450,9 @@ public class MojitoView extends FrameLayout {
                     setViewPagerLocking(false);
                     break;
                 }
-                if (mDragListener != null) {
+                if (onMojitoViewCallback != null) {
                     float tempTranslateY = Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP ? Math.abs(mMoveDownTranslateY) : mMoveDownTranslateY;
-                    mDragListener.onDrag(this, mTranslateX, tempTranslateY);
+                    onMojitoViewCallback.onDrag(this, mTranslateX, tempTranslateY);
                 }
                 isDrag = true;
                 int dy = y - mLastY;
@@ -484,7 +483,6 @@ public class MojitoView extends FrameLayout {
                 }
 
                 float tempTranslateY = Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP ? Math.abs(mMoveDownTranslateY) : mMoveDownTranslateY;
-                Log.e("tempTranslateY", "tempTranslateY:" + tempTranslateY);
                 if (tempTranslateY > MAX_TRANSLATE_Y) {
                     backToMin();
                 } else {
@@ -521,8 +519,8 @@ public class MojitoView extends FrameLayout {
     }
 
     private void setViewPagerLocking(boolean lock) {
-        if (onLockCallback != null) {
-            onLockCallback.onLock(lock);
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.onLock(lock);
         }
     }
 
@@ -543,51 +541,11 @@ public class MojitoView extends FrameLayout {
         imageHeightOfAnimatorEnd = imageWrapper.getHeight();
     }
 
+    private OnMojitoViewCallback onMojitoViewCallback;
 
-    private OnFinishCallback onFinishCallback;
-    private OnDragCallback mDragListener;
-    private OnShowFinishCallback onShowFinishCallback;
-    private OnReleaseCallback onReleaseCallback;
-    OnLockCallback onLockCallback;
-
-    public void setOnLockCallback(OnLockCallback onLockCallback) {
-        this.onLockCallback = onLockCallback;
+    public void setOnMojitoViewCallback(OnMojitoViewCallback onMojitoViewCallback) {
+        this.onMojitoViewCallback = onMojitoViewCallback;
     }
 
-    public void setOnReleaseCallback(OnReleaseCallback onReleaseCallback) {
-        this.onReleaseCallback = onReleaseCallback;
-    }
-
-    public void setOnShowFinishCallback(OnShowFinishCallback onShowFinishCallback) {
-        this.onShowFinishCallback = onShowFinishCallback;
-    }
-
-    public void setOnDragListener(OnDragCallback listener) {
-        mDragListener = listener;
-    }
-
-    public void setOnFinishCallback(OnFinishCallback onFinishCallback) {
-        this.onFinishCallback = onFinishCallback;
-    }
-
-    public interface OnDragCallback {
-        void onDrag(MojitoView view, float moveX, float moveY);
-    }
-
-    public interface OnShowFinishCallback {
-        void showFinish(MojitoView mojitoView, boolean showImmediately);
-    }
-
-    public interface OnFinishCallback {
-        void callFinish();
-    }
-
-    public interface OnReleaseCallback {
-        void onRelease(boolean isToMax, boolean isToMin);
-    }
-
-    public interface OnLockCallback {
-        void onLock(boolean isLock);
-    }
 
 }

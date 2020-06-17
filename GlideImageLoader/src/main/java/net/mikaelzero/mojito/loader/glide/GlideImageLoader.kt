@@ -15,8 +15,8 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.util.*
 
-class GlideImageLoader protected constructor(context: Context?, okHttpClient: OkHttpClient?) : ImageLoader {
-    protected val mRequestManager: RequestManager
+open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpClient?) : ImageLoader {
+    private val mRequestManager: RequestManager
     private val mFlyingRequestTargets: MutableMap<Int, ImageDownloadTarget> = HashMap(3)
 
     override fun loadImage(requestId: Int, uri: Uri, callback: ImageLoader.Callback) {

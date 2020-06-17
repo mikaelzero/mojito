@@ -6,18 +6,17 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import net.mikaelzero.mojito.ImageActivity.Companion.startImageActivity
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import net.mikaelzero.mojito.ui.ImageMojitoActivity.Companion.startImageActivity
 import net.mikaelzero.mojito.bean.ConfigBean
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
-import net.mikaelzero.mojito.interfaces.IIndicator
-import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
-import net.mikaelzero.mojito.loader.DefaultMojitoConfig
+import net.mikaelzero.mojito.impl.DefaultMojitoConfig
+import net.mikaelzero.mojito.interfaces.*
 import net.mikaelzero.mojito.loader.IContentViewImplFactory
-import net.mikaelzero.mojito.loader.IMojitoConfig
 import net.mikaelzero.mojito.loader.ImageLoader
 
 //TODO 旋转屏幕没有做处理  使用场景不多 暂时不考虑
@@ -29,8 +28,7 @@ class Mojito {
 
 
     companion object {
-        var showImmediatelyFlag = true
-
+        private var isInit = false
         val instance = SingletonHolder.holder
 
         @JvmStatic
@@ -105,15 +103,14 @@ class Mojito {
 
         var iIndicator: IIndicator? = null
         var iProgress: IProgress? = null
+        var coverLayoutLoader: CoverLayoutLoader? = null
 
         fun clean() {
-            instance.onClickListener = null
-            instance.onLongPressListener = null
-            instance.onShowFinishListener = null
-            instance.onDragListener = null
-            instance.onMojitoFinishListener = null
+            isInit = false
+            instance.onMojitoListener = null
             iIndicator = null
             iProgress = null
+            coverLayoutLoader = null
         }
     }
 
@@ -164,13 +161,13 @@ class Mojito {
         var lastPos = 0
         val totalCount = layoutManager!!.itemCount - (configBean?.headerSize ?: 0)
         if (layoutManager is GridLayoutManager) {
-            val gridLayMan = layoutManager
-            firstPos = gridLayMan.findFirstVisibleItemPosition()
-            lastPos = gridLayMan.findLastVisibleItemPosition()
+            firstPos = layoutManager.findFirstVisibleItemPosition()
+            lastPos = layoutManager.findLastVisibleItemPosition()
         } else if (layoutManager is LinearLayoutManager) {
-            val linLayMan = layoutManager
-            firstPos = linLayMan.findFirstVisibleItemPosition()
-            lastPos = linLayMan.findLastVisibleItemPosition()
+            firstPos = layoutManager.findFirstVisibleItemPosition()
+            lastPos = layoutManager.findLastVisibleItemPosition()
+        } else if (layoutManager is StaggeredGridLayoutManager) {
+
         }
         fillPlaceHolder(originImageList, totalCount, firstPos, lastPos)
         val views = arrayOfNulls<View>(originImageList.size)
@@ -180,12 +177,7 @@ class Mojito {
         return views(views)
     }
 
-    private fun fillPlaceHolder(
-        originImageList: MutableList<View?>,
-        totalCount: Int,
-        firstPos: Int,
-        lastPos: Int
-    ) {
+    private fun fillPlaceHolder(originImageList: MutableList<View?>, totalCount: Int, firstPos: Int, lastPos: Int) {
         if (firstPos > 0) {
             for (pos in firstPos downTo 1) {
                 originImageList.add(0, null)
@@ -223,7 +215,10 @@ class Mojito {
 
 
     fun start(): Mojito {
-        startImageActivity(scanForActivity(mContext), configBean)
+        if (!isInit) {
+            isInit = true
+            startImageActivity(scanForActivity(mContext), configBean)
+        }
         return this
     }
 
@@ -243,72 +238,34 @@ class Mojito {
         return this
     }
 
+    fun setCoverLayoutLoader(on: CoverLayoutLoader): Mojito {
+        coverLayoutLoader = on
+        return this
+    }
+
     fun setIndicator(on: IIndicator?): Mojito {
         iIndicator = on
         return this
     }
 
-    fun setMojitoConfig(on: IMojitoConfig?) {
-        mojitoConfig = on
-    }
+
+    private var onMojitoListener: OnMojitoListener? = null
 
 
-    private var onLongPressListener: OnLongPressListener? = null
-    private var onClickListener: OnClickListener? = null
-    private var onShowFinishListener: OnShowFinishListener? = null
-    private var onMojitoFinishListener: OnMojitoFinishListener? = null
-    private var onDragListener: OnDragListener? = null
+    @LayoutRes
+    private var imageCoverLayoutRes: Int? = null
 
-
-    fun setOnClickListener(onClickListener: OnClickListener): Mojito {
-        this.onClickListener = onClickListener
+    fun setOnMojitoListener(onMojitoListener: OnMojitoListener): Mojito {
+        this.onMojitoListener = onMojitoListener
         return this
     }
 
 
-    fun setOnLongPressListener(onLongPressListener: OnLongPressListener): Mojito {
-        this.onLongPressListener = onLongPressListener
-        return this
+    fun setImageCoverLayoutRes() {
+
     }
 
-    fun clickListener(): OnClickListener? {
-        return instance.onClickListener
-    }
-
-    fun longPressListener(): OnLongPressListener? {
-        return instance.onLongPressListener
-    }
-
-    fun showFinishListener(): OnShowFinishListener? {
-        return instance.onShowFinishListener
-    }
-
-    fun mojitoFinishListener(): OnMojitoFinishListener? {
-        return instance.onMojitoFinishListener
-    }
-
-    fun dragListener(): OnDragListener? {
-        return instance.onDragListener
-    }
-
-
-    interface OnClickListener {
-        fun onClick(view: View, x: Float, y: Float, position: Int)
-    }
-
-    interface OnLongPressListener {
-        fun onClick(view: View, x: Float, y: Float, position: Int)
-    }
-
-    interface OnShowFinishListener {
-        fun onFinish(mojitoView: MojitoView, showImmediately: Boolean)
-    }
-
-    interface OnMojitoFinishListener {
-        fun onFinish()
-    }
-
-    interface OnDragListener {
-        fun onDrag(view: MojitoView, moveX: Float, moveY: Float)
+    fun mojitoListener(): OnMojitoListener? {
+        return instance.onMojitoListener
     }
 }

@@ -1,4 +1,4 @@
-package net.mikaelzero.mojito.interfaces;
+package net.mikaelzero.mojito.impl;
 
 import android.animation.Animator;
 import android.animation.AnimatorSet;

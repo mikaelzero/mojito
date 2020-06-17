@@ -1,4 +1,4 @@
-package net.mikaelzero.mojito.loader
+package net.mikaelzero.mojito.interfaces
 
 
 /**
@@ -17,4 +17,5 @@ interface IMojitoConfig {
      * DRAG_BOTH_BOTTOM_TOP
      */
     fun dragMode(): Int
+    fun duration(): Long
 }

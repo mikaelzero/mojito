@@ -1,5 +1,6 @@
 package net.mikaelzero.mojito.view.sketch
 
+import androidx.lifecycle.LifecycleOwner
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.IContentViewImplFactory
 
@@ -9,7 +10,7 @@ import net.mikaelzero.mojito.loader.IContentViewImplFactory
  * @Description:
  */
 class SketchContentViewImplFactory : IContentViewImplFactory {
-    override fun newInstance(): ContentLoader {
-        return SketchImageContentLoaderImpl()
+    override fun newInstance(lifecycleOwner: LifecycleOwner): ContentLoader {
+        return SketchImageContentLoaderImpl(lifecycleOwner)
     }
 }

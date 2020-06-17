@@ -1,4 +1,4 @@
-package net.mikaelzero.mojito.tools;
+package net.mikaelzero.mojito.impl;
 
 import android.content.Context;
 import android.graphics.Canvas;

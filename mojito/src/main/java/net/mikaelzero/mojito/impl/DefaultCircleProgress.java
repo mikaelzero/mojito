@@ -1,19 +1,16 @@
-package net.mikaelzero.mojito.interfaces;
+package net.mikaelzero.mojito.impl;
 
 import android.content.Context;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
-import net.mikaelzero.mojito.tools.LoadingView;
-/**
- * Created by moyokoo.
- * Date:  2018/10/17
- * 进度加载
- */
-public class DefaultPercentProgress implements IProgress {
-    private SparseArray<LoadingView> progressBarArray = new SparseArray<>();
+import net.mikaelzero.mojito.interfaces.IProgress;
+
+public class DefaultCircleProgress implements IProgress {
+    private SparseArray<ProgressBar> progressBarArray = new SparseArray<>();
 
     @Override
     public void attach(int position, FrameLayout parent) {
@@ -21,7 +18,7 @@ public class DefaultPercentProgress implements IProgress {
         int progressSize = LoadingView.dip2Px(context, 50);
         FrameLayout.LayoutParams progressLp = new FrameLayout.LayoutParams(progressSize, progressSize);
         progressLp.gravity = Gravity.CENTER;
-        LoadingView loadingView = new LoadingView(context);
+        ProgressBar loadingView = new ProgressBar(context);
         loadingView.setLayoutParams(progressLp);
         parent.addView(loadingView);
         progressBarArray.put(position, loadingView);
@@ -34,22 +31,18 @@ public class DefaultPercentProgress implements IProgress {
 
     @Override
     public void onProgress(int position, int progress) {
-        LoadingView loadingView = progressBarArray.get(position);
-        if (loadingView != null) {
-            loadingView.setProgress(progress);
-        }
     }
 
     @Override
     public void onFinish(int position) {
-        LoadingView loadingView = progressBarArray.get(position);
-        loadingView.loadCompleted();
+        ProgressBar loadingView = progressBarArray.get(position);
+        loadingView.setVisibility(View.GONE);
     }
 
     @Override
     public void onFailed(int position) {
-        LoadingView loadingView = progressBarArray.get(position);
-        loadingView.loadFaild();
+        ProgressBar loadingView = progressBarArray.get(position);
+        loadingView.setVisibility(View.GONE);
     }
 
     @Override

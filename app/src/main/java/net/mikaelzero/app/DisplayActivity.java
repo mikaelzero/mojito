@@ -13,20 +13,20 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.gyf.barlibrary.ImmersionBar;
 
-import net.mikaelzero.mojito.ImageActivity;
 import net.mikaelzero.mojito.Mojito;
-import net.mikaelzero.mojito.interfaces.CircleIndexIndicator;
+import net.mikaelzero.mojito.impl.CircleIndexIndicator;
+import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.salient.artplayer.MediaPlayerManager;
 
 import java.util.Arrays;
@@ -124,9 +124,13 @@ public class DisplayActivity extends AppCompatActivity {
                             .urls(Arrays.asList(activityPosition == 2 ? longImageUrl : normalImageUlr))
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
-                            .setOnLongPressListener((view, x, y, position1) -> {
-                                Toast.makeText(context, "长按长按长按", Toast.LENGTH_SHORT).show();
+                            .setOnMojitoListener(new SimpleMojitoViewCallback() {
+                                @Override
+                                public void onLongClick(@Nullable FragmentActivity fragmentActivity, @NotNull View view, float x, float y, int position) {
+                                    Toast.makeText(context, "长按长按长按", Toast.LENGTH_SHORT).show();
+                                }
                             })
+                            .setCoverLayoutLoader(new NumCoverLoader())
                             .start();
                 }
             });

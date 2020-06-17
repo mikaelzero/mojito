@@ -1,4 +1,4 @@
-package net.mikaelzero.mojito.interfaces;
+package net.mikaelzero.mojito.impl;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -9,6 +9,7 @@ import android.widget.FrameLayout;
 
 import androidx.viewpager.widget.ViewPager;
 
+import net.mikaelzero.mojito.interfaces.IIndicator;
 import net.mikaelzero.mojito.tools.Utils;
 
 /**

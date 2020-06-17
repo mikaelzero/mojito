@@ -1,4 +1,6 @@
-package net.mikaelzero.mojito.loader
+package net.mikaelzero.mojito.impl
+
+import net.mikaelzero.mojito.interfaces.IMojitoConfig
 
 /**
  * @Author:         MikaelZero
@@ -7,4 +9,5 @@ package net.mikaelzero.mojito.loader
  */
 class DefaultMojitoConfig : IMojitoConfig {
     override fun dragMode(): Int = IMojitoConfig.DRAG_BOTH_BOTTOM_TOP
+    override fun duration(): Long = 250
 }
