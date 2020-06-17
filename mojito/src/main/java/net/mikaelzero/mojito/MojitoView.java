@@ -93,7 +93,7 @@ public class MojitoView extends FrameLayout {
         MAX_TRANSLATE_Y = screenHeight / 8;
         MAX_Y = screenHeight - screenHeight / 20;
 
-        addView(LayoutInflater.from(getContext()).inflate(R.layout.content_item, null), 0);
+        addView(LayoutInflater.from(getContext()).inflate(R.layout.layout_content, null), 0);
         contentLayout = findViewById(R.id.contentLayout);
         backgroundView = findViewById(R.id.backgroundView);
         backgroundView.setAlpha(mAlpha);

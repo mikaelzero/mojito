@@ -26,8 +26,7 @@ object GlideProgressSupport {
     }
 
     fun init(glide: Glide, okHttpClient: OkHttpClient?) {
-        val builder: OkHttpClient.Builder
-        builder = okHttpClient?.newBuilder() ?: OkHttpClient.Builder()
+        val builder: OkHttpClient.Builder = okHttpClient?.newBuilder() ?: OkHttpClient.Builder()
         builder.addNetworkInterceptor(
             createInterceptor(
                 DispatchingProgressListener()

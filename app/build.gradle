@@ -9,8 +9,8 @@ android {
         applicationId "net.mikaelzero.app"
         minSdkVersion globalConfiguration.androidMinSdkVersion
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
-        versionCode 119
-        versionName "1.19"
+        versionCode 1
+        versionName "1"
     }
     buildTypes {
         debug{

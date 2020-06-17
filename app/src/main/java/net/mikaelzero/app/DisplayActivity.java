@@ -19,10 +19,12 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.gyf.barlibrary.ImmersionBar;
+import com.gyf.immersionbar.ImmersionBar;
 
 import net.mikaelzero.mojito.Mojito;
 import net.mikaelzero.mojito.impl.CircleIndexIndicator;
+import net.mikaelzero.mojito.impl.DefaultCircleProgress;
+import net.mikaelzero.mojito.impl.DefaultPercentProgress;
 import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback;
 
 import org.jetbrains.annotations.NotNull;
@@ -124,6 +126,7 @@ public class DisplayActivity extends AppCompatActivity {
                             .urls(Arrays.asList(activityPosition == 2 ? longImageUrl : normalImageUlr))
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
+                            .setProgress(new DefaultPercentProgress())
                             .setOnMojitoListener(new SimpleMojitoViewCallback() {
                                 @Override
                                 public void onLongClick(@Nullable FragmentActivity fragmentActivity, @NotNull View view, float x, float y, int position) {

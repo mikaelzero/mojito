@@ -107,6 +107,7 @@ class Mojito {
 
         fun clean() {
             isInit = false
+            imageLoader()?.cancelAll()
             instance.onMojitoListener = null
             iIndicator = null
             iProgress = null

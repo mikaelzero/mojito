@@ -23,11 +23,13 @@ import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.*
 import net.mikaelzero.mojito.tools.ScreenUtils
 import java.io.File
+import java.lang.Exception
 
 
 class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     var contentViewOriginModel: ContentViewOriginModel? = null
     var originUrl: String? = null
+    var targetUrl: String? = null
     var showView: View? = null
     var position = 0
     var showImmediately = false
@@ -49,14 +51,16 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mViewLoadFactory = imageViewFactory()
         if (arguments != null) {
             originUrl = arguments!!.getString("originUrl")
+            targetUrl = arguments!!.getString("targetUrl")
             position = arguments!!.getInt("position")
             showImmediately = arguments!!.getBoolean("showImmediately")
             contentViewOriginModel = arguments!!.getParcelable("model")
         }
+        Mojito.iProgress?.attach(position, loadingLayout)
+
         contentLoader = contentLoader()?.newInstance(viewLifecycleOwner)
         mojitoView?.setContentLoader(contentLoader)
         showView = contentLoader?.providerRealView()
-
 
         mojitoView?.setOnMojitoViewCallback(this)
 
@@ -74,33 +78,72 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mImageLoader?.loadImage(showView.hashCode(), Uri.parse(originUrl), object : DefaultImageCallback() {
             override fun onSuccess(image: File) {
                 mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
-                val options = BitmapFactory.Options()
-                options.inJustDecodeBounds = true
-                BitmapFactory.decodeFile(image.absolutePath, options)
-                var h = options.outHeight
-                var w = options.outWidth
-                val isLongImage = contentLoader?.isLongImage(w, h)
-                if (isLongImage != null && isLongImage) {
-                    w = ScreenUtils.getScreenWidth(context)
-                    h = ScreenUtils.getScreenHeight(context)
-                }
-                mojitoView?.putData(
-                    contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
-                    contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
-                    w, h
-                )
-                mojitoView?.show(showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
-                ImageMojitoActivity.showImmediatelyFlag = false
+                startAnim(image)
             }
         })
     }
+
+    private fun startAnim(image: File) {
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        BitmapFactory.decodeFile(image.absolutePath, options)
+        var h = options.outHeight
+        var w = options.outWidth
+        val isLongImage = contentLoader?.isLongImage(w, h)
+        if (isLongImage != null && isLongImage) {
+            w = ScreenUtils.getScreenWidth(context)
+            h = ScreenUtils.getScreenHeight(context)
+        }
+        mojitoView?.putData(
+            contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
+            contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
+            w, h
+        )
+        mojitoView?.show(showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
+        ImageMojitoActivity.showImmediatelyFlag = false
+//                if (targetUrl != null) {
+//                    replaceImageUrl(targetUrl!!)
+//                }
+        replaceImageUrl("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592402146122-assets/web-upload/f6d03f69-f034-4ec1-a8a5-b72ee0a66796.jpeg?x-oss-process=image/auto-orient,1")
+    }
+
 
     override fun backToMin() {
         mojitoView?.backToMin()
     }
 
     override fun replaceImageUrl(url: String) {
+        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), object : DefaultImageCallback() {
+            override fun onStart() {
+                mainHandler.post {
+                    loadingLayout.visibility = View.VISIBLE
+                    Mojito.iProgress?.onStart(position)
+                }
+            }
 
+            override fun onProgress(progress: Int) {
+                mainHandler.post {
+                    loadingLayout.visibility = View.VISIBLE
+                    Mojito.iProgress?.onProgress(position, progress)
+                }
+            }
+
+            override fun onFail(error: Exception?) {
+                Mojito.iProgress?.onFailed(position)
+            }
+
+            override fun onSuccess(image: File) {
+                mainHandler.post {
+                    loadingLayout.visibility = View.GONE
+                }
+                mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
+            }
+        })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        mImageLoader?.cancel(showView.hashCode())
     }
 
     companion object {

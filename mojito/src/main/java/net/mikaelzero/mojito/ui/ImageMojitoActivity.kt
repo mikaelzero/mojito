@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
-import com.gyf.barlibrary.ImmersionBar
+import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_image.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.R
@@ -48,7 +48,8 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         for (i in contentViewOriginModels!!.indices) {
             viewPagerBeans.add(
                 ViewPagerBean(
-                    configBean.originImageUrls!![i], i,
+                    configBean.originImageUrls!![i],
+                    configBean.targetImageUrls?.get(i), i,
                     contentViewOriginModels!!.size > 1 || configBean.position != i,
                     contentViewOriginModels!![i]
                 )
@@ -75,8 +76,10 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         }
         viewPager.adapter = imageViewPagerAdapter
         viewPager.setCurrentItem(currentPosition, false)
-        Mojito.coverLayoutLoader?.pageChange(imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
-            viewPagerBeans.size, currentPosition)
+        Mojito.coverLayoutLoader?.pageChange(
+            imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
+            viewPagerBeans.size, currentPosition
+        )
         viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
 
@@ -87,8 +90,10 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
             override fun onPageSelected(position: Int) {
-                Mojito.coverLayoutLoader?.pageChange(imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
-                    viewPagerBeans.size, position)
+                Mojito.coverLayoutLoader?.pageChange(
+                    imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
+                    viewPagerBeans.size, position
+                )
             }
 
         })

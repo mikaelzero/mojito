@@ -50,7 +50,7 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
                 callback.onFinish()
             }
         }
-        cancel(requestId)
+//        cancel(requestId)
         rememberTarget(requestId, target)
         downloadImageInto(uri, target)
     }
@@ -72,7 +72,7 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
         }
     }
 
-    protected fun downloadImageInto(uri: Uri?, target: Target<File>) {
+    private fun downloadImageInto(uri: Uri?, target: Target<File>) {
         mRequestManager
             .downloadOnly()
             .load(uri)
