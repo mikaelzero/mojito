@@ -43,7 +43,7 @@ publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
     artifactId = "SketchImageViewLoader"
-    publishVersion = "0.0.2"
+    publishVersion = "0.0.3"
     desc = "mojito"
     website = "https://github.com/MikaelZero/Mojito"
 }

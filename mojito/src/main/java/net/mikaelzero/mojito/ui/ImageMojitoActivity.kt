@@ -46,10 +46,16 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         }
         val viewPagerBeans = mutableListOf<ViewPagerBean>()
         for (i in contentViewOriginModels!!.indices) {
+            var targetImageUrl: String? = null
+            if (configBean.targetImageUrls != null) {
+                if (i < configBean.targetImageUrls!!.size) {
+                    targetImageUrl = configBean.targetImageUrls!![i]
+                }
+            }
             viewPagerBeans.add(
                 ViewPagerBean(
                     configBean.originImageUrls!![i],
-                    configBean.targetImageUrls?.get(i), i,
+                    targetImageUrl, i,
                     contentViewOriginModels!!.size > 1 || configBean.position != i,
                     contentViewOriginModels!![i]
                 )
@@ -61,6 +67,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 return if (fragment == null) {
                     val imageFragment = ImageMojitoFragment.newInstance(
                         viewPagerBeans[position].url,
+                        viewPagerBeans[position].targetUrl,
                         position,
                         viewPagerBeans[position].showImmediately,
                         viewPagerBeans[position].contentViewOriginModel

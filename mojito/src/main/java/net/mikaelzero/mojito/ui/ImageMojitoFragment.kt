@@ -1,10 +1,12 @@
 package net.mikaelzero.mojito.ui
 
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +20,7 @@ import net.mikaelzero.mojito.MojitoView
 import net.mikaelzero.mojito.R
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.interfaces.IMojitoFragment
+import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.*
@@ -37,6 +40,8 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     private var mViewLoadFactory: ImageViewLoadFactory? = null
     private var contentLoader: ContentLoader? = null
     private var mainHandler = Handler(Looper.getMainLooper())
+    private var iProgress: IProgress? = null
+    private var imageCoverLoader: ImageCoverLoader? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_image, container, false)
@@ -56,7 +61,17 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             showImmediately = arguments!!.getBoolean("showImmediately")
             contentViewOriginModel = arguments!!.getParcelable("model")
         }
-        Mojito.iProgress?.attach(position, loadingLayout)
+        imageCoverLoader = Mojito.instance.imageCoverLoader()?.providerInstance()
+        imageCoderLayout.removeAllViews()
+        if (imageCoverLoader?.attach(this) != null) {
+            imageCoderLayout.visibility = View.VISIBLE
+            imageCoderLayout.addView(imageCoverLoader?.attach(this))
+        } else {
+            imageCoderLayout.visibility = View.GONE
+        }
+
+        iProgress = Mojito.instance.progressLoader()?.providerInstance()
+        iProgress?.attach(position, loadingLayout)
 
         contentLoader = contentLoader()?.newInstance(viewLifecycleOwner)
         mojitoView?.setContentLoader(contentLoader)
@@ -101,10 +116,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         )
         mojitoView?.show(showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
         ImageMojitoActivity.showImmediatelyFlag = false
-//                if (targetUrl != null) {
-//                    replaceImageUrl(targetUrl!!)
-//                }
-        replaceImageUrl("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592402146122-assets/web-upload/f6d03f69-f034-4ec1-a8a5-b72ee0a66796.jpeg?x-oss-process=image/auto-orient,1")
+        if (targetUrl != null) {
+            replaceImageUrl(targetUrl!!)
+        }
     }
 
 
@@ -112,31 +126,41 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mojitoView?.backToMin()
     }
 
+    override fun providerContext(): Context? {
+        return context
+    }
+
     override fun replaceImageUrl(url: String) {
         mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), object : DefaultImageCallback() {
             override fun onStart() {
                 mainHandler.post {
-                    loadingLayout.visibility = View.VISIBLE
-                    Mojito.iProgress?.onStart(position)
+                    if (loadingLayout.visibility == View.GONE) {
+                        loadingLayout.visibility = View.VISIBLE
+                    }
+                    iProgress?.onStart(position)
                 }
             }
 
             override fun onProgress(progress: Int) {
                 mainHandler.post {
-                    loadingLayout.visibility = View.VISIBLE
-                    Mojito.iProgress?.onProgress(position, progress)
+                    if (loadingLayout.visibility == View.GONE) {
+                        loadingLayout.visibility = View.VISIBLE
+                    }
+                    iProgress?.onProgress(position, progress)
                 }
             }
 
             override fun onFail(error: Exception?) {
-                Mojito.iProgress?.onFailed(position)
+                iProgress?.onFailed(position)
             }
 
             override fun onSuccess(image: File) {
                 mainHandler.post {
-                    loadingLayout.visibility = View.GONE
+                    if (loadingLayout.visibility == View.VISIBLE) {
+                        loadingLayout.visibility = View.GONE
+                    }
+                    mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
                 }
-                mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
             }
         })
     }
@@ -147,9 +171,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     companion object {
-        fun newInstance(originUrl: String?, position: Int, shouldShowAnimation: Boolean, contentViewOriginModel: ContentViewOriginModel?): ImageMojitoFragment {
+        fun newInstance(originUrl: String?, targetUrl: String?, position: Int, shouldShowAnimation: Boolean, contentViewOriginModel: ContentViewOriginModel?): ImageMojitoFragment {
             val args = Bundle()
             args.putString("originUrl", originUrl)
+            args.putString("targetUrl", targetUrl)
             args.putInt("position", position)
             args.putBoolean("showImmediately", shouldShowAnimation)
             args.putParcelable("model", contentViewOriginModel)

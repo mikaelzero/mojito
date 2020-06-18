@@ -1,6 +1,7 @@
 package net.mikaelzero.mojito.impl;
 
 import android.content.Context;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +15,9 @@ import net.mikaelzero.mojito.interfaces.IProgress;
  * 进度加载
  */
 public class DefaultPercentProgress implements IProgress {
-    private SparseArray<LoadingView> progressBarArray = new SparseArray<>();
+//    private SparseArray<LoadingView> progressBarArray = new SparseArray<>();
+
+    LoadingView loadingView;
 
     @Override
     public void attach(int position, FrameLayout parent) {
@@ -22,10 +25,11 @@ public class DefaultPercentProgress implements IProgress {
         int progressSize = LoadingView.dip2Px(context, 50);
         FrameLayout.LayoutParams progressLp = new FrameLayout.LayoutParams(progressSize, progressSize);
         progressLp.gravity = Gravity.CENTER;
-        LoadingView loadingView = new LoadingView(context);
+         loadingView = new LoadingView(context);
         loadingView.setLayoutParams(progressLp);
         parent.addView(loadingView);
-        progressBarArray.put(position, loadingView);
+        Log.e("attach", "attach:  position: " + position + "    loadingView:" + loadingView.hashCode());
+//        progressBarArray.put(position, loadingView);
     }
 
     @Override
@@ -35,26 +39,29 @@ public class DefaultPercentProgress implements IProgress {
 
     @Override
     public void onProgress(int position, int progress) {
-        LoadingView loadingView = progressBarArray.get(position);
+//        LoadingView loadingView = progressBarArray.get(position);
         if (loadingView != null) {
+            Log.e("attach", "attach onProgress:  position: " + position + "    loadingView:" + loadingView.hashCode()+
+                    "     progress:"+progress);
             loadingView.setProgress(progress);
         }
     }
 
     @Override
     public void onFinish(int position) {
-        LoadingView loadingView = progressBarArray.get(position);
+//        LoadingView loadingView = progressBarArray.get(position);
+
         loadingView.loadCompleted();
     }
 
     @Override
     public void onFailed(int position) {
-        LoadingView loadingView = progressBarArray.get(position);
+//        LoadingView loadingView = progressBarArray.get(position);
         loadingView.loadFaild();
     }
 
     @Override
     public View getProgressView(int position) {
-        return progressBarArray.get(position);
+        return null;
     }
 }

@@ -16,7 +16,7 @@ class NumCoverLoader : CoverLayoutLoader {
     lateinit var view: View
     var numTv: TextView? = null
     override fun attach(context: IMojitoActivity) {
-        view = LayoutInflater.from(context.getContext()).inflate(R.layout.wechat_cover_layout, null)
+        view = LayoutInflater.from(context.getContext()).inflate(R.layout.num_cover_layout, null)
         numTv = view.findViewById(R.id.numTv)
     }
 

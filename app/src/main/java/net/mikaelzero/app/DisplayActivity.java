@@ -26,11 +26,15 @@ import net.mikaelzero.mojito.impl.CircleIndexIndicator;
 import net.mikaelzero.mojito.impl.DefaultCircleProgress;
 import net.mikaelzero.mojito.impl.DefaultPercentProgress;
 import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback;
+import net.mikaelzero.mojito.interfaces.IProgress;
+import net.mikaelzero.mojito.loader.ImageCoverLoader;
+import net.mikaelzero.mojito.loader.InstanceLoader;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.salient.artplayer.MediaPlayerManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class DisplayActivity extends AppCompatActivity {
@@ -59,6 +63,10 @@ public class DisplayActivity extends AppCompatActivity {
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
     };
+    String[] targetUrl = new String[]{
+            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592402146122-assets/web-upload/f6d03f69-f034-4ec1-a8a5-b72ee0a66796.jpeg?x-oss-process=image/auto-orient,1",
+            "https://cdn.nlark.com/yuque/0/2019/png/252337/1574341611686-assets/web-upload/8fda6600-8247-42f8-8ff9-cc727d29a5c8.png"
+    };
     Context context;
     int activityPosition;
 
@@ -66,9 +74,6 @@ public class DisplayActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = this;
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        ImmersionBar.with(this).fullScreen(true).init();
         setContentView(R.layout.activity_display);
         activityPosition = getIntent().getIntExtra("position", 0);
 
@@ -77,7 +82,6 @@ public class DisplayActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new MainAdapter());
         mRecyclerView.addHeaderView(LayoutInflater.from(this).inflate(R.layout.adapter_header, null));
         mRecyclerView.addFooterView(LayoutInflater.from(this).inflate(R.layout.adapter_footer, null));
-//        Mojito.prefetch(normalImageUlr);
     }
 
 
@@ -119,14 +123,16 @@ public class DisplayActivity extends AppCompatActivity {
                     Mojito.with(context)
                             .urls(normalImageUlr[position])
                             .position(0)
+                            .setProgressLoader(DefaultPercentProgress::new)
                             .views(views[holder.getAdapterPosition()])
                             .start();
                 } else {
                     Mojito.with(context)
-                            .urls(Arrays.asList(activityPosition == 2 ? longImageUrl : normalImageUlr))
+                            .urls(Arrays.asList(normalImageUlr), Arrays.asList(targetUrl))
                             .position(holder.getAdapterPosition(), 1)
                             .views(mRecyclerView, R.id.srcImageView)
-                            .setProgress(new DefaultPercentProgress())
+                            .setImageCoverLoader(() -> new TargetImageCover("https://i0.hdslb.com/bfs/archive/cb79d0f3b728d4ee3399e44574c85dcfc5bb4225.jpg@412w_232h_1c_100q.jpg"))
+                            .setProgressLoader(DefaultPercentProgress::new)
                             .setOnMojitoListener(new SimpleMojitoViewCallback() {
                                 @Override
                                 public void onLongClick(@Nullable FragmentActivity fragmentActivity, @NotNull View view, float x, float y, int position) {

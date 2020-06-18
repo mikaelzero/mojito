@@ -17,7 +17,9 @@ import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.impl.DefaultMojitoConfig
 import net.mikaelzero.mojito.interfaces.*
 import net.mikaelzero.mojito.loader.IContentViewImplFactory
+import net.mikaelzero.mojito.loader.ImageCoverLoader
 import net.mikaelzero.mojito.loader.ImageLoader
+import net.mikaelzero.mojito.loader.InstanceLoader
 
 //TODO 旋转屏幕没有做处理  使用场景不多 暂时不考虑
 class Mojito {
@@ -102,7 +104,6 @@ class Mojito {
         }
 
         var iIndicator: IIndicator? = null
-        var iProgress: IProgress? = null
         var coverLayoutLoader: CoverLayoutLoader? = null
 
         fun clean() {
@@ -110,7 +111,6 @@ class Mojito {
             imageLoader()?.cancelAll()
             instance.onMojitoListener = null
             iIndicator = null
-            iProgress = null
             coverLayoutLoader = null
         }
     }
@@ -122,6 +122,8 @@ class Mojito {
     private var imageViewLoadFactory: ImageViewLoadFactory? = null
     private var mojitoConfig: IMojitoConfig? = null
     private var configBean: ConfigBean? = null
+    private var progressLoader: InstanceLoader<IProgress>? = null
+    private var imageCoverLoader: InstanceLoader<ImageCoverLoader>? = null
 
 
     fun urls(imageUrl: String): Mojito {
@@ -129,9 +131,21 @@ class Mojito {
         return this
     }
 
+    fun urls(imageUrl: String, targetUrl: String): Mojito {
+        configBean?.originImageUrls = listOf(imageUrl)
+        configBean?.targetImageUrls = listOf(targetUrl)
+        return this
+    }
+
 
     fun urls(imageUrls: List<String>?): Mojito {
         configBean?.originImageUrls = imageUrls
+        return this
+    }
+
+    fun urls(imageUrls: List<String>?, targetImageUrls: List<String>?): Mojito {
+        configBean?.originImageUrls = imageUrls
+        configBean?.targetImageUrls = targetImageUrls
         return this
     }
 
@@ -234,10 +248,16 @@ class Mojito {
     }
 
 
-    fun setProgress(on: IProgress?): Mojito {
-        iProgress = on
+    fun setProgressLoader(loader: InstanceLoader<IProgress>): Mojito {
+        this.progressLoader = loader
         return this
     }
+
+    fun setImageCoverLoader(loader: InstanceLoader<ImageCoverLoader>): Mojito {
+        this.imageCoverLoader = loader
+        return this
+    }
+
 
     fun setCoverLayoutLoader(on: CoverLayoutLoader): Mojito {
         coverLayoutLoader = on
@@ -268,5 +288,13 @@ class Mojito {
 
     fun mojitoListener(): OnMojitoListener? {
         return instance.onMojitoListener
+    }
+
+    fun progressLoader(): InstanceLoader<IProgress>? {
+        return instance.progressLoader
+    }
+
+    fun imageCoverLoader(): InstanceLoader<ImageCoverLoader>? {
+        return instance.imageCoverLoader
     }
 }
