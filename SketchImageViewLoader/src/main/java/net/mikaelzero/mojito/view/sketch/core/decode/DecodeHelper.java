@@ -32,7 +32,7 @@ import net.mikaelzero.mojito.view.sketch.core.request.LoadRequest;
 public abstract class DecodeHelper {
 
     /**
-     * 当前 {@link me.panpf.sketch.decode.DecodeHelper} 是否可以解码指定类型的图片
+     * 当前 {@link DecodeHelper} 是否可以解码指定类型的图片
      *
      * @param request      {@link LoadRequest}
      * @param dataSource   {@link DataSource}. 图片数据源，用于读取图片数据

@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.didi.dokit'
 
 android {
     def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -11,6 +12,7 @@ android {
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
         versionCode 1
         versionName "1"
+        multiDexEnabled true
     }
     buildTypes {
         debug{
@@ -46,8 +48,10 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.44'
     implementation 'com.yanzhenjie:sofia:1.0.5'
-    implementation 'com.gyf.immersionbar:immersionbar:2.3.3'
-
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.github.markzhai:blockcanary-android:1.5.0'
+    debugImplementation "com.didichuxing.doraemonkit:doraemonkit:3.1.8"
+    releaseImplementation "com.didichuxing.doraemonkit:doraemonkit-no-op:3.1.8"
 
     implementation project(':mojito')
     implementation project(':GlideImageLoader')

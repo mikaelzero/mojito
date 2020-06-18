@@ -1,12 +1,14 @@
 package net.mikaelzero.mojito.ui
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,9 +26,10 @@ import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.*
+import net.mikaelzero.mojito.tools.BitmapUtil
 import net.mikaelzero.mojito.tools.ScreenUtils
 import java.io.File
-import java.lang.Exception
+import java.io.IOException
 
 
 class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
@@ -98,12 +101,14 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         })
     }
 
+
     private fun startAnim(image: File) {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
         BitmapFactory.decodeFile(image.absolutePath, options)
-        var h = options.outHeight
-        var w = options.outWidth
+        val arr = BitmapUtil.getAdjustSize(image.path, options)
+        var w = arr[0]
+        var h = arr[1]
         val isLongImage = contentLoader?.isLongImage(w, h)
         if (isLongImage != null && isLongImage) {
             w = ScreenUtils.getScreenWidth(context)

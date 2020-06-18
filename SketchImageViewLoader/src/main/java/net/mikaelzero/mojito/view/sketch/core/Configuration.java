@@ -144,21 +144,13 @@ public final class Configuration {
         return context;
     }
 
-    /**
-     * 获取 {@link UriModel} 管理器
-     *
-     * @return {@link UriModelManager}. {@link UriModel} 管理器
-     */
+
     @NonNull
     public UriModelManager getUriModelManager() {
         return uriModelManager;
     }
 
-    /**
-     * 获取 {@link OptionsFilter} 管理器
-     *
-     * @return {@link OptionsFilterManager}. {@link OptionsFilter} 管理器
-     */
+
     @NonNull
     public OptionsFilterManager getOptionsFilterManager() {
         return optionsFilterManager;
@@ -407,9 +399,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 {@link Resize} 属性处理器
+     * 获取 {@link } 属性处理器
      *
-     * @return {@link ImageProcessor}. {@link Resize} 属性处理器
+     * @return {@link ImageProcessor}. {@link } 属性处理器
      */
     @NonNull
     public ImageProcessor getResizeProcessor() {
@@ -417,9 +409,9 @@ public final class Configuration {
     }
 
     /**
-     * 设置 {@link Resize} 属性处理器
+     * 设置 {@link } 属性处理器
      *
-     * @param resizeProcessor {@link ImageProcessor}. {@link Resize} 属性处理器
+     * @param resizeProcessor {@link ImageProcessor}. {@link } 属性处理器
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
@@ -433,9 +425,9 @@ public final class Configuration {
     }
 
     /**
-     * 获取 {@link Resize} 计算器
+     * 获取 {@link } 计算器
      *
-     * @return {@link ResizeCalculator}. {@link Resize} 计算器
+     * @return {@link ResizeCalculator}. {@link } 计算器
      */
     @NonNull
     public ResizeCalculator getResizeCalculator() {
@@ -443,9 +435,9 @@ public final class Configuration {
     }
 
     /**
-     * 设置 {@link Resize} 计算器
+     * 设置 {@link } 计算器
      *
-     * @param resizeCalculator {@link ResizeCalculator}. {@link Resize} 计算器
+     * @param resizeCalculator {@link ResizeCalculator}. {@link } 计算器
      * @return {@link Configuration}. 为了支持链式调用
      */
     @NonNull
@@ -626,7 +618,7 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局暂停下载新图片，开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     * 设置全局暂停下载新图片，开启后将不再从网络下载图片，只影响 {@link Sketch#display(String, SketchView)} 方法
      *
      * @param pauseDownloadEnabled 全局暂停下载新图片
      * @return {@link Configuration}. 为了支持链式调用
@@ -716,7 +708,7 @@ public final class Configuration {
     }
 
     /**
-     * 设置全局移动数据下暂停下载，只影响 {@link Sketch#display(String, SketchView)} 方法和 {@link Sketch#load(String, LoadListener)} 方法
+     * 设置全局移动数据下暂停下载，只影响 {@link Sketch#display(String, SketchView)} 方法
      *
      * @param mobileDataPauseDownloadEnabled 全局移动数据下暂停下载
      * @return {@link Configuration}. 为了支持链式调用

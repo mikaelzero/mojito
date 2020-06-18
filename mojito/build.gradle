@@ -42,6 +42,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'androidx.exifinterface:exifinterface:1.2.0'
 }
 repositories {
     mavenCentral()
@@ -52,7 +53,7 @@ publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
     artifactId = "core"
-    publishVersion = "0.0.3"
+    publishVersion = "0.0.4"
     desc = "mojito"
     website = "https://github.com/MikaelZero/Mojito"
 }

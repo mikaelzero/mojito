@@ -60,8 +60,10 @@ public class DisplayActivity extends AppCompatActivity {
 //            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334187-assets/web-upload/29de7d66-d904-439e-b547-1bdc58934b50.gif",
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg",
 //            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
-            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
+//            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg",
+//            "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg",
+            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/84061801.png",
+            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/53821823.png",
     };
     String[] targetUrl = new String[]{
             "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592402146122-assets/web-upload/f6d03f69-f034-4ec1-a8a5-b72ee0a66796.jpeg?x-oss-process=image/auto-orient,1",

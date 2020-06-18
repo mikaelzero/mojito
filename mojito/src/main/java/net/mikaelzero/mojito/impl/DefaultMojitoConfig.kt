@@ -9,5 +9,5 @@ import net.mikaelzero.mojito.interfaces.IMojitoConfig
  */
 class DefaultMojitoConfig : IMojitoConfig {
     override fun dragMode(): Int = IMojitoConfig.DRAG_BOTH_BOTTOM_TOP
-    override fun duration(): Long = 250
+    override fun duration(): Long = 200
 }
