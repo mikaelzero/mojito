@@ -8,6 +8,6 @@ import net.mikaelzero.mojito.interfaces.IMojitoConfig
  * @Description:
  */
 class DefaultMojitoConfig : IMojitoConfig {
-    override fun dragMode(): Int = IMojitoConfig.DRAG_BOTH_BOTTOM_TOP
     override fun duration(): Long = 300
+    override fun maxTransYRatio(): Float = 0.1f
 }

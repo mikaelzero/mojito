@@ -76,35 +76,22 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
                     else -> {
                         val rectF = Rect()
                         sketchImageView.zoomer?.getVisibleRect(rectF)
-                        if (Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_ONLY_BOTTOM) {
-                            //长图处于顶部  并且有向下滑动的趋势
-                            (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
-                                    && rectF.top == 0 && isDown)
-                                    ||
-                                    //长图不处于顶部的时候
-                                    sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
-                                    && rectF.top != 0
-                                    ||
-                                    //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
-                                    sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
-                        } else {
-                            val drawRect = RectF()
-                            sketchImageView.zoomer?.getDrawRect(drawRect)
+                        val drawRect = RectF()
+                        sketchImageView.zoomer?.getDrawRect(drawRect)
 
-                            //长图处于顶部  并且有向下滑动的趋势
-                            val isTop = sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale && rectF.top == 0 && isDown
-                            //长图不处于顶部和底部的时候
-                            val isCenter = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
-                                    && rectF.top != 0
-                                    && rectF.bottom < drawRect.bottom
-                            //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
-                            val isScale = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
-                            val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
-                                    && !isDown
-                                    && rectF.bottom >= drawRect.bottom)
-                            Log.e("result", "result:  isTop$isTop    isCenter:$isCenter    isScale:$isScale    isBottom:$isBottom")
-                            return isTop || isCenter || isScale || isBottom
-                        }
+                        //长图处于顶部  并且有向下滑动的趋势
+                        val isTop = sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale && rectF.top == 0 && isDown
+                        //长图不处于顶部和底部的时候
+                        val isCenter = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
+                                && rectF.top != 0
+                                && rectF.bottom < drawRect.bottom
+                        //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
+                        val isScale = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
+                        val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
+                                && !isDown
+                                && rectF.bottom >= drawRect.bottom)
+                        Log.e("result", "result:  isTop$isTop    isCenter:$isCenter    isScale:$isScale    isBottom:$isBottom")
+                        return isTop || isCenter || isScale || isBottom
                     }
                 }
             }

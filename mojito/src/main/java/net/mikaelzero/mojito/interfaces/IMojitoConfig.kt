@@ -7,15 +7,6 @@ package net.mikaelzero.mojito.interfaces
  * @Description:
  */
 interface IMojitoConfig {
-    companion object {
-        const val DRAG_ONLY_BOTTOM = 1
-        const val DRAG_BOTH_BOTTOM_TOP = 2
-    }
-
-    /**
-     * DRAG_ONLY_BOTTOM
-     * DRAG_BOTH_BOTTOM_TOP
-     */
-    fun dragMode(): Int
     fun duration(): Long
+    fun maxTransYRatio():Float
 }

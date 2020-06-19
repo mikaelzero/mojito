@@ -49,9 +49,7 @@ public class MojitoView extends FrameLayout {
     private float mMoveDownTranslateY;
     private float mTranslateX;
 
-    private final float DEFAULT_MIN_SCALE = 0.3f;
-    private int MAX_TRANSLATE_Y;
-    private int MAX_Y;
+    private float MAX_TRANSLATE_Y;
 
     FrameLayout contentLayout;
     View backgroundView;
@@ -67,11 +65,9 @@ public class MojitoView extends FrameLayout {
     private int targetImageTop;
     private int targetImageWidth;
     private int targetImageHeight;
+    private int targetEndLeft;
 
     private int mLastY;
-
-    int minWidth = 0;
-    int minHeight = 0;
 
     int releaseLeft = 0;
     float releaseY = 0;
@@ -87,7 +83,6 @@ public class MojitoView extends FrameLayout {
     int imageHeightOfAnimatorEnd = 0;
 
     MarginViewWrapper imageWrapper;
-    MarginViewWrapper imageRealWrapper;
     boolean isDrag = false;
     boolean isAnimating = false;
     boolean isMultiFinger = false;
@@ -106,8 +101,7 @@ public class MojitoView extends FrameLayout {
         super(context, attrs, defStyleAttr);
         screenWidth = ScreenUtils.getScreenWidth(context);
         screenHeight = ScreenUtils.getScreenHeight(context);
-        MAX_TRANSLATE_Y = screenHeight / 8;
-        MAX_Y = screenHeight - screenHeight / 20;
+        MAX_TRANSLATE_Y = screenHeight * Mojito.mojitoConfig().maxTransYRatio();
 
         addView(LayoutInflater.from(getContext()).inflate(R.layout.layout_content, null), 0);
         contentLayout = findViewById(R.id.contentLayout);
@@ -123,9 +117,15 @@ public class MojitoView extends FrameLayout {
         mOriginTop = 0;
         mOriginWidth = 0;
         mOriginHeight = 0;
-        mAlpha = 1f;
+        mAlpha = 0f;
+        backgroundView.setAlpha(mAlpha);
         setVisibility(View.VISIBLE);
-        getLocation(true);
+        setOriginParams();
+        min2NormalAndDrag2Min(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+        contentLayout.setAlpha(0f);
+        contentLayout.animate().alpha(1f).setDuration(animationDuration).start();
+        backgroundView.animate().alpha(1f).setDuration(animationDuration).start();
+        setShowEndParams();
     }
 
     public void putData(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
@@ -140,14 +140,14 @@ public class MojitoView extends FrameLayout {
     public void show(boolean showImmediately) {
         mAlpha = showImmediately ? mAlpha = 1f : 0f;
         setVisibility(View.VISIBLE);
-        getLocation(showImmediately);
+        setOriginParams();
+        beginShow(showImmediately);
     }
 
-
-    private void getLocation(final boolean showImmediately) {
+    private void setOriginParams() {
         int[] locationImage = new int[2];
         contentLayout.getLocationOnScreen(locationImage);
-        int endLeft = 0;
+        targetEndLeft = 0;
         if (screenWidth / (float) screenHeight < realWidth / (float) realHeight) {
             targetImageWidth = screenWidth;
             targetImageHeight = (int) (targetImageWidth * (realHeight / (float) realWidth));
@@ -156,7 +156,7 @@ public class MojitoView extends FrameLayout {
             targetImageHeight = screenHeight;
             targetImageWidth = (int) (targetImageHeight * (realWidth / (float) realHeight));
             targetImageTop = 0;
-            endLeft = (screenWidth - targetImageWidth) / 2;
+            targetEndLeft = (screenWidth - targetImageWidth) / 2;
         }
 
         imageWrapper.setWidth(mOriginWidth);
@@ -164,42 +164,28 @@ public class MojitoView extends FrameLayout {
         imageWrapper.setMarginLeft(mOriginLeft);
         imageWrapper.setMarginTop(mOriginTop);
 
-        minWidth = (int) (targetImageWidth * DEFAULT_MIN_SCALE);
-        minHeight = (int) (targetImageHeight * DEFAULT_MIN_SCALE);
+    }
 
+    private void beginShow(final boolean showImmediately) {
         if (showImmediately) {
             mAlpha = 1f;
             backgroundView.setAlpha(mAlpha);
-            min2NormalAndDrag2Min(targetImageTop, endLeft, targetImageWidth, targetImageHeight);
-            isAnimating = false;
-            setImageDataOfAnimatorEnd();
-            changeContentViewToFullscreen();
-            contentLoader.loadAnimFinish();
-            if (onMojitoViewCallback != null) {
-                onMojitoViewCallback.showFinish(this, true);
-            }
+            min2NormalAndDrag2Min(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
+            setShowEndParams();
         } else {
             ValueAnimator valueAnimator = ValueAnimator.ofFloat(mOriginTop, targetImageTop);
-            final int finalEndLeft = endLeft;
             valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     float value = (float) animation.getAnimatedValue();
-                    min2NormalAndDrag2Min(value, mOriginTop, targetImageTop, mOriginLeft, finalEndLeft,
+                    min2NormalAndDrag2Min(value, mOriginTop, targetImageTop, mOriginLeft, targetEndLeft,
                             mOriginWidth, targetImageWidth, mOriginHeight, targetImageHeight);
                 }
             });
             valueAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    isAnimating = false;
-                    setImageDataOfAnimatorEnd();
-                    changeContentViewToFullscreen();
-                    contentLoader.loadAnimFinish();
-                    if (onMojitoViewCallback != null) {
-                        onMojitoViewCallback.showFinish(MojitoView.this, false);
-                    }
-
+                    setShowEndParams();
                 }
             });
             valueAnimator.setDuration(animationDuration).start();
@@ -207,41 +193,33 @@ public class MojitoView extends FrameLayout {
         }
     }
 
-    void dragAnd2Normal(float currentY, boolean isDrag) {
+    private void setShowEndParams() {
+        isAnimating = false;
+        setImageDataOfAnimatorEnd();
+        changeContentViewToFullscreen();
+        contentLoader.loadAnimFinish();
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.showFinish(MojitoView.this, false);
+        }
+    }
+
+    private void dragAnd2Normal(float currentY, boolean isDrag) {
         //根据触摸点的Y坐标和屏幕的比例来更改透明度
         //according to touch point y and screen ratio to change background alpha
-        float alphaChangePercent = Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP ?
-                Math.abs(mMoveDownTranslateY) / screenHeight : mMoveDownTranslateY / screenHeight;
+        float alphaChangePercent = Math.abs(mMoveDownTranslateY) / screenHeight;
         mAlpha = 1 - alphaChangePercent;
         int originLeftOffset = (screenWidth - targetImageWidth) / 2;
         float left = 0f;
-        int leftOffset = 0;
-        if (Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP) {
-            float nodeMarginPercent = (MAX_Y - currentY + targetImageTop) / MAX_Y;
-            if (nodeMarginPercent > 1) {
-                nodeMarginPercent = 1 - (nodeMarginPercent - 1);
-            }
-            left = mTranslateX;
-            float ratio = nodeMarginPercent;
-            contentLayout.setPivotX(mDownX);
-            contentLayout.setPivotY(mDownY);
-            contentLayout.setScaleX(ratio);
-            contentLayout.setScaleY(ratio);
-        } else {
-            float nodeMarginPercent = (MAX_Y - currentY + targetImageTop) / MAX_Y;
-            float widthPercent = DEFAULT_MIN_SCALE + (1f - DEFAULT_MIN_SCALE) * nodeMarginPercent;
-            if (nodeMarginPercent >= 1) {
-                //处于拖动到正常大小上方
-                imageWrapper.setWidth(targetImageWidth);
-                imageWrapper.setHeight(targetImageHeight);
-                left = mTranslateX;
-                mAlpha = nodeMarginPercent;
-            } else {
-                imageWrapper.setWidth(targetImageWidth * widthPercent);
-                imageWrapper.setHeight(targetImageHeight * widthPercent);
-                left = mTranslateX + leftOffset;
-            }
+        float nodeMarginPercent = (screenHeight - currentY) / screenHeight;
+        if (nodeMarginPercent > 1) {
+            nodeMarginPercent = 1 - (nodeMarginPercent - 1);
         }
+        left = mTranslateX;
+        float ratio = nodeMarginPercent;
+        contentLayout.setPivotX(mDownX);
+        contentLayout.setPivotY(mDownY);
+        contentLayout.setScaleX(ratio);
+        contentLayout.setScaleY(ratio);
         if (!isDrag) {
             left = (currentY - targetImageTop) / (releaseY - targetImageTop) * releaseLeft;
         }
@@ -251,17 +229,17 @@ public class MojitoView extends FrameLayout {
         contentLoader.dragging(imageWrapper.getWidth(), imageWrapper.getHeight(), imageWrapper.getWidth() / (float) screenWidth);
     }
 
-    void min2NormalAndDrag2Min(float currentY, float startY, float endY, float startLeft, float endLeft,
-                               float startWidth, float endWidth, float startHeight, float endHeight) {
+    private void min2NormalAndDrag2Min(float currentY, float startY, float endY, float startLeft, float endLeft,
+                                       float startWidth, float endWidth, float startHeight, float endHeight) {
         min2NormalAndDrag2Min(false, currentY, startY, endY, startLeft, endLeft, startWidth, endWidth, startHeight, endHeight);
     }
 
-    void min2NormalAndDrag2Min(float endY, float endLeft, float endWidth, float endHeight) {
+    private void min2NormalAndDrag2Min(float endY, float endLeft, float endWidth, float endHeight) {
         min2NormalAndDrag2Min(true, 0, 0, endY, 0, endLeft, 0, endWidth, 0, endHeight);
     }
 
-    void min2NormalAndDrag2Min(boolean showImmediately, float currentY, float startY, float endY, float startLeft, float endLeft,
-                               float startWidth, float endWidth, float startHeight, float endHeight) {
+    private void min2NormalAndDrag2Min(boolean showImmediately, float currentY, float startY, float endY, float startLeft, float endLeft,
+                                       float startWidth, float endWidth, float startHeight, float endHeight) {
         if (showImmediately) {
             imageWrapper.setWidth(endWidth);
             imageWrapper.setHeight(endHeight);
@@ -279,7 +257,7 @@ public class MojitoView extends FrameLayout {
         imageWrapper.setMarginTop((int) currentY);
     }
 
-    void backToNormal() {
+    private void backToNormal() {
         isAnimating = true;
         releaseLeft = imageWrapper.getMarginLeft() - (screenWidth - targetImageWidth) / 2;
         releaseY = imageWrapper.getMarginTop();
@@ -308,63 +286,37 @@ public class MojitoView extends FrameLayout {
         backToMin(false);
     }
 
-    public void backToMin(boolean isDrag) {
+    private void backToMin(boolean isDrag) {
         if (isAnimating) {
             return;
         }
-        contentLoader.beginBackToMin(false);
-
-        if (!isDrag && contentLoader.useTransitionApi() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            contentLayout.post(new Runnable() {
-                @Override
-                public void run() {
-                    TransitionManager.beginDelayedTransition((ViewGroup) contentLayout.getParent(), new TransitionSet()
-                            .setDuration(Mojito.mojitoConfig().duration())
-                            .addTransition(new ChangeBounds())
-                            .addTransition(new ChangeTransform())
-                            .addTransition(new ChangeImageTransform())
-                            .addListener(new TransitionAdapterListener() {
-                                @Override
-                                public void onTransitionEnd(Transition transition) {
-                                    if (onMojitoViewCallback != null) {
-                                        onMojitoViewCallback.onMojitoViewFinish();
-                                    }
-                                }
-                            })
-                    );
-                    contentLoader.beginBackToMin(true);
-                    contentLayout.setTranslationX(0);
-                    contentLayout.setTranslationY(0);
-                    imageWrapper.setWidth(mOriginWidth);
-                    imageWrapper.setHeight(mOriginHeight);
-                    imageWrapper.setMarginTop(mOriginTop);
-                    imageWrapper.setMarginLeft(mOriginLeft);
-                    if (onMojitoViewCallback != null) {
-                        onMojitoViewCallback.onRelease(false, true);
-                    }
-                    changeBackgroundViewAlpha(true);
-                }
-            });
-        } else {
-            resetContentScaleParams();
-            reRebuildSize();
-            setReleaseParams();
-
-            contentLoader.beginBackToMin(true);
-            ValueAnimator valueAnimator = ValueAnimator.ofFloat(releaseY, mOriginTop);
-            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float value = (float) animation.getAnimatedValue();
-                    min2NormalAndDrag2Min(value, releaseY, mOriginTop, releaseLeft, mOriginLeft, releaseWidth, mOriginWidth, releaseHeight, mOriginHeight);
-                }
-            });
-            valueAnimator.setDuration(animationDuration).start();
-            if (onMojitoViewCallback != null) {
-                onMojitoViewCallback.onRelease(false, true);
-            }
-            changeBackgroundViewAlpha(true);
+        if (mOriginWidth == 0 || mOriginHeight == 0) {
+            backToMinWithoutView();
+            return;
         }
+        contentLoader.beginBackToMin(false);
+        if (!isDrag && contentLoader.useTransitionApi() && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            backToMinWithTransition();
+            return;
+        }
+        resetContentScaleParams();
+        reRebuildSize();
+        setReleaseParams();
+
+        contentLoader.beginBackToMin(true);
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(releaseY, mOriginTop);
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = (float) animation.getAnimatedValue();
+                min2NormalAndDrag2Min(value, releaseY, mOriginTop, releaseLeft, mOriginLeft, releaseWidth, mOriginWidth, releaseHeight, mOriginHeight);
+            }
+        });
+        valueAnimator.setDuration(animationDuration).start();
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.onRelease(false, true);
+        }
+        changeBackgroundViewAlpha(true);
     }
 
     private void resetContentScaleParams() {
@@ -439,6 +391,56 @@ public class MojitoView extends FrameLayout {
         imageWrapper.setMarginLeft(releaseLeft);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    private void backToMinWithTransition() {
+        contentLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                TransitionManager.beginDelayedTransition((ViewGroup) contentLayout.getParent(), new TransitionSet()
+                        .setDuration(Mojito.mojitoConfig().duration())
+                        .addTransition(new ChangeBounds())
+                        .addTransition(new ChangeTransform())
+                        .addTransition(new ChangeImageTransform())
+                        .addListener(new TransitionAdapterListener() {
+                            @Override
+                            public void onTransitionEnd(Transition transition) {
+                                if (onMojitoViewCallback != null) {
+                                    onMojitoViewCallback.onMojitoViewFinish();
+                                }
+                            }
+                        })
+                );
+                contentLoader.beginBackToMin(true);
+                contentLayout.setTranslationX(0);
+                contentLayout.setTranslationY(0);
+                imageWrapper.setWidth(mOriginWidth);
+                imageWrapper.setHeight(mOriginHeight);
+                imageWrapper.setMarginTop(mOriginTop);
+                imageWrapper.setMarginLeft(mOriginLeft);
+                if (onMojitoViewCallback != null) {
+                    onMojitoViewCallback.onRelease(false, true);
+                }
+                changeBackgroundViewAlpha(true);
+            }
+        });
+    }
+
+
+    private void backToMinWithoutView() {
+        contentLayout.animate().alpha(0f).setDuration(animationDuration)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        if (onMojitoViewCallback != null) {
+                            onMojitoViewCallback.onMojitoViewFinish();
+                        }
+                    }
+                }).start();
+        backgroundView.animate().alpha(0f).setDuration(animationDuration).start();
+        if (onMojitoViewCallback != null) {
+            onMojitoViewCallback.onRelease(false, true);
+        }
+    }
 
     /**
      * @param isToZero 是否透明
@@ -517,7 +519,7 @@ public class MojitoView extends FrameLayout {
                     break;
                 }
                 if (onMojitoViewCallback != null) {
-                    float tempTranslateY = Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP ? Math.abs(mMoveDownTranslateY) : mMoveDownTranslateY;
+                    float tempTranslateY = Math.abs(mMoveDownTranslateY);
                     onMojitoViewCallback.onDrag(this, mTranslateX, tempTranslateY);
                 }
                 isDrag = true;
@@ -548,7 +550,7 @@ public class MojitoView extends FrameLayout {
                     break;
                 }
 
-                float tempTranslateY = Mojito.mojitoConfig().dragMode() == IMojitoConfig.DRAG_BOTH_BOTTOM_TOP ? Math.abs(mMoveDownTranslateY) : mMoveDownTranslateY;
+                float tempTranslateY = Math.abs(mMoveDownTranslateY);
                 if (tempTranslateY > MAX_TRANSLATE_Y) {
                     backToMin(true);
                 } else {

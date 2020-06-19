@@ -87,6 +87,7 @@ class Mojito {
             return instance.mojitoConfig!!
         }
 
+
         @JvmStatic
         fun prefetch(vararg uris: Uri?) {
             val imageLoader = imageLoader()
@@ -273,18 +274,9 @@ class Mojito {
 
     private var onMojitoListener: OnMojitoListener? = null
 
-
-    @LayoutRes
-    private var imageCoverLayoutRes: Int? = null
-
     fun setOnMojitoListener(onMojitoListener: OnMojitoListener): Mojito {
         this.onMojitoListener = onMojitoListener
         return this
-    }
-
-
-    fun setImageCoverLayoutRes() {
-
     }
 
     fun mojitoListener(): OnMojitoListener? {
