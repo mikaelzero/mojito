@@ -107,6 +107,7 @@ class Mojito {
         var coverLayoutLoader: CoverLayoutLoader? = null
 
         fun clean() {
+            instance.mContext = null
             isInit = false
             imageLoader()?.cancelAll()
             instance.onMojitoListener = null

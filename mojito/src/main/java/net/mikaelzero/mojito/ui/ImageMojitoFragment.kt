@@ -93,7 +93,12 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                 Mojito.instance.mojitoListener()?.onLongClick(activity, view, x, y, position)
             }
         })
-        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(originUrl), object : DefaultImageCallback() {
+        val uri = if (originUrl != null && File(originUrl!!).isFile) {
+            Uri.fromFile(File(originUrl!!))
+        } else {
+            Uri.parse(originUrl)
+        }
+        mImageLoader?.loadImage(showView.hashCode(), uri, object : DefaultImageCallback() {
             override fun onSuccess(image: File) {
                 mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
                 startAnim(image)
@@ -114,12 +119,16 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             w = ScreenUtils.getScreenWidth(context)
             h = ScreenUtils.getScreenHeight(context)
         }
-        mojitoView?.putData(
-            contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
-            contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
-            w, h
-        )
-        mojitoView?.show(showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
+        if (contentViewOriginModel == null) {
+            mojitoView?.showWithoutView(w,h)
+        } else {
+            mojitoView?.putData(
+                contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
+                contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
+                w, h
+            )
+            mojitoView?.show(showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
+        }
         ImageMojitoActivity.showImmediatelyFlag = false
         if (targetUrl != null) {
             replaceImageUrl(targetUrl!!)

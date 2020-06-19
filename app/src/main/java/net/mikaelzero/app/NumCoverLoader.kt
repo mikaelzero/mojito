@@ -1,5 +1,6 @@
 package net.mikaelzero.app
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
@@ -32,8 +33,9 @@ class NumCoverLoader : CoverLayoutLoader {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun pageChange(iMojitoFragment: IMojitoFragment, totalSize: Int, position: Int) {
-        numTv?.text = "$position/$totalSize"
+        numTv?.text = (position + 1).toString() + "/" + totalSize
     }
 
 }

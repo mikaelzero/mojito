@@ -27,11 +27,31 @@ public class SourceUtil {
         return thumbnailImageList;
     }
 
-    /**
-     * 使用ContentProvider读取SD卡最近图片
-     *
-     * @param maxCount 读取的最大张数
-     */
+
+    public static List<String> getNormalImages() {
+        List<String> list = new ArrayList<>();
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591710912974-assets/web-upload/1e6325b7-4e26-443f-98f8-aa3925222ea1.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333257-assets/web-upload/dfe8a4eb-9872-444b-b2a5-83378f467915.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333210-assets/web-upload/8d20ed3d-1472-47c9-a2e6-da96e6019299.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg");
+//            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg");
+//            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/84061801.png",
+//            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/53821823.png",
+
+        return list;
+    }
+
+    public static List<String> getSingleImage() {
+        List<String> list = new ArrayList<>();
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg");
+        return list;
+    }
+
     public static List<String> getLatestPhotoPaths(Context context, int maxCount) {
         Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 

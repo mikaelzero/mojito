@@ -41,11 +41,13 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         configBean = intent.getParcelableExtra("config")!!
         val currentPosition = configBean.position ?: 0
         contentViewOriginModels = configBean.contentViewOriginModels
-        if (contentViewOriginModels == null) {
-            finish()
-        }
+
         val viewPagerBeans = mutableListOf<ViewPagerBean>()
-        for (i in contentViewOriginModels!!.indices) {
+        if (configBean.originImageUrls == null) {
+            finish()
+            return
+        }
+        for (i in configBean.originImageUrls!!.indices) {
             var targetImageUrl: String? = null
             if (configBean.targetImageUrls != null) {
                 if (i < configBean.targetImageUrls!!.size) {
@@ -56,8 +58,8 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 ViewPagerBean(
                     configBean.originImageUrls!![i],
                     targetImageUrl, i,
-                    contentViewOriginModels!!.size > 1 || configBean.position != i,
-                    contentViewOriginModels!![i]
+                    contentViewOriginModels == null || configBean.position != i,
+                    contentViewOriginModels?.get(i)
                 )
             )
         }
@@ -104,7 +106,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
         })
-        if (contentViewOriginModels!!.size > 1) {
+        if (contentViewOriginModels != null && contentViewOriginModels!!.size > 1) {
             Mojito.iIndicator?.attach(indicatorLayout)
             Mojito.iIndicator?.onShow(viewPager)
         }

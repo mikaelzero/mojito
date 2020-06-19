@@ -16,11 +16,8 @@ import net.mikaelzero.app.local.LocalImageActivity
 
 class MainActivity : AppCompatActivity() {
     var texts = arrayOf(
-        "加载列表",
-        "load local image",
-        "加载单张",
-        "加载长图",
-        "加载视频"
+        "load normal",
+        "load local image"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {

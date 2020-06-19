@@ -116,6 +116,17 @@ public class MojitoView extends FrameLayout {
         imageWrapper = new MarginViewWrapper(contentLayout);
     }
 
+    public void showWithoutView(int realWidth, int realHeight) {
+        this.realWidth = realWidth;
+        this.realHeight = realHeight;
+        mOriginLeft = 0;
+        mOriginTop = 0;
+        mOriginWidth = 0;
+        mOriginHeight = 0;
+        mAlpha = 1f;
+        setVisibility(View.VISIBLE);
+        getLocation(true);
+    }
 
     public void putData(int left, int top, int originWidth, int originHeight, int realWidth, int realHeight) {
         this.realWidth = realWidth;
