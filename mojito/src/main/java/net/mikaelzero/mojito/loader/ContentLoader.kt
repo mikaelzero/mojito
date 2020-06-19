@@ -3,7 +3,6 @@ package net.mikaelzero.mojito.loader
 import android.content.Context
 import android.graphics.RectF
 import android.view.View
-import androidx.lifecycle.LifecycleOwner
 
 /**
  * @Author: MikaelZero
@@ -20,6 +19,7 @@ interface ContentLoader {
     fun beginBackToMin(isResetSize: Boolean)
     fun loadAnimFinish()
     fun needReBuildSize(): Boolean
+    fun useTransitionApi():Boolean
     fun isLongImage(width: Int, height: Int): Boolean
     fun onTapCallback(onTapCallback: OnTapCallback)
     fun onLongTapCallback(onLongTapCallback: OnLongTapCallback)

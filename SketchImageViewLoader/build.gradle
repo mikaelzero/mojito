@@ -33,7 +33,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-//    implementation 'me.panpf:sketch:2.7.1'
     implementation 'me.panpf:sketch-gif:2.7.1'
     implementation project(':mojito')
 }
@@ -45,5 +44,5 @@ publish {
     artifactId = "SketchImageViewLoader"
     publishVersion = "0.0.4"
     desc = "mojito"
-    website = "https://github.com/MikaelZero/Mojito"
+    website = "https://github.com/MikaelZero/mojito"
 }

@@ -29,6 +29,7 @@
         <activity
             android:name="net.mikaelzero.app.DisplayActivity"
             android:configChanges="orientation" />
+        <activity android:name=".local.LocalImageActivity" />
     </application>
 
 </manifest>

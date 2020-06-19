@@ -3,16 +3,20 @@ package net.mikaelzero.mojito.view.sketch
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
+import android.os.Build
+import android.transition.*
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.interfaces.IMojitoConfig
+import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.OnLongTapCallback
 import net.mikaelzero.mojito.loader.OnTapCallback
 import net.mikaelzero.mojito.tools.ScreenUtils
@@ -32,6 +36,7 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
     }
 
     private lateinit var sketchImageView: SketchImageView
+    lateinit var frameLayout: FrameLayout
     private var isLongHeightImage = false
     private var isLongWidthImage = false
 
@@ -40,7 +45,7 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
     }
 
     override fun providerView(): View {
-        return sketchImageView
+        return frameLayout
     }
 
     override val displayRect: RectF
@@ -51,9 +56,11 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
         }
 
     override fun init(context: Context) {
+        frameLayout = FrameLayout(context)
         sketchImageView = SketchImageView(context)
         sketchImageView.isZoomEnabled = true
         sketchImageView.options.isDecodeGifImage = true
+        frameLayout.addView(sketchImageView)
     }
 
     override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean {
@@ -134,28 +141,26 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
         if (isLongHeightImage || isLongWidthImage) {
 
         } else {
-            if (needReBuildSize()) {
-                if (isResetSize) {
-                    sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                }
-            } else {
-                if (isResetSize) {
-                    sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
-                }
+            if (isResetSize) {
+                sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
             }
         }
     }
 
     override fun loadAnimFinish() {
         if (isLongHeightImage || isLongWidthImage) {
-//            sketchImageView.scaleType = ImageView.ScaleType.FIT_CENTER
+
         } else {
-            sketchImageView.zoomer?.setScaleType(ImageView.ScaleType.FIT_CENTER)
+            sketchImageView.scaleType = ImageView.ScaleType.FIT_CENTER
         }
     }
 
     override fun needReBuildSize(): Boolean {
         return sketchImageView.zoomer!!.zoomScale > sketchImageView.zoomer!!.fullZoomScale
+    }
+
+    override fun useTransitionApi(): Boolean {
+        return isLongWidthImage || isLongHeightImage || needReBuildSize()
     }
 
     override fun isLongImage(width: Int, height: Int): Boolean {
@@ -168,7 +173,7 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
         if (isLongHeightImage || isLongWidthImage) {
 
         } else {
-            sketchImageView.zoomer!!.setScaleType(ImageView.ScaleType.CENTER_CROP)
+            sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
         }
         return isLongHeightImage || isLongWidthImage
     }
