@@ -1,6 +1,6 @@
 package net.mikaelzero.mojito.interfaces
 
-import android.content.Context
+import androidx.fragment.app.Fragment
 
 /**
  * @Author:         MikaelZero
@@ -8,7 +8,7 @@ import android.content.Context
  * @Description:
  */
 interface IMojitoFragment {
-    fun providerContext():Context?
-    fun replaceImageUrl(url:String)
+    fun providerContext():Fragment?
+    fun loadTargetUrl()
     fun backToMin()
 }

@@ -42,7 +42,7 @@ apply plugin: 'com.novoda.bintray-release'
 publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
-    artifactId = "SketchImageViewLoader"
+    artifactId = "SketchImageFactory"
     publishVersion = "0.0.7"
     desc = "mojito"
     website = "https://github.com/MikaelZero/mojito"

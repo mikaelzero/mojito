@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import net.mikaelzero.mojito.interfaces.CoverLayoutLoader
+import net.mikaelzero.mojito.interfaces.ActivityCoverLoader
 import net.mikaelzero.mojito.interfaces.IMojitoActivity
 import net.mikaelzero.mojito.interfaces.IMojitoFragment
 
@@ -13,7 +13,7 @@ import net.mikaelzero.mojito.interfaces.IMojitoFragment
  * @CreateDate:     2020/6/17 11:29 AM
  * @Description:
  */
-class NumCoverLoader : CoverLayoutLoader {
+class NumActivityCoverLoader : ActivityCoverLoader {
     lateinit var view: View
     var numTv: TextView? = null
     override fun attach(context: IMojitoActivity) {

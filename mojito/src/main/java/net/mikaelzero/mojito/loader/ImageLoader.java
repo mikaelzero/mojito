@@ -8,7 +8,7 @@ import java.io.File;
 
 public interface ImageLoader {
 
-    void loadImage(int requestId, Uri uri, Callback callback);
+    void loadImage(int requestId, Uri uri, boolean onlyRetrieveFromCache,Callback callback);
 
     void prefetch(Uri uri);
 

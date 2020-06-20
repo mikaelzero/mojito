@@ -6,6 +6,7 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.view.View
 import androidx.annotation.IdRes
+import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +16,7 @@ import net.mikaelzero.mojito.bean.ConfigBean
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.impl.DefaultMojitoConfig
 import net.mikaelzero.mojito.interfaces.*
-import net.mikaelzero.mojito.loader.ImageCoverLoader
+import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.ImageLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 
@@ -94,15 +95,18 @@ class Mojito {
         }
 
         var iIndicator: IIndicator? = null
-        var coverLayoutLoader: CoverLayoutLoader? = null
+        var activityCoverLoader: ActivityCoverLoader? = null
 
         fun clean() {
             instance.mContext = null
-            isInit = false
-            imageLoader()?.cancelAll()
+            instance.fragmentCoverLoader = null
+            instance.progressLoader = null
+            instance.autoLoadTarget = true
             instance.onMojitoListener = null
+            isInit = false
             iIndicator = null
-            coverLayoutLoader = null
+            activityCoverLoader = null
+            imageLoader()?.cancelAll()
         }
     }
 
@@ -113,8 +117,8 @@ class Mojito {
     private var mojitoConfig: IMojitoConfig? = null
     private var configBean: ConfigBean? = null
     private var progressLoader: InstanceLoader<IProgress>? = null
-    private var imageCoverLoader: InstanceLoader<ImageCoverLoader>? = null
-
+    private var fragmentCoverLoader: InstanceLoader<FragmentCoverLoader>? = null
+    private var autoLoadTarget: Boolean = true
 
     fun urls(imageUrl: String): Mojito {
         configBean?.originImageUrls = listOf(imageUrl)
@@ -165,14 +169,18 @@ class Mojito {
         var firstPos = 0
         var lastPos = 0
         val totalCount = layoutManager!!.itemCount - (configBean?.headerSize ?: 0)
-        if (layoutManager is GridLayoutManager) {
-            firstPos = layoutManager.findFirstVisibleItemPosition()
-            lastPos = layoutManager.findLastVisibleItemPosition()
-        } else if (layoutManager is LinearLayoutManager) {
-            firstPos = layoutManager.findFirstVisibleItemPosition()
-            lastPos = layoutManager.findLastVisibleItemPosition()
-        } else if (layoutManager is StaggeredGridLayoutManager) {
+        when (layoutManager) {
+            is GridLayoutManager -> {
+                firstPos = layoutManager.findFirstVisibleItemPosition()
+                lastPos = layoutManager.findLastVisibleItemPosition()
+            }
+            is LinearLayoutManager -> {
+                firstPos = layoutManager.findFirstVisibleItemPosition()
+                lastPos = layoutManager.findLastVisibleItemPosition()
+            }
+            is StaggeredGridLayoutManager -> {
 
+            }
         }
         fillPlaceHolder(originImageList, totalCount, firstPos, lastPos)
         val views = arrayOfNulls<View>(originImageList.size)
@@ -218,7 +226,6 @@ class Mojito {
         return this
     }
 
-
     fun start(): Mojito {
         if (!isInit) {
             isInit = true
@@ -243,19 +250,24 @@ class Mojito {
         return this
     }
 
-    fun setImageCoverLoader(loader: InstanceLoader<ImageCoverLoader>): Mojito {
-        this.imageCoverLoader = loader
+    fun setFragmentCoverLoader(loader: InstanceLoader<FragmentCoverLoader>): Mojito {
+        this.fragmentCoverLoader = loader
         return this
     }
 
 
-    fun setCoverLayoutLoader(on: CoverLayoutLoader): Mojito {
-        coverLayoutLoader = on
+    fun setActivityCoverLoader(on: ActivityCoverLoader): Mojito {
+        activityCoverLoader = on
         return this
     }
 
     fun setIndicator(on: IIndicator?): Mojito {
         iIndicator = on
+        return this
+    }
+
+    fun autoLoadTarget(autoLoadTarget: Boolean): Mojito {
+        this.autoLoadTarget = autoLoadTarget
         return this
     }
 
@@ -275,7 +287,11 @@ class Mojito {
         return instance.progressLoader
     }
 
-    fun imageCoverLoader(): InstanceLoader<ImageCoverLoader>? {
-        return instance.imageCoverLoader
+    fun fragmentCoverLoader(): InstanceLoader<FragmentCoverLoader>? {
+        return instance.fragmentCoverLoader
+    }
+
+    fun autoLoadTarget(): Boolean {
+        return instance.autoLoadTarget
     }
 }

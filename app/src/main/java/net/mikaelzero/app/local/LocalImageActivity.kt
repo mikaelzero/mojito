@@ -3,25 +3,16 @@ package net.mikaelzero.app.local
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_local.*
-import net.mikaelzero.app.NumCoverLoader
+import net.mikaelzero.app.NumActivityCoverLoader
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
-import net.mikaelzero.app.TargetImageCover
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.impl.DefaultPercentProgress
-import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback
-import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.loader.ImageCoverLoader
-import net.mikaelzero.mojito.loader.InstanceLoader
-import java.util.*
 
 /**
  * @Author:         MikaelZero
@@ -29,6 +20,9 @@ import java.util.*
  * @Description:
  */
 class LocalImageActivity : AppCompatActivity() {
+    companion object {
+        var imageLoader: Int = 0
+    }
 
     private var images: List<String>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +43,7 @@ class LocalImageActivity : AppCompatActivity() {
     private fun loadAdapter() {
         images = SourceUtil.getLatestPhotoPaths(this, 666)
         if (images != null && !images.isNullOrEmpty()) {
-            val localAdapter = LocalAdapter()
+            val localAdapter = if (imageLoader == 0) LocalGlideAdapter() else LocalFrescoAdapter()
             localAdapter.setList(images)
             recyclerView.adapter = localAdapter
             recyclerView.layoutManager = GridLayoutManager(this, 3)
@@ -58,7 +52,7 @@ class LocalImageActivity : AppCompatActivity() {
                     .urls(images)
                     .position(position)
                     .views(recyclerView, R.id.srcImageView)
-                    .setCoverLayoutLoader(NumCoverLoader())
+                    .setActivityCoverLoader(NumActivityCoverLoader())
                     .start()
             }
         }

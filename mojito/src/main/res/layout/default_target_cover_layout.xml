@@ -12,8 +12,13 @@
         android:layout_height="wrap_content"
         android:layout_gravity="top|center_horizontal"
         android:layout_margin="16dp"
+        android:background="@drawable/target_button_shape"
+        android:paddingLeft="8dp"
+        android:paddingTop="2dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="2dp"
+        android:text="查看原图"
         android:textColor="#fff"
-        android:textSize="20sp"
-        android:text="查看原图" />
+        android:textSize="16sp" />
 
 </FrameLayout>

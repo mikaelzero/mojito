@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
@@ -19,7 +20,7 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
     private val mRequestManager: RequestManager
     private val mFlyingRequestTargets: MutableMap<Int, ImageDownloadTarget> = HashMap(3)
 
-    override fun loadImage(requestId: Int, uri: Uri, callback: ImageLoader.Callback) {
+    override fun loadImage(requestId: Int, uri: Uri, onlyRetrieveFromCache: Boolean, callback: ImageLoader.Callback) {
         val cacheMissed = BooleanArray(1)
         val target: ImageDownloadTarget = object : ImageDownloadTarget(uri.toString()) {
             override fun onResourceReady(resource: File, transition: Transition<in File>?) {
@@ -52,11 +53,11 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
         }
 //        cancel(requestId)
         rememberTarget(requestId, target)
-        downloadImageInto(uri, target)
+        downloadImageInto(uri, target, onlyRetrieveFromCache)
     }
 
     override fun prefetch(uri: Uri) {
-        downloadImageInto(uri, PrefetchTarget())
+        downloadImageInto(uri, PrefetchTarget(), false)
     }
 
     @Synchronized
@@ -72,9 +73,10 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
         }
     }
 
-    private fun downloadImageInto(uri: Uri?, target: Target<File>) {
+    private fun downloadImageInto(uri: Uri?, target: Target<File>, onlyRetrieveFromCache: Boolean) {
         mRequestManager
             .downloadOnly()
+            .onlyRetrieveFromCache(onlyRetrieveFromCache)
             .load(uri)
             .into(target)
     }

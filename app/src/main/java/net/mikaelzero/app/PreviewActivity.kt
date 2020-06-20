@@ -1,11 +1,8 @@
 package net.mikaelzero.app
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -15,23 +12,37 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_display.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
+import net.mikaelzero.mojito.impl.DefaultTargetFragmentCover
 import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback
 import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.loader.ImageCoverLoader
+import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
+import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
+import net.mikaelzero.mojito.loader.glide.GlideImageLoader
+import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 import org.salient.artplayer.MediaPlayerManager
 
-class DisplayActivity : AppCompatActivity() {
+class PreviewActivity : AppCompatActivity() {
     var context: Context? = null
-    var activityPosition = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
         setContentView(R.layout.activity_display)
-        activityPosition = intent.getIntExtra("position", 0)
+        if (imageLoader == 0) {
+            Mojito.initialize(
+                GlideImageLoader.with(this),
+                SketchImageLoadFactory()
+            )
+        } else {
+            Mojito.initialize(
+                FrescoImageLoader.with(this),
+                SketchImageLoadFactory()
+            )
+        }
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-        val adapter = NormalAdapter()
+        val adapter = if (imageLoader == 0) GlideAdapter() else FrescoAdapter()
         adapter.setList(SourceUtil.getNormalImages())
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->
@@ -39,11 +50,7 @@ class DisplayActivity : AppCompatActivity() {
                 .urls(SourceUtil.getNormalImages())
                 .position(position)
                 .views(recyclerView, R.id.srcImageView)
-                .setImageCoverLoader(object : InstanceLoader<ImageCoverLoader> {
-                    override fun providerInstance(): ImageCoverLoader {
-                        return TargetImageCover("https://i0.hdslb.com/bfs/archive/cb79d0f3b728d4ee3399e44574c85dcfc5bb4225.jpg@412w_232h_1c_100q.jpg")
-                    }
-                })
+                .autoLoadTarget(false)
                 .setProgressLoader(object : InstanceLoader<IProgress> {
                     override fun providerInstance(): IProgress {
                         return DefaultPercentProgress()
@@ -51,22 +58,35 @@ class DisplayActivity : AppCompatActivity() {
                 })
                 .setOnMojitoListener(object : SimpleMojitoViewCallback() {
                     override fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int) {
-                        Toast.makeText(context, "长按长按长按", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "long click", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onClick(view: View, x: Float, y: Float, position: Int) {
+                        Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()
                     }
                 })
-//                .setCoverLayoutLoader(NumCoverLoader())
                 .setIndicator(NumIndicator())
                 .start()
         }
         adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header_layout, null))
         adapter.addFooterView(LayoutInflater.from(this).inflate(R.layout.header_layout, null))
+
         Glide.with(this).load(SourceUtil.getSingleImage()[0]).into(singleIv)
+        Glide.with(this).load(SourceUtil.getLongHorImage()[0]).into(longHorIv)
+
         singleIv.setOnClickListener {
             Mojito.with(context)
                 .urls(SourceUtil.getSingleImage())
                 .views(singleIv)
                 .start()
         }
+        longHorIv.setOnClickListener {
+            Mojito.with(context)
+                .urls(SourceUtil.getLongHorImage())
+                .views(longHorIv)
+                .start()
+        }
+
         noViewBtn.setOnClickListener {
             Mojito.with(context)
                 .urls(SourceUtil.getSingleImage())
@@ -76,15 +96,6 @@ class DisplayActivity : AppCompatActivity() {
             Mojito.with(context)
                 .urls(SourceUtil.getNormalImages())
                 .start()
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return if (item.itemId == android.R.id.home) {
-            onBackPressed()
-            true
-        } else {
-            super.onOptionsItemSelected(item)
         }
     }
 
@@ -99,10 +110,6 @@ class DisplayActivity : AppCompatActivity() {
     }
 
     companion object {
-        fun newIntent(activity: Activity, bundle: Bundle?) {
-            val intent = Intent(activity, DisplayActivity::class.java)
-            intent.putExtras(bundle!!)
-            activity.startActivity(intent)
-        }
+        var imageLoader: Int = 0
     }
 }

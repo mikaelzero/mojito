@@ -29,9 +29,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.mikaelzero.app.DisplayActivity"
+            android:name="net.mikaelzero.app.PreviewActivity"
             android:configChanges="orientation" />
         <activity android:name=".local.LocalImageActivity" />
+        <activity android:name=".TargetActivity" />
     </application>
 
 </manifest>

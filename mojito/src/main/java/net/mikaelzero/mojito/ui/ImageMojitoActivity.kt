@@ -33,9 +33,9 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         setContentView(R.layout.activity_image)
 
         userCustomLayout.removeAllViews()
-        Mojito.coverLayoutLoader?.let {
-            Mojito.coverLayoutLoader?.attach(this)
-            userCustomLayout.addView(Mojito.coverLayoutLoader!!.providerView())
+        Mojito.activityCoverLoader?.let {
+            Mojito.activityCoverLoader?.attach(this)
+            userCustomLayout.addView(Mojito.activityCoverLoader!!.providerView())
         }
 
         configBean = intent.getParcelableExtra("config")!!
@@ -70,7 +70,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 ViewPagerBean(
                     configBean.originImageUrls!![i],
                     targetImageUrl, i,
-                    contentViewOriginModels == null || configBean.position != i,
+                    currentPosition != i,
                     model
                 )
             )
@@ -97,7 +97,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         }
         viewPager.adapter = imageViewPagerAdapter
         viewPager.setCurrentItem(currentPosition, false)
-        Mojito.coverLayoutLoader?.pageChange(
+        Mojito.activityCoverLoader?.pageChange(
             imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
             viewPagerBeans.size, currentPosition
         )
@@ -111,7 +111,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
             override fun onPageSelected(position: Int) {
-                Mojito.coverLayoutLoader?.pageChange(
+                Mojito.activityCoverLoader?.pageChange(
                     imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
                     viewPagerBeans.size, position
                 )
@@ -142,9 +142,9 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     }
 
     companion object {
-        var showImmediatelyFlag = true
+        var hasShowedAnim = false
         fun startImageActivity(activity: Activity?, configBean: ConfigBean?) {
-            showImmediatelyFlag = true
+            hasShowedAnim = false
             val intent = Intent(activity, ImageMojitoActivity::class.java)
             intent.putExtra("config", configBean)
             activity?.startActivity(intent)

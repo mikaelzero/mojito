@@ -19,17 +19,23 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
+        <ImageView
+            android:id="@+id/longHorIv"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop" />
+
         <Button
             android:id="@+id/noViewBtn"
-            android:text="No View"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="No View" />
 
         <Button
             android:id="@+id/noViewViewPagerBtn"
-            android:text="No View ViewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="No View ViewPager" />
 
     </LinearLayout>
 

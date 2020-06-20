@@ -5,9 +5,9 @@ import android.view.View
 /**
  * @Author:         MikaelZero
  * @CreateDate:     2020/6/17 11:19 AM
- * @Description:
+ * @Description:    仅出现在activity
  */
-interface CoverLayoutLoader {
+interface ActivityCoverLoader {
     fun attach(context: IMojitoActivity)
     fun providerView(): View
 
@@ -20,5 +20,5 @@ interface CoverLayoutLoader {
      * 手指松开后的状态
      */
     fun fingerRelease(isToMax: Boolean, isToMin: Boolean)
-    fun pageChange(iMojitoFragment: IMojitoFragment,totalSize:Int, position: Int)
+    fun pageChange(iMojitoFragment: IMojitoFragment, totalSize: Int, position: Int)
 }

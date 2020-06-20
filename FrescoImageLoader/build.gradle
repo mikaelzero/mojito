@@ -34,8 +34,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.3.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-    api "com.github.bumptech.glide:okhttp3-integration:4.11.0"
+    implementation "com.facebook.fresco:fresco:2.1.0"
+    implementation "androidx.annotation:annotation:1.1.0"
     implementation project(':mojito')
 }
 
@@ -43,8 +43,9 @@ apply plugin: 'com.novoda.bintray-release'
 publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
-    artifactId = "GlideImageLoader"
+    artifactId = "FrescoImageLoader"
     publishVersion = "0.0.7"
     desc = "mojito"
     website = "https://github.com/MikaelZero/mojito"
 }
+

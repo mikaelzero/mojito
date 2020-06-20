@@ -49,9 +49,11 @@ dependencies {
     implementation 'com.yanzhenjie:sofia:1.0.5'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
+    implementation "com.facebook.fresco:fresco:2.1.0"
 
     implementation project(':mojito')
     implementation project(':GlideImageLoader')
+    implementation project(':FrescoImageLoader')
     implementation project(':SketchImageViewLoader')
 
 //    implementation 'net.mikaelzero.mojito:core:0.0.1'
