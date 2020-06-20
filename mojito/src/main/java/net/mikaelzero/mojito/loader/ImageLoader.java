@@ -16,6 +16,8 @@ public interface ImageLoader {
 
     void cancelAll();
 
+    void cleanCache();
+
     @UiThread
     interface Callback {
         void onCacheHit(int imageType, File image);

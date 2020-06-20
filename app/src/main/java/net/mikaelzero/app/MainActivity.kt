@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import net.mikaelzero.app.local.LocalImageActivity
+import net.mikaelzero.mojito.Mojito
 
 class MainActivity : AppCompatActivity() {
     var texts = listOf(
@@ -13,7 +14,8 @@ class MainActivity : AppCompatActivity() {
         "load with fresco",
         "load local image with glide",
         "load local image with fresco",
-        "load target image by button"
+        "load target image by button",
+        "clean cache"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +48,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 4 -> {
                     startActivity(Intent(this@MainActivity, TargetActivity::class.java))
+                }
+                5->{
+                    Mojito.cleanCache()
                 }
             }
         }

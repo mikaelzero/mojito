@@ -77,6 +77,10 @@ class Mojito {
             return instance.mojitoConfig!!
         }
 
+        @JvmStatic
+        fun cleanCache() {
+            instance.mImageLoader?.cleanCache()
+        }
 
         @JvmStatic
         fun prefetch(vararg uris: Uri?) {

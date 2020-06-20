@@ -63,8 +63,11 @@ public final class FrescoImageLoader implements ImageLoader {
     @Override
     public void loadImage(final int requestId, Uri uri, boolean onlyRetrieveFromCache, final Callback callback) {
         ImageRequest request = ImageRequest.fromUri(uri);
-
         final File localCache = getCacheFile(request);
+        if (onlyRetrieveFromCache && !localCache.exists()) {
+            callback.onFail(new Exception(""));
+            return;
+        }
         if (localCache.exists()) {
             mExecutorSupplier.forLocalStorageRead().execute(new Runnable() {
                 @Override
@@ -131,6 +134,14 @@ public final class FrescoImageLoader implements ImageLoader {
         for (File tempFile : tempFiles) {
             deleteTempFile(tempFile);
         }
+    }
+
+    @Override
+    public void cleanCache() {
+        ImagePipeline imagePipeline = Fresco.getImagePipeline();
+        imagePipeline.clearMemoryCaches();
+        imagePipeline.clearDiskCaches();
+        imagePipeline.clearCaches();
     }
 
     private synchronized void rememberSource(int requestId, DataSource source) {

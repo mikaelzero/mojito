@@ -12,6 +12,7 @@ import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
+import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
 import net.mikaelzero.mojito.loader.glide.GlideImageLoader
 import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 

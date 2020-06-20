@@ -10,9 +10,14 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_local.*
 import net.mikaelzero.app.NumActivityCoverLoader
+import net.mikaelzero.app.PreviewActivity
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
 import net.mikaelzero.mojito.Mojito
+import net.mikaelzero.mojito.impl.NumIndicator
+import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
+import net.mikaelzero.mojito.loader.glide.GlideImageLoader
+import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 /**
  * @Author:         MikaelZero
@@ -28,7 +33,17 @@ class LocalImageActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_local)
-
+        if (imageLoader == 0) {
+            Mojito.initialize(
+                GlideImageLoader.with(this),
+                SketchImageLoadFactory()
+            )
+        } else {
+            Mojito.initialize(
+                FrescoImageLoader.with(this),
+                SketchImageLoadFactory()
+            )
+        }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -52,7 +67,7 @@ class LocalImageActivity : AppCompatActivity() {
                     .urls(images)
                     .position(position)
                     .views(recyclerView, R.id.srcImageView)
-                    .setActivityCoverLoader(NumActivityCoverLoader())
+                    .setIndicator(NumIndicator())
                     .start()
             }
         }

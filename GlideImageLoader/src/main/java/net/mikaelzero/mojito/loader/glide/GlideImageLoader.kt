@@ -16,7 +16,7 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.util.*
 
-open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpClient?) : ImageLoader {
+open class GlideImageLoader constructor(val context: Context, okHttpClient: OkHttpClient?) : ImageLoader {
     private val mRequestManager: RequestManager
     private val mFlyingRequestTargets: MutableMap<Int, ImageDownloadTarget> = HashMap(3)
 
@@ -73,6 +73,11 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
         }
     }
 
+    override fun cleanCache() {
+        Glide.get(context).clearMemory()
+        Thread(Runnable { Glide.get(context).clearDiskCache() }).start()
+    }
+
     private fun downloadImageInto(uri: Uri?, target: Target<File>, onlyRetrieveFromCache: Boolean) {
         mRequestManager
             .downloadOnly()
@@ -95,13 +100,13 @@ open class GlideImageLoader constructor(context: Context?, okHttpClient: OkHttpC
 
     companion object {
         @JvmOverloads
-        fun with(context: Context?, okHttpClient: OkHttpClient? = null): GlideImageLoader {
+        fun with(context: Context, okHttpClient: OkHttpClient? = null): GlideImageLoader {
             return GlideImageLoader(context, okHttpClient)
         }
     }
 
     init {
-        GlideProgressSupport.init(Glide.get(context!!), okHttpClient)
+        GlideProgressSupport.init(Glide.get(context), okHttpClient)
         mRequestManager = Glide.with(context)
     }
 }
