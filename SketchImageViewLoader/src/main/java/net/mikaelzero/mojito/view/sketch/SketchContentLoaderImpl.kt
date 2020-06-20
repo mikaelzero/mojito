@@ -29,14 +29,14 @@ import net.mikaelzero.mojito.view.sketch.core.decode.ImageSizeCalculator
  * @CreateDate: 2020/6/10 10:01 AM
  * @Description:
  */
-class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoader, LifecycleObserver {
+class SketchContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoader, LifecycleObserver {
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
     private lateinit var sketchImageView: SketchImageView
-    lateinit var frameLayout: FrameLayout
+    private lateinit var frameLayout: FrameLayout
     private var isLongHeightImage = false
     private var isLongWidthImage = false
 
@@ -121,7 +121,6 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
     }
 
     override fun dragging(width: Int, height: Int, ratio: Float) {
-
     }
 
     override fun beginBackToMin(isResetSize: Boolean) {
@@ -132,6 +131,9 @@ class SketchImageContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoad
                 sketchImageView.scaleType = ImageView.ScaleType.CENTER_CROP
             }
         }
+    }
+
+    override fun backToNormal() {
     }
 
     override fun loadAnimFinish() {

@@ -6,7 +6,6 @@ import android.content.ContextWrapper
 import android.net.Uri
 import android.view.View
 import androidx.annotation.IdRes
-import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +15,6 @@ import net.mikaelzero.mojito.bean.ConfigBean
 import net.mikaelzero.mojito.bean.ContentViewOriginModel
 import net.mikaelzero.mojito.impl.DefaultMojitoConfig
 import net.mikaelzero.mojito.interfaces.*
-import net.mikaelzero.mojito.loader.IContentViewImplFactory
 import net.mikaelzero.mojito.loader.ImageCoverLoader
 import net.mikaelzero.mojito.loader.ImageLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
@@ -43,23 +41,19 @@ class Mojito {
         @JvmStatic
         fun initialize(
             imageLoader: ImageLoader,
-            contentLoader: IContentViewImplFactory,
             imageViewLoadFactory: ImageViewLoadFactory
         ) {
             instance.mImageLoader = imageLoader
-            instance.contentLoader = contentLoader
             instance.imageViewLoadFactory = imageViewLoadFactory
         }
 
         @JvmStatic
         fun initialize(
             imageLoader: ImageLoader,
-            contentLoader: IContentViewImplFactory,
             imageViewLoadFactory: ImageViewLoadFactory,
             mojitoConfig: IMojitoConfig
         ) {
             instance.mImageLoader = imageLoader
-            instance.contentLoader = contentLoader
             instance.imageViewLoadFactory = imageViewLoadFactory
             instance.mojitoConfig = mojitoConfig
         }
@@ -67,11 +61,6 @@ class Mojito {
         @JvmStatic
         fun imageLoader(): ImageLoader? {
             return instance.mImageLoader
-        }
-
-        @JvmStatic
-        fun contentLoader(): IContentViewImplFactory? {
-            return instance.contentLoader
         }
 
         @JvmStatic
@@ -120,7 +109,6 @@ class Mojito {
 
     private var mContext: Context? = null
     private var mImageLoader: ImageLoader? = null
-    private var contentLoader: IContentViewImplFactory? = null
     private var imageViewLoadFactory: ImageViewLoadFactory? = null
     private var mojitoConfig: IMojitoConfig? = null
     private var configBean: ConfigBean? = null

@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_display.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
+import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback
 import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.loader.ImageCoverLoader
@@ -53,7 +54,8 @@ class DisplayActivity : AppCompatActivity() {
                         Toast.makeText(context, "长按长按长按", Toast.LENGTH_SHORT).show()
                     }
                 })
-                .setCoverLayoutLoader(NumCoverLoader())
+//                .setCoverLayoutLoader(NumCoverLoader())
+                .setIndicator(NumIndicator())
                 .start()
         }
         adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header_layout, null))
@@ -62,7 +64,17 @@ class DisplayActivity : AppCompatActivity() {
         singleIv.setOnClickListener {
             Mojito.with(context)
                 .urls(SourceUtil.getSingleImage())
-//                .views(singleIv)
+                .views(singleIv)
+                .start()
+        }
+        noViewBtn.setOnClickListener {
+            Mojito.with(context)
+                .urls(SourceUtil.getSingleImage())
+                .start()
+        }
+        noViewViewPagerBtn.setOnClickListener {
+            Mojito.with(context)
+                .urls(SourceUtil.getNormalImages())
                 .start()
         }
     }

@@ -54,12 +54,24 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                     targetImageUrl = configBean.targetImageUrls!![i]
                 }
             }
+
+            val model = when {
+                contentViewOriginModels == null -> {
+                    null
+                }
+                i >= contentViewOriginModels!!.size -> {
+                    null
+                }
+                else -> {
+                    contentViewOriginModels?.get(i)
+                }
+            }
             viewPagerBeans.add(
                 ViewPagerBean(
                     configBean.originImageUrls!![i],
                     targetImageUrl, i,
                     contentViewOriginModels == null || configBean.position != i,
-                    contentViewOriginModels?.get(i)
+                    model
                 )
             )
         }

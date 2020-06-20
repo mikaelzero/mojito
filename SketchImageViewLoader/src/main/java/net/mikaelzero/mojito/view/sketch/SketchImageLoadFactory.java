@@ -3,7 +3,10 @@ package net.mikaelzero.mojito.view.sketch;
 import android.net.Uri;
 import android.view.View;
 
+import androidx.lifecycle.LifecycleOwner;
+
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory;
+import net.mikaelzero.mojito.loader.ContentLoader;
 import net.mikaelzero.mojito.view.sketch.core.SketchImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 
 
-public class SketchImageViewLoadFactory implements ImageViewLoadFactory {
+public class SketchImageLoadFactory implements ImageViewLoadFactory {
+
+
 
     @Override
     public void loadAnimatedContent(@NotNull View view, int imageType, @NotNull File imageFile) {
@@ -23,5 +28,11 @@ public class SketchImageViewLoadFactory implements ImageViewLoadFactory {
         if (view instanceof SketchImageView) {
             ((SketchImageView) view).displayImage(uri.getPath());
         }
+    }
+
+    @NotNull
+    @Override
+    public ContentLoader newContentLoader(@NotNull LifecycleOwner lifecycleOwner) {
+        return new SketchContentLoaderImpl(lifecycleOwner);
     }
 }

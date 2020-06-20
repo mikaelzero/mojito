@@ -17,6 +17,7 @@ interface ContentLoader {
     fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean
     fun dragging(width: Int, height: Int, ratio: Float)
     fun beginBackToMin(isResetSize: Boolean)
+    fun backToNormal()
     fun loadAnimFinish()
     fun needReBuildSize(): Boolean
     fun useTransitionApi():Boolean

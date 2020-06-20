@@ -1,10 +1,7 @@
 package net.mikaelzero.mojito.ui
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.graphics.Matrix
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -15,7 +12,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_image.*
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.Mojito.Companion.contentLoader
 import net.mikaelzero.mojito.Mojito.Companion.imageLoader
 import net.mikaelzero.mojito.Mojito.Companion.imageViewFactory
 import net.mikaelzero.mojito.MojitoView
@@ -29,7 +25,6 @@ import net.mikaelzero.mojito.loader.*
 import net.mikaelzero.mojito.tools.BitmapUtil
 import net.mikaelzero.mojito.tools.ScreenUtils
 import java.io.File
-import java.io.IOException
 
 
 class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
@@ -76,7 +71,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         iProgress = Mojito.instance.progressLoader()?.providerInstance()
         iProgress?.attach(position, loadingLayout)
 
-        contentLoader = contentLoader()?.newInstance(viewLifecycleOwner)
+        contentLoader = mViewLoadFactory?.newContentLoader(viewLifecycleOwner)
         mojitoView?.setContentLoader(contentLoader)
         showView = contentLoader?.providerRealView()
 
@@ -90,7 +85,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         })
         contentLoader?.onLongTapCallback(object : OnLongTapCallback {
             override fun onLongTap(view: View, x: Float, y: Float) {
-                Mojito.instance.mojitoListener()?.onLongClick(activity, view, x, y, position)
+                if (!mojitoView.isDrag) {
+                    Mojito.instance.mojitoListener()?.onLongClick(activity, view, x, y, position)
+                }
             }
         })
         val uri = if (originUrl != null && File(originUrl!!).isFile) {
@@ -120,7 +117,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             h = ScreenUtils.getScreenHeight(context)
         }
         if (contentViewOriginModel == null) {
-            mojitoView?.showWithoutView(w,h)
+            mojitoView?.showWithoutView(w, h, showImmediately && !ImageMojitoActivity.showImmediatelyFlag)
         } else {
             mojitoView?.putData(
                 contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),

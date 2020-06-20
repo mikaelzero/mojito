@@ -44,7 +44,7 @@ publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
     artifactId = "GlideImageViewFactory"
-    publishVersion = "0.0.4"
+    publishVersion = "0.0.7"
     desc = "mojito"
     website = "https://github.com/MikaelZero/mojito"
 }

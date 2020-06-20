@@ -13,20 +13,6 @@ import java.util.List;
 
 public class SourceUtil {
 
-    public static List<String> getThumbSourceGroup() {
-        List<String> thumbnailImageList = new ArrayList<>();
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486263782969.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1485055822651.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194909983.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486194996586.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486195059137.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173497249.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173526402.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486173639603.png@233w_160h_20q");
-        thumbnailImageList.add("http://static.fdc.com.cn/avatar/sns/1486172566083.png@233w_160h_20q");
-        return thumbnailImageList;
-    }
-
 
     public static List<String> getNormalImages() {
         List<String> list = new ArrayList<>();
@@ -39,8 +25,8 @@ public class SourceUtil {
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg");
 //            "https://cdn.nlark.com/yuque/0/2020/gif/252337/1592042334373-assets/web-upload/d44ddb2e-f51f-4495-aa58-178de673d066.gif"
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591856982603-assets/web-upload/c9072e47-5ce0-4a5f-ab5c-212d1bca3bc9.jpeg");
-        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg");
-//            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/84061801.png",
+//        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg");
+        list.add("https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/84061801.png");
 //            "https://aiwo-img.oss-cn-hangzhou.aliyuncs.com/53821823.png",
 
         return list;
@@ -59,8 +45,6 @@ public class SourceUtil {
         String key_DATA = MediaStore.Images.Media.DATA;
 
         ContentResolver mContentResolver = context.getContentResolver();
-
-        // 只查询jpg和png的图片,按最新修改排序
         Cursor cursor = mContentResolver.query(mImageUri, new String[]{key_DATA},
                 key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=? or " + key_MIME_TYPE + "=?",
                 new String[]{"image/jpeg", "image/jpg", "image/gif"},
@@ -68,8 +52,6 @@ public class SourceUtil {
 
         List<String> latestImagePaths = null;
         if (cursor != null) {
-            //从最新的图片开始读取.
-            //当cursor中没有数据时，cursor.moveToLast()将返回false
             if (cursor.moveToLast()) {
                 latestImagePaths = new ArrayList<String>();
                 do {

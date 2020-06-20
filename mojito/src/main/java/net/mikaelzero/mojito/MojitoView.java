@@ -110,21 +110,28 @@ public class MojitoView extends FrameLayout {
         imageWrapper = new MarginViewWrapper(contentLayout);
     }
 
-    public void showWithoutView(int realWidth, int realHeight) {
+    public void showWithoutView(int realWidth, int realHeight, boolean showImmediately) {
         this.realWidth = realWidth;
         this.realHeight = realHeight;
         mOriginLeft = 0;
         mOriginTop = 0;
         mOriginWidth = 0;
         mOriginHeight = 0;
-        mAlpha = 0f;
-        backgroundView.setAlpha(mAlpha);
+
         setVisibility(View.VISIBLE);
         setOriginParams();
         min2NormalAndDrag2Min(targetImageTop, targetEndLeft, targetImageWidth, targetImageHeight);
-        contentLayout.setAlpha(0f);
-        contentLayout.animate().alpha(1f).setDuration(animationDuration).start();
-        backgroundView.animate().alpha(1f).setDuration(animationDuration).start();
+
+        if (showImmediately) {
+            mAlpha = 1f;
+            backgroundView.setAlpha(mAlpha);
+        } else {
+            mAlpha = 0f;
+            backgroundView.setAlpha(mAlpha);
+            contentLayout.setAlpha(0f);
+            contentLayout.animate().alpha(1f).setDuration(animationDuration).start();
+            backgroundView.animate().alpha(1f).setDuration(animationDuration).start();
+        }
         setShowEndParams();
     }
 
@@ -258,6 +265,7 @@ public class MojitoView extends FrameLayout {
     }
 
     private void backToNormal() {
+        contentLoader.backToNormal();
         isAnimating = true;
         releaseLeft = imageWrapper.getMarginLeft() - (screenWidth - targetImageWidth) / 2;
         releaseY = imageWrapper.getMarginTop();
@@ -615,5 +623,7 @@ public class MojitoView extends FrameLayout {
         this.onMojitoViewCallback = onMojitoViewCallback;
     }
 
-
+    public boolean isDrag() {
+        return isDrag;
+    }
 }

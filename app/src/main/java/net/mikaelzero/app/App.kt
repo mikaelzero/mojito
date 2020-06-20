@@ -5,8 +5,7 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchContentViewImplFactory
-import net.mikaelzero.mojito.view.sketch.SketchImageViewLoadFactory
+import net.mikaelzero.mojito.view.sketch.*
 
 
 class App : Application() {
@@ -18,8 +17,7 @@ class App : Application() {
         super.onCreate()
         Mojito.initialize(
             GlideImageLoader.with(this),
-            SketchContentViewImplFactory(),
-            SketchImageViewLoadFactory()
+            SketchImageLoadFactory()
         )
     }
 }

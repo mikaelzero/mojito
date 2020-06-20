@@ -19,6 +19,18 @@
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
+        <Button
+            android:id="@+id/noViewBtn"
+            android:text="No View"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/noViewViewPagerBtn"
+            android:text="No View ViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

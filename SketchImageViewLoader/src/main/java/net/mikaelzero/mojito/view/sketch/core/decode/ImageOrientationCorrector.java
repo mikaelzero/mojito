@@ -27,10 +27,10 @@ import android.graphics.RectF;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.cache.BitmapPool;
 import net.mikaelzero.mojito.view.sketch.core.datasource.DataSource;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 import net.mikaelzero.mojito.view.sketch.core.util.SketchUtils;
 
 import java.io.IOException;
@@ -192,9 +192,9 @@ public class ImageOrientationCorrector {
      * @return exif 保存的原始方向
      */
     public int readExifOrientation(@Nullable String mimeType, @NonNull DataSource dataSource) {
-        if (!support(mimeType)) {
-            return ExifInterface.ORIENTATION_UNDEFINED;
-        }
+//        if (!support(mimeType)) {
+//            return ExifInterface.ORIENTATION_UNDEFINED;
+//        }
 
         InputStream inputStream = null;
         try {

@@ -47,7 +47,7 @@ class LocalImageActivity : AppCompatActivity() {
     }
 
     private fun loadAdapter() {
-        images = SourceUtil.getLatestPhotoPaths(this, 99)
+        images = SourceUtil.getLatestPhotoPaths(this, 666)
         if (images != null && !images.isNullOrEmpty()) {
             val localAdapter = LocalAdapter()
             localAdapter.setList(images)
