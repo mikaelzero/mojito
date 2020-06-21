@@ -14,11 +14,9 @@ android {
         multiDexEnabled true
     }
     buildTypes {
-        debug{
-            release {
-                minifyEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            }
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         release {
             minifyEnabled true
@@ -51,12 +49,13 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.4'
     implementation "com.facebook.fresco:fresco:2.1.0"
 
-    implementation project(':mojito')
-    implementation project(':GlideImageLoader')
-    implementation project(':FrescoImageLoader')
-    implementation project(':SketchImageViewLoader')
+//    implementation project(':mojito')
+//    implementation project(':GlideImageLoader')
+//    implementation project(':FrescoImageLoader')
+//    implementation project(':SketchImageViewLoader')
 
-//    implementation 'net.mikaelzero.mojito:core:0.0.1'
-//    implementation 'net.mikaelzero.mojito:GlideImageViewFactory:0.0.1'
-//    implementation 'net.mikaelzero.mojito:SketchImageViewLoader:0.0.1'
+    implementation 'net.mikaelzero.mojito:core:1.0.0'
+    implementation 'net.mikaelzero.mojito:FrescoImageLoader:1.0.0'
+    implementation 'net.mikaelzero.mojito:GlideImageLoader:1.0.0'
+    implementation 'net.mikaelzero.mojito:SketchImageFactory:1.0.0'
 }

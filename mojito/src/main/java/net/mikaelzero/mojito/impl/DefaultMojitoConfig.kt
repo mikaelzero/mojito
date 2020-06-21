@@ -8,6 +8,6 @@ import net.mikaelzero.mojito.interfaces.IMojitoConfig
  * @Description:
  */
 class DefaultMojitoConfig : IMojitoConfig {
-    override fun duration(): Long = 200
+    override fun duration(): Long = 250
     override fun maxTransYRatio(): Float = 0.16f
 }

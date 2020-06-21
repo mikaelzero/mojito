@@ -3,6 +3,7 @@ package net.mikaelzero.app
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import net.mikaelzero.mojito.interfaces.ActivityCoverLoader
 import net.mikaelzero.mojito.interfaces.IMojitoActivity
@@ -13,12 +14,16 @@ import net.mikaelzero.mojito.interfaces.IMojitoFragment
  * @CreateDate:     2020/6/17 11:29 AM
  * @Description:
  */
-class NumActivityCoverLoader : ActivityCoverLoader {
+class BilibiliActivityCoverLoader : ActivityCoverLoader {
     lateinit var view: View
     var numTv: TextView? = null
     override fun attach(context: IMojitoActivity) {
-        view = LayoutInflater.from(context.getContext()).inflate(R.layout.num_cover_layout, null)
+        view = LayoutInflater.from(context.getContext()).inflate(R.layout.bilibili_cover_layout, null)
         numTv = view.findViewById(R.id.numTv)
+        val closeIv = view.findViewById<ImageView>(R.id.closeIv)
+        closeIv.setOnClickListener {
+            context.getCurrentFragment().backToMin()
+        }
     }
 
     override fun providerView(): View {

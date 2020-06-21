@@ -15,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         "load local image with glide",
         "load local image with fresco",
         "load target image by button",
+        "Activity Cover",
         "clean cache"
     )
 
@@ -49,7 +50,10 @@ class MainActivity : AppCompatActivity() {
                 4 -> {
                     startActivity(Intent(this@MainActivity, TargetActivity::class.java))
                 }
-                5->{
+                5 -> {
+                    startActivity(Intent(this@MainActivity, ActivityCoverActivity::class.java))
+                }
+                6 -> {
                     Mojito.cleanCache()
                 }
             }

@@ -33,6 +33,7 @@
             android:configChanges="orientation" />
         <activity android:name=".local.LocalImageActivity" />
         <activity android:name=".TargetActivity" />
+        <activity android:name=".ActivityCoverActivity" />
     </application>
 
 </manifest>

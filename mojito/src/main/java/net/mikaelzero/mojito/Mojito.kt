@@ -20,7 +20,6 @@ import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.ImageLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 
-//TODO 旋转屏幕没有做处理  使用场景不多 暂时不考虑
 class Mojito {
 
     private object SingletonHolder {

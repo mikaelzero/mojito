@@ -9,8 +9,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import kotlinx.android.synthetic.main.activity_local.*
-import net.mikaelzero.app.NumActivityCoverLoader
-import net.mikaelzero.app.PreviewActivity
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
 import net.mikaelzero.mojito.Mojito

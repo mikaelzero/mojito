@@ -20,22 +20,22 @@ import kotlin.math.roundToInt
  * @CreateDate:     2020/6/18 10:59 AM
  * @Description:
  */
-class DefaultTargetFragmentCover : FragmentCoverLoader {
+class DefaultTargetFragmentCover(val topMargin: Float = 0f) : FragmentCoverLoader {
     var view: View? = null
-    private var originBottomMargin = 10
-    private var currentBottomMargin = originBottomMargin
+    private var originTopMargin = 0
+    private var currentTopMargin = originTopMargin
 
     override fun attach(iMojitoFragment: IMojitoFragment, autoLoadTarget: Boolean): View? {
         if (autoLoadTarget) {
             return null
         }
-        originBottomMargin = Utils.dip2px(iMojitoFragment.providerContext()?.context, 16f) + ImmersionBar.getStatusBarHeight(iMojitoFragment.providerContext()!!)
+        originTopMargin = Utils.dip2px(iMojitoFragment.providerContext()?.context, topMargin) + ImmersionBar.getStatusBarHeight(iMojitoFragment.providerContext()!!)
         view = LayoutInflater.from(iMojitoFragment.providerContext()?.context).inflate(R.layout.default_target_cover_layout, null)
 
         val seeTargetImageTv = view?.findViewById<TextView>(R.id.seeTargetImageTv)
         val indexLp = FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT)
         indexLp.gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-        indexLp.topMargin = originBottomMargin
+        indexLp.topMargin = originTopMargin
         view?.layoutParams = indexLp
         seeTargetImageTv?.setOnClickListener {
             iMojitoFragment.loadTargetUrl()
@@ -64,8 +64,8 @@ class DefaultTargetFragmentCover : FragmentCoverLoader {
         var begin = 0
         var end = 0
         if (isToMax) {
-            begin = currentBottomMargin
-            end = originBottomMargin
+            begin = currentTopMargin
+            end = originTopMargin
         }
         if (isToMin) {
             view?.visibility = View.GONE
@@ -89,11 +89,11 @@ class DefaultTargetFragmentCover : FragmentCoverLoader {
             return
         }
         val indexLp = view?.layoutParams as FrameLayout.LayoutParams
-        currentBottomMargin = (originBottomMargin - moveY / 6f).roundToInt()
-        if (currentBottomMargin > originBottomMargin) {
-            currentBottomMargin = originBottomMargin
+        currentTopMargin = (originTopMargin - moveY / 6f).roundToInt()
+        if (currentTopMargin > originTopMargin) {
+            currentTopMargin = originTopMargin
         }
-        indexLp.topMargin = currentBottomMargin
+        indexLp.topMargin = currentTopMargin
         view?.layoutParams = indexLp
     }
 }
