@@ -8,6 +8,5 @@ import java.io.File
 
 interface ImageViewLoadFactory {
     fun loadSillContent(view: View, uri: Uri)
-    fun loadAnimatedContent(view: View, imageType: Int, imageFile: File)
-    fun newContentLoader(lifecycleOwner: LifecycleOwner): ContentLoader
+    fun newContentLoader(): ContentLoader
 }

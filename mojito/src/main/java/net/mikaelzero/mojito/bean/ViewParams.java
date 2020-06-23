@@ -3,7 +3,7 @@ package net.mikaelzero.mojito.bean;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class ContentViewOriginModel implements Parcelable {
+public class ViewParams implements Parcelable {
     public int left;
     public int top;
     public int width;
@@ -54,25 +54,25 @@ public class ContentViewOriginModel implements Parcelable {
         dest.writeInt(this.height);
     }
 
-    public ContentViewOriginModel() {
+    public ViewParams() {
     }
 
-    protected ContentViewOriginModel(Parcel in) {
+    protected ViewParams(Parcel in) {
         this.left = in.readInt();
         this.top = in.readInt();
         this.width = in.readInt();
         this.height = in.readInt();
     }
 
-    public static final Parcelable.Creator<ContentViewOriginModel> CREATOR = new Parcelable.Creator<ContentViewOriginModel>() {
+    public static final Parcelable.Creator<ViewParams> CREATOR = new Parcelable.Creator<ViewParams>() {
         @Override
-        public ContentViewOriginModel createFromParcel(Parcel source) {
-            return new ContentViewOriginModel(source);
+        public ViewParams createFromParcel(Parcel source) {
+            return new ViewParams(source);
         }
 
         @Override
-        public ContentViewOriginModel[] newArray(int size) {
-            return new ContentViewOriginModel[size];
+        public ViewParams[] newArray(int size) {
+            return new ViewParams[size];
         }
     };
 }

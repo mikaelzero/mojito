@@ -21,7 +21,7 @@
         android:usesCleartextTraffic="true"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/AppTheme">
-        <activity android:name="net.mikaelzero.app.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -34,6 +34,8 @@
         <activity android:name=".local.LocalImageActivity" />
         <activity android:name=".TargetActivity" />
         <activity android:name=".ActivityCoverActivity" />
+        <activity android:name=".video.VideoActivity" />
+        <activity android:name=".stagger.StaggerActivity" />
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package net.mikaelzero.mojito.ui
 
-import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -11,29 +10,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_image.*
-import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.Mojito.Companion.imageLoader
 import net.mikaelzero.mojito.Mojito.Companion.imageViewFactory
 import net.mikaelzero.mojito.MojitoView
 import net.mikaelzero.mojito.R
-import net.mikaelzero.mojito.bean.ContentViewOriginModel
+import net.mikaelzero.mojito.bean.FragmentConfig
 import net.mikaelzero.mojito.interfaces.IMojitoFragment
 import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.*
 import net.mikaelzero.mojito.tools.BitmapUtil
+import net.mikaelzero.mojito.tools.MojitoConstant
 import net.mikaelzero.mojito.tools.ScreenUtils
 import java.io.File
 
 
 class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
-    var contentViewOriginModel: ContentViewOriginModel? = null
-    var originUrl: String? = null
-    var targetUrl: String? = null
+    lateinit var fragmentConfig: FragmentConfig
     var showView: View? = null
-    var position = 0
-    var showImmediately = false
     private var mImageLoader: ImageLoader? = null
     private var mViewLoadFactory: ImageViewLoadFactory? = null
     private var contentLoader: ContentLoader? = null
@@ -50,18 +45,18 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         if (context == null || activity == null) {
             return
         }
-        mImageLoader = imageLoader()
-        mViewLoadFactory = imageViewFactory()
         if (arguments != null) {
-            originUrl = arguments!!.getString("originUrl")
-            targetUrl = arguments!!.getString("targetUrl")
-            position = arguments!!.getInt("position")
-            showImmediately = arguments!!.getBoolean("showImmediately")
-            contentViewOriginModel = arguments!!.getParcelable("model")
+            fragmentConfig = arguments!!.getParcelable(MojitoConstant.KEY_FRAGMENT_PARAMS)!!
         }
-        fragmentCoverLoader = Mojito.instance.fragmentCoverLoader()?.providerInstance()
+        mImageLoader = imageLoader()
+        mViewLoadFactory = if (ImageMojitoActivity.multiContentLoader != null) {
+            ImageMojitoActivity.multiContentLoader?.providerLoader(fragmentConfig.position)
+        } else {
+            imageViewFactory()
+        }
+        fragmentCoverLoader = ImageMojitoActivity.fragmentCoverLoader?.providerInstance()
         imageCoverLayout.removeAllViews()
-        val fragmentCoverAttachView = fragmentCoverLoader?.attach(this, targetUrl == null || Mojito.instance.autoLoadTarget())
+        val fragmentCoverAttachView = fragmentCoverLoader?.attach(this, fragmentConfig.targetUrl == null || fragmentConfig.autoLoadTarget)
         if (fragmentCoverAttachView != null) {
             imageCoverLayout.visibility = View.VISIBLE
             imageCoverLayout.addView(fragmentCoverAttachView)
@@ -69,11 +64,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             imageCoverLayout.visibility = View.GONE
         }
 
-        iProgress = Mojito.instance.progressLoader()?.providerInstance()
-        iProgress?.attach(position, loadingLayout)
-
-        contentLoader = mViewLoadFactory?.newContentLoader(viewLifecycleOwner)
-        mojitoView?.setContentLoader(contentLoader)
+        iProgress = ImageMojitoActivity.progressLoader?.providerInstance()
+        iProgress?.attach(fragmentConfig.position, loadingLayout)
+        contentLoader = mViewLoadFactory?.newContentLoader()
+        mojitoView?.setContentLoader(contentLoader, fragmentConfig.originUrl, fragmentConfig.targetUrl)
         showView = contentLoader?.providerRealView()
 
         mojitoView?.setOnMojitoViewCallback(this)
@@ -81,20 +75,20 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         contentLoader?.onTapCallback(object : OnTapCallback {
             override fun onTap(view: View, x: Float, y: Float) {
                 mojitoView?.backToMin()
-                Mojito.instance.mojitoListener()?.onClick(view, x, y, position)
+                ImageMojitoActivity.onMojitoListener?.onClick(view, x, y, fragmentConfig.position)
             }
         })
         contentLoader?.onLongTapCallback(object : OnLongTapCallback {
             override fun onLongTap(view: View, x: Float, y: Float) {
                 if (!mojitoView.isDrag) {
-                    Mojito.instance.mojitoListener()?.onLongClick(activity, view, x, y, position)
+                    ImageMojitoActivity.onMojitoListener?.onLongClick(activity, view, x, y, fragmentConfig.position)
                 }
             }
         })
-        val uri = if (originUrl != null && File(originUrl!!).isFile) {
-            Uri.fromFile(File(originUrl!!))
+        val uri = if (File(fragmentConfig.originUrl).isFile) {
+            Uri.fromFile(File(fragmentConfig.originUrl))
         } else {
-            Uri.parse(originUrl)
+            Uri.parse(fragmentConfig.originUrl)
         }
         mImageLoader?.loadImage(showView.hashCode(), uri, false, object : DefaultImageCallback() {
             override fun onSuccess(image: File) {
@@ -104,6 +98,16 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        contentLoader?.pageChange(false)
+        super.onResume()
+    }
+
+    override fun onPause() {
+        contentLoader?.pageChange(true)
+        super.onPause()
     }
 
 
@@ -119,19 +123,25 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             w = ScreenUtils.getScreenWidth(context)
             h = ScreenUtils.getScreenHeight(context)
         }
-        if (contentViewOriginModel == null) {
-            mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else showImmediately)
+        if (fragmentConfig.viewParams == null) {
+            mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
         } else {
             mojitoView?.putData(
-                contentViewOriginModel!!.getLeft(), contentViewOriginModel!!.getTop(),
-                contentViewOriginModel!!.getWidth(), contentViewOriginModel!!.getHeight(),
+                fragmentConfig.viewParams!!.getLeft(), fragmentConfig.viewParams!!.getTop(),
+                fragmentConfig.viewParams!!.getWidth(), fragmentConfig.viewParams!!.getHeight(),
                 w, h
             )
-            mojitoView?.show(if (ImageMojitoActivity.hasShowedAnim) true else showImmediately)
+            mojitoView?.show(if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
         }
         ImageMojitoActivity.hasShowedAnim = true
-        if (targetUrl != null) {
-            replaceImageUrl(targetUrl!!)
+
+        val targetEnable = if (ImageMojitoActivity.multiContentLoader == null) {
+            true
+        } else {
+            ImageMojitoActivity.multiContentLoader!!.providerEnableTargetLoad(fragmentConfig.position)
+        }
+        if (fragmentConfig.targetUrl != null && targetEnable) {
+            replaceImageUrl(fragmentConfig.targetUrl!!)
         }
     }
 
@@ -155,7 +165,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         val onlyRetrieveFromCache: Boolean = if (forceLoadTarget) {
             !forceLoadTarget
         } else {
-            !Mojito.instance.autoLoadTarget()
+            !fragmentConfig.autoLoadTarget
         }
         mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), onlyRetrieveFromCache, object : DefaultImageCallback() {
             override fun onStart() {
@@ -163,7 +173,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     if (loadingLayout.visibility == View.GONE) {
                         loadingLayout.visibility = View.VISIBLE
                     }
-                    iProgress?.onStart(position)
+                    iProgress?.onStart(fragmentConfig.position)
                 }
             }
 
@@ -172,13 +182,13 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     if (loadingLayout.visibility == View.GONE) {
                         loadingLayout.visibility = View.VISIBLE
                     }
-                    iProgress?.onProgress(position, progress)
+                    iProgress?.onProgress(fragmentConfig.position, progress)
                 }
             }
 
             override fun onFail(error: Exception?) {
                 mainHandler.post {
-                    iProgress?.onFailed(position)
+                    iProgress?.onFailed(fragmentConfig.position)
                     fragmentCoverLoader?.imageCacheHandle(false, true)
                 }
             }
@@ -196,10 +206,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     override fun loadTargetUrl() {
-        if (targetUrl == null) {
+        if (fragmentConfig.targetUrl == null) {
             fragmentCoverLoader?.imageCacheHandle(false, false)
         } else {
-            replaceImageUrl(targetUrl!!, true)
+            replaceImageUrl(fragmentConfig.targetUrl!!, true)
         }
     }
 
@@ -209,13 +219,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     companion object {
-        fun newInstance(originUrl: String?, targetUrl: String?, position: Int, shouldShowAnimation: Boolean, contentViewOriginModel: ContentViewOriginModel?): ImageMojitoFragment {
+        fun newInstance(fragmentConfig: FragmentConfig): ImageMojitoFragment {
             val args = Bundle()
-            args.putString("originUrl", originUrl)
-            args.putString("targetUrl", targetUrl)
-            args.putInt("position", position)
-            args.putBoolean("showImmediately", shouldShowAnimation)
-            args.putParcelable("model", contentViewOriginModel)
+            args.putParcelable(MojitoConstant.KEY_FRAGMENT_PARAMS, fragmentConfig)
             val fragment = ImageMojitoFragment()
             fragment.arguments = args
             return fragment
@@ -223,27 +229,27 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     override fun onMojitoViewFinish() {
-        Mojito.instance.mojitoListener()?.onMojitoViewFinish()
+        ImageMojitoActivity.onMojitoListener?.onMojitoViewFinish()
         if (context is ImageMojitoActivity) {
             (context as ImageMojitoActivity).finishView()
         }
     }
 
     override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) {
-        Mojito.iIndicator?.move(moveX, moveY)
-        Mojito.activityCoverLoader?.move(moveX, moveY)
+        ImageMojitoActivity.iIndicator?.move(moveX, moveY)
+        ImageMojitoActivity.activityCoverLoader?.move(moveX, moveY)
         fragmentCoverLoader?.move(moveX, moveY)
-        Mojito.instance.mojitoListener()?.onDrag(view, moveX, moveY)
+        ImageMojitoActivity.onMojitoListener?.onDrag(view, moveX, moveY)
     }
 
     override fun onRelease(isToMax: Boolean, isToMin: Boolean) {
-        Mojito.iIndicator?.fingerRelease(isToMax, isToMin)
+        ImageMojitoActivity.iIndicator?.fingerRelease(isToMax, isToMin)
         fragmentCoverLoader?.fingerRelease(isToMax, isToMin)
-        Mojito.activityCoverLoader?.fingerRelease(isToMax, isToMin)
+        ImageMojitoActivity.activityCoverLoader?.fingerRelease(isToMax, isToMin)
     }
 
     override fun showFinish(mojitoView: MojitoView, showImmediately: Boolean) {
-        Mojito.instance.mojitoListener()?.onShowFinish(mojitoView, showImmediately)
+        ImageMojitoActivity.onMojitoListener?.onShowFinish(mojitoView, showImmediately)
     }
 
     override fun onLock(isLock: Boolean) {
@@ -251,6 +257,5 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             (context as ImageMojitoActivity).setViewPagerLock(isLock)
         }
     }
-
 
 }

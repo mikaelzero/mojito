@@ -12,16 +12,13 @@ import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_display.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
-import net.mikaelzero.mojito.impl.DefaultTargetFragmentCover
 import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback
 import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
 import net.mikaelzero.mojito.loader.glide.GlideImageLoader
 import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
-import org.salient.artplayer.MediaPlayerManager
 
 class PreviewActivity : AppCompatActivity() {
     var context: Context? = null
@@ -72,8 +69,8 @@ class PreviewActivity : AppCompatActivity() {
         adapter.addHeaderView(LayoutInflater.from(this).inflate(R.layout.header_layout, null))
         adapter.addFooterView(LayoutInflater.from(this).inflate(R.layout.header_layout, null))
 
-        Glide.with(this).load(SourceUtil.getSingleImage()[0]).into(singleIv)
-        Glide.with(this).load(SourceUtil.getLongHorImage()[0]).into(longHorIv)
+        Glide.with(this).load(SourceUtil.getSingleImage()).into(singleIv)
+        Glide.with(this).load(SourceUtil.getLongHorImage()).into(longHorIv)
 
         singleIv.setOnClickListener {
             Mojito.with(context)
@@ -100,15 +97,6 @@ class PreviewActivity : AppCompatActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        MediaPlayerManager.instance().pause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MediaPlayerManager.instance().releasePlayerAndView(this)
-    }
 
     companion object {
         var imageLoader: Int = 0

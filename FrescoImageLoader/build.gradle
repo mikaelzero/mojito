@@ -44,7 +44,7 @@ publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
     artifactId = "FrescoImageLoader"
-    publishVersion = "1.0.0"
+    publishVersion = "1.1.0"
     desc = "mojito"
     website = "https://github.com/MikaelZero/mojito"
 }

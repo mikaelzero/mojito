@@ -10,5 +10,5 @@ data class ViewPagerBean(
     val targetUrl: String? = null,
     val position: Int,
     val showImmediately: Boolean,
-    val contentViewOriginModel: ContentViewOriginModel? = null
+    val viewParams: ViewParams? = null
 )

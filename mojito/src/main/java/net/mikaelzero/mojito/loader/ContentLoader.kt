@@ -11,7 +11,7 @@ import android.view.View
  */
 interface ContentLoader {
     val displayRect: RectF
-    fun init(context: Context)
+    fun init(context: Context, originUrl:String,targetUrl: String?)
     fun providerView(): View
     fun providerRealView(): View
     fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean
@@ -20,8 +20,9 @@ interface ContentLoader {
     fun backToNormal()
     fun loadAnimFinish()
     fun needReBuildSize(): Boolean
-    fun useTransitionApi():Boolean
+    fun useTransitionApi(): Boolean
     fun isLongImage(width: Int, height: Int): Boolean
     fun onTapCallback(onTapCallback: OnTapCallback)
     fun onLongTapCallback(onLongTapCallback: OnLongTapCallback)
+    fun pageChange(isHidden: Boolean)
 }

@@ -15,6 +15,7 @@ import android.transition.TransitionListenerAdapter;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -573,6 +574,12 @@ public class MojitoView extends FrameLayout {
         return super.dispatchTouchEvent(event);
     }
 
+    //不消费该事件会导致事件交还给上级
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return true;
+    }
+
     private boolean isTouchPointInContentLayout(View view, MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
@@ -588,9 +595,9 @@ public class MojitoView extends FrameLayout {
         return y >= top && y <= bottom && x >= left && x <= right;
     }
 
-    public void setContentLoader(ContentLoader view) {
+    public void setContentLoader(ContentLoader view,String originUrl,String targetUrl) {
         this.contentLoader = view;
-        this.contentLoader.init(getContext());
+        this.contentLoader.init(getContext(),originUrl,targetUrl);
         contentLayout.addView(contentLoader.providerView());
     }
 

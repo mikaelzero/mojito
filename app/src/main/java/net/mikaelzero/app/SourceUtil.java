@@ -29,16 +29,42 @@ public class SourceUtil {
         return list;
     }
 
-    public static List<String> getSingleImage() {
+    public static List<String> getVideoImages() {
         List<String> list = new ArrayList<>();
-        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/png/252337/1592812206070-assets/web-upload/07a534d9-8f24-492b-b659-a76aac4e20f8.png");
+        list.add("https://cdn.nlark.com/yuque/0/2020/png/252337/1592812206070-assets/web-upload/07a534d9-8f24-492b-b659-a76aac4e20f8.png");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg");
         return list;
     }
 
-    public static List<String> getLongHorImage() {
+    public static String getSingleVideoImages() {
+        return "https://cdn.nlark.com/yuque/0/2020/png/252337/1592812206070-assets/web-upload/07a534d9-8f24-492b-b659-a76aac4e20f8.png";
+    }
+
+    public static List<String> getVideoTargetImages() {
         List<String> list = new ArrayList<>();
-        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");
+        list.add(videoUrl());
+        list.add("http://vfx.mtime.cn/Video/2018/07/06/mp4/180706094003288023.mp4");
+        list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg");
         return list;
+    }
+
+    public static String getSingleVideoTargetImages() {
+        return videoUrl();
+    }
+
+    public static String videoUrl() {
+        return "https://apd-8d51891fce5fc22e6bb1ec1f711fc97b.v.smtcdns.com/mv.music.tc.qq.com/AV32c3rihanK4crv62XO5c_uI3uURafaVFT27KI_Y6AE/97A73ABFCADF3AFDFDDA1AF6BD3D6C0C0444ED0DC63C9A8FE1B0DEC94B360208D1C75AE5B284A44AF4FF4F9DE59BFAE1ZZqqmusic_default/1049_M0143700004FSwAW2Mxtku1001735049.f9844.mp4?fname=1049_M0143700004FSwAW2Mxtku1001735049.f9844.mp4";
+    }
+
+    public static String getSingleImage() {
+        return "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591753659216-assets/web-upload/2c772338-b6b6-4173-a830-202831511172.jpeg";
+    }
+
+    public static String getLongHorImage() {
+        return "https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592057985345-assets/web-upload/c2fe2b62-5519-4129-856e-ba19428a508a.jpeg";
     }
 
     public static List<String> getTargetButtonTarget() {

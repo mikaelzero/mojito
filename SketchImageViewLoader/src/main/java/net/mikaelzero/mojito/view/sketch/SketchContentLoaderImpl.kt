@@ -29,11 +29,8 @@ import net.mikaelzero.mojito.view.sketch.core.decode.ImageSizeCalculator
  * @CreateDate: 2020/6/10 10:01 AM
  * @Description:
  */
-class SketchContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoader, LifecycleObserver {
+class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
 
-    init {
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
 
     private lateinit var sketchImageView: SketchImageView
     private lateinit var frameLayout: FrameLayout
@@ -55,7 +52,7 @@ class SketchContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoader, L
             return RectF(rectF)
         }
 
-    override fun init(context: Context) {
+    override fun init(context: Context, originUrl: String, targetUrl: String?) {
         frameLayout = FrameLayout(context)
         sketchImageView = SketchImageView(context)
         sketchImageView.isZoomEnabled = true
@@ -179,19 +176,8 @@ class SketchContentLoaderImpl(lifecycleOwner: LifecycleOwner) : ContentLoader, L
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun onDestroy(source: LifecycleOwner?) {
+    override fun pageChange(isHidden: Boolean) {
+
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    fun onStop(source: LifecycleOwner?) {
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onResume(source: LifecycleOwner?) {
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-    fun onPause(source: LifecycleOwner?) {
-    }
 }

@@ -1,10 +1,10 @@
 package net.mikaelzero.mojito.ui
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.Window
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -13,15 +13,19 @@ import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_image.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.R
-import net.mikaelzero.mojito.bean.ContentViewOriginModel
-import net.mikaelzero.mojito.bean.ConfigBean
+import net.mikaelzero.mojito.bean.ActivityConfig
+import net.mikaelzero.mojito.bean.FragmentConfig
+import net.mikaelzero.mojito.bean.ViewParams
 import net.mikaelzero.mojito.bean.ViewPagerBean
-import net.mikaelzero.mojito.interfaces.IMojitoActivity
-import net.mikaelzero.mojito.interfaces.IMojitoFragment
+import net.mikaelzero.mojito.interfaces.*
+import net.mikaelzero.mojito.loader.FragmentCoverLoader
+import net.mikaelzero.mojito.loader.InstanceLoader
+import net.mikaelzero.mojito.loader.MultiContentLoader
+import net.mikaelzero.mojito.tools.MojitoConstant
 
 class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
-    private var contentViewOriginModels: List<ContentViewOriginModel>? = null
-    private lateinit var configBean: ConfigBean
+    private var viewParams: List<ViewParams>? = null
+    lateinit var activityConfig: ActivityConfig
     private lateinit var imageViewPagerAdapter: FragmentPagerAdapter
     val fragmentMap = hashMapOf<Int, ImageMojitoFragment?>()
 
@@ -33,59 +37,61 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         setContentView(R.layout.activity_image)
 
         userCustomLayout.removeAllViews()
-        Mojito.activityCoverLoader?.let {
-            Mojito.activityCoverLoader?.attach(this)
-            userCustomLayout.addView(Mojito.activityCoverLoader!!.providerView())
+        activityCoverLoader?.let {
+            activityCoverLoader?.attach(this)
+            userCustomLayout.addView(activityCoverLoader!!.providerView())
         }
 
-        configBean = intent.getParcelableExtra("config")!!
-        val currentPosition = configBean.position ?: 0
-        contentViewOriginModels = configBean.contentViewOriginModels
+        activityConfig = intent.getParcelableExtra(MojitoConstant.KEY_ACTIVITY_PARAMS)!!
+        val currentPosition = activityConfig.position ?: 0
+        viewParams = activityConfig.viewParams
 
         val viewPagerBeans = mutableListOf<ViewPagerBean>()
-        if (configBean.originImageUrls == null) {
+        if (activityConfig.originImageUrls == null) {
             finish()
             return
         }
-        for (i in configBean.originImageUrls!!.indices) {
+        for (i in activityConfig.originImageUrls!!.indices) {
             var targetImageUrl: String? = null
-            if (configBean.targetImageUrls != null) {
-                if (i < configBean.targetImageUrls!!.size) {
-                    targetImageUrl = configBean.targetImageUrls!![i]
+            if (activityConfig.targetImageUrls != null) {
+                if (i < activityConfig.targetImageUrls!!.size) {
+                    targetImageUrl = activityConfig.targetImageUrls!![i]
                 }
             }
 
             val model = when {
-                contentViewOriginModels == null -> {
+                viewParams == null -> {
                     null
                 }
-                i >= contentViewOriginModels!!.size -> {
+                i >= viewParams!!.size -> {
                     null
                 }
                 else -> {
-                    contentViewOriginModels?.get(i)
+                    viewParams?.get(i)
                 }
             }
             viewPagerBeans.add(
                 ViewPagerBean(
-                    configBean.originImageUrls!![i],
+                    activityConfig.originImageUrls!![i],
                     targetImageUrl, i,
                     currentPosition != i,
                     model
                 )
             )
         }
-        imageViewPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+        imageViewPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
                 val fragment = fragmentMap[position]
                 return if (fragment == null) {
-                    val imageFragment = ImageMojitoFragment.newInstance(
+                    val fragmentConfig = FragmentConfig(
                         viewPagerBeans[position].url,
                         viewPagerBeans[position].targetUrl,
+                        viewPagerBeans[position].viewParams,
                         position,
-                        viewPagerBeans[position].showImmediately,
-                        viewPagerBeans[position].contentViewOriginModel
+                        activityConfig.autoLoadTarget,
+                        viewPagerBeans[position].showImmediately
                     )
+                    val imageFragment = ImageMojitoFragment.newInstance(fragmentConfig)
                     fragmentMap[position] = imageFragment
                     imageFragment
                 } else {
@@ -97,7 +103,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         }
         viewPager.adapter = imageViewPagerAdapter
         viewPager.setCurrentItem(currentPosition, false)
-        Mojito.activityCoverLoader?.pageChange(
+        activityCoverLoader?.pageChange(
             imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
             viewPagerBeans.size, currentPosition
         )
@@ -111,16 +117,16 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
             override fun onPageSelected(position: Int) {
-                Mojito.activityCoverLoader?.pageChange(
+                activityCoverLoader?.pageChange(
                     imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
                     viewPagerBeans.size, position
                 )
             }
 
         })
-        if (contentViewOriginModels != null && contentViewOriginModels!!.size > 1) {
-            Mojito.iIndicator?.attach(indicatorLayout)
-            Mojito.iIndicator?.onShow(viewPager)
+        if (viewParams != null && viewParams!!.size > 1) {
+            iIndicator?.attach(indicatorLayout)
+            iIndicator?.onShow(viewPager)
         }
     }
 
@@ -129,6 +135,12 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     }
 
     fun finishView() {
+        progressLoader = null
+        fragmentCoverLoader = null
+        multiContentLoader = null
+        iIndicator = null
+        activityCoverLoader = null
+        onMojitoListener = null
         Mojito.clean()
         finish()
         overridePendingTransition(0, 0)
@@ -143,13 +155,13 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
 
     companion object {
         var hasShowedAnim = false
-        fun startImageActivity(activity: Activity?, configBean: ConfigBean?) {
-            hasShowedAnim = false
-            val intent = Intent(activity, ImageMojitoActivity::class.java)
-            intent.putExtra("config", configBean)
-            activity?.startActivity(intent)
-            activity?.overridePendingTransition(0, 0)
-        }
+
+        var progressLoader: InstanceLoader<IProgress>? = null
+        var fragmentCoverLoader: InstanceLoader<FragmentCoverLoader>? = null
+        var multiContentLoader: MultiContentLoader? = null
+        var iIndicator: IIndicator? = null
+        var activityCoverLoader: ActivityCoverLoader? = null
+        var onMojitoListener: OnMojitoListener? = null
     }
 
     override fun getCurrentFragment(): IMojitoFragment {
