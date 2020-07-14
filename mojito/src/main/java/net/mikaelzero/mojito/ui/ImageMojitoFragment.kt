@@ -1,6 +1,7 @@
 package net.mikaelzero.mojito.ui
 
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -10,8 +11,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_image.*
+import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.Mojito.Companion.imageLoader
 import net.mikaelzero.mojito.Mojito.Companion.imageViewFactory
+import net.mikaelzero.mojito.Mojito.Companion.mojitoConfig
 import net.mikaelzero.mojito.MojitoView
 import net.mikaelzero.mojito.R
 import net.mikaelzero.mojito.bean.FragmentConfig
@@ -97,6 +100,14 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     startAnim(image)
                 }
             }
+
+            override fun onFail(error: java.lang.Exception) {
+                mainHandler.post {
+                    val errorDrawableResId = Mojito.mojitoConfig().errorDrawableResId()
+                    if(errorDrawableResId > 0) mViewLoadFactory?.loadContentFail(showView!!, errorDrawableResId)
+                    startAnim(ScreenUtils.getScreenWidth(context), ScreenUtils.getScreenHeight(context))
+                }
+            }
         })
     }
 
@@ -110,7 +121,6 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         super.onPause()
     }
 
-
     private fun startAnim(image: File) {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
@@ -123,6 +133,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             w = ScreenUtils.getScreenWidth(context)
             h = ScreenUtils.getScreenHeight(context)
         }
+        startAnim(w, h)
+    }
+
+    private fun startAnim(w: Int, h: Int) {
         if (fragmentConfig.viewParams == null) {
             mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
         } else {

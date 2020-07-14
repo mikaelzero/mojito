@@ -8,5 +8,6 @@ package net.mikaelzero.mojito.interfaces
  */
 interface IMojitoConfig {
     fun duration(): Long
-    fun maxTransYRatio():Float
+    fun maxTransYRatio(): Float
+    fun errorDrawableResId(): Int
 }
