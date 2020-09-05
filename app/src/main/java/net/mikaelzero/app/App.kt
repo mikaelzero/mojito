@@ -5,6 +5,8 @@ import android.content.Context
 import androidx.multidex.MultiDex
 import net.mikaelzero.app.video.ArtLoadFactory
 import net.mikaelzero.mojito.Mojito
+import net.mikaelzero.mojito.impl.DefaultMojitoConfig
+import net.mikaelzero.mojito.interfaces.IMojitoConfig
 import net.mikaelzero.mojito.loader.glide.GlideImageLoader
 import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 

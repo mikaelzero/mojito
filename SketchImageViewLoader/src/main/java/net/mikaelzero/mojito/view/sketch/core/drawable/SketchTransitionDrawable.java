@@ -22,9 +22,9 @@ import android.graphics.drawable.TransitionDrawable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.request.ImageFrom;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 
 public class SketchTransitionDrawable extends TransitionDrawable implements SketchDrawable {
 

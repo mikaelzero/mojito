@@ -17,4 +17,6 @@ public interface OnMojitoViewCallback {
     void onRelease(boolean isToMax, boolean isToMin);
 
     void onLock(boolean isLock);
+
+    void onLongImageMove(float ratio);
 }

@@ -25,7 +25,6 @@ public class SourceUtil {
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042333165-assets/web-upload/cde12f44-07bb-46aa-ab7d-0ced4783b2ee.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/png/252337/1587091196083-assets/web-upload/62122ab5-986b-4662-be88-d3007a5e31c5.png");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592288524369-assets/web-upload/84ee5f6c-8459-4497-8175-153836bef167.jpeg");
-
         return list;
     }
 

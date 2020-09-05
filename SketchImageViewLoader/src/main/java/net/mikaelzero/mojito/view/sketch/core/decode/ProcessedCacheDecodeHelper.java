@@ -22,6 +22,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.ErrorTracker;
 import net.mikaelzero.mojito.view.sketch.core.cache.BitmapPool;
@@ -31,7 +32,6 @@ import net.mikaelzero.mojito.view.sketch.core.datasource.DiskCacheDataSource;
 import net.mikaelzero.mojito.view.sketch.core.request.ErrorCause;
 import net.mikaelzero.mojito.view.sketch.core.request.LoadRequest;
 import net.mikaelzero.mojito.view.sketch.core.uri.GetDataSourceException;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 
 import java.util.Locale;
 

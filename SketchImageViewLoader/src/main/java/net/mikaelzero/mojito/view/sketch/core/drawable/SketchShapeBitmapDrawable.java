@@ -32,13 +32,13 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.Sketch;
 import net.mikaelzero.mojito.view.sketch.core.decode.ResizeCalculator;
 import net.mikaelzero.mojito.view.sketch.core.request.ImageFrom;
 import net.mikaelzero.mojito.view.sketch.core.request.ShapeSize;
 import net.mikaelzero.mojito.view.sketch.core.shaper.ImageShaper;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 
 /**
  * 可以改变 {@link BitmapDrawable} 的形状和尺寸

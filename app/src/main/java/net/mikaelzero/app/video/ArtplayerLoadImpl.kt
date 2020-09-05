@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ItemTouchUIUtil
 import com.bumptech.glide.Glide
 import net.mikaelzero.app.R
 import net.mikaelzero.mojito.Mojito
+import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.OnLongTapCallback
 import net.mikaelzero.mojito.loader.OnTapCallback
@@ -41,7 +42,7 @@ class ArtplayerLoadImpl : ContentLoader {
     override val displayRect: RectF
         get() = RectF()
 
-    override fun init(context: Context, originUrl: String, targetUrl: String?) {
+    override fun init(context: Context, originUrl: String, targetUrl: String?, onMojitoViewCallback: OnMojitoViewCallback?) {
         this.context = context
         this.targetUrl = targetUrl
         frameLayout = LayoutInflater.from(context).inflate(R.layout.video_layout, null)
@@ -70,7 +71,7 @@ class ArtplayerLoadImpl : ContentLoader {
         return coverIv
     }
 
-    override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean {
+    override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isHorizontal: Boolean): Boolean {
         return false
     }
 

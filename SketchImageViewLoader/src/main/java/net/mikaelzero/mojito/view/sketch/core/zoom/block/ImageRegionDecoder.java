@@ -25,6 +25,7 @@ import android.graphics.Rect;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.Configuration;
 import net.mikaelzero.mojito.view.sketch.core.Sketch;
@@ -34,7 +35,6 @@ import net.mikaelzero.mojito.view.sketch.core.decode.ImageOrientationCorrector;
 import net.mikaelzero.mojito.view.sketch.core.decode.ImageType;
 import net.mikaelzero.mojito.view.sketch.core.uri.GetDataSourceException;
 import net.mikaelzero.mojito.view.sketch.core.uri.UriModel;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 import net.mikaelzero.mojito.view.sketch.core.util.SketchUtils;
 
 import java.io.IOException;

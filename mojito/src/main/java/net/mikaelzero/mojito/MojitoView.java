@@ -145,6 +145,19 @@ public class MojitoView extends FrameLayout {
         mOriginHeight = originHeight;
     }
 
+    /**
+     * 重新设置宽高  因为如果图片还未加载出来  默认宽高为全屏
+     */
+    public void resetSize(int w, int h) {
+        if (this.realWidth == w && this.realHeight == h) {
+            return;
+        }
+        this.realWidth = w;
+        this.realHeight = h;
+        setOriginParams();
+        beginShow(true);
+    }
+
     public void show(boolean showImmediately) {
         mAlpha = showImmediately ? mAlpha = 1f : 0f;
         setVisibility(View.VISIBLE);
@@ -514,14 +527,14 @@ public class MojitoView extends FrameLayout {
                 mYDistanceTraveled += Math.abs(mMoveDownTranslateY);
 
                 // if touch slop too short,un need event
-                if (Math.abs(mYDistanceTraveled) < touchSlop || (Math.abs(mTranslateX) > Math.abs(mYDistanceTraveled) && !isDrag)) {
+                if (Math.abs(mYDistanceTraveled) < touchSlop && (Math.abs(mTranslateX) > Math.abs(mYDistanceTraveled) && !isDrag)) {
                     mYDistanceTraveled = 0;
                     if (isTouchPointInContentLayout(contentLayout, event)) {
                         break;
                     }
                     break;
                 }
-                if (contentLoader.dispatchTouchEvent(isDrag, false, mMoveDownTranslateY < 0, mTranslateX > 0)) {
+                if (contentLoader.dispatchTouchEvent(isDrag, false, mMoveDownTranslateY < 0, Math.abs(mTranslateX) > Math.abs(mMoveDownTranslateY))) {
                     //if is long image,top or bottom or minScale, need handle event
                     //if image scale<1(origin scale) , need handle event
                     setViewPagerLocking(false);
@@ -544,7 +557,7 @@ public class MojitoView extends FrameLayout {
                     break;
                 }
                 isMultiFinger = false;
-                if (contentLoader.dispatchTouchEvent(isDrag, true, mMoveDownTranslateY > 0, mTranslateX > 0)) {
+                if (contentLoader.dispatchTouchEvent(isDrag, true, mMoveDownTranslateY > 0, Math.abs(mTranslateX) > Math.abs(mMoveDownTranslateY))) {
                     //if is long image,top or bottom or minScale, need handle event
                     //if image scale<1(origin scale) , need handle event
                     setViewPagerLocking(false);
@@ -595,9 +608,9 @@ public class MojitoView extends FrameLayout {
         return y >= top && y <= bottom && x >= left && x <= right;
     }
 
-    public void setContentLoader(ContentLoader view,String originUrl,String targetUrl) {
+    public void setContentLoader(ContentLoader view, String originUrl, String targetUrl) {
         this.contentLoader = view;
-        this.contentLoader.init(getContext(),originUrl,targetUrl);
+        this.contentLoader.init(getContext(), originUrl, targetUrl, onMojitoViewCallback);
         contentLayout.addView(contentLoader.providerView());
     }
 

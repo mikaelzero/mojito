@@ -52,7 +52,7 @@ publish {
     userOrg = "mikaelzero"
     groupId = "net.mikaelzero.mojito"
     artifactId = "core"
-    publishVersion = "1.1.0"
+    publishVersion = "${mojito_version}"
     desc = "mojito"
     website = "https://github.com/MikaelZero/mojito"
 }

@@ -11,6 +11,7 @@ import net.mikaelzero.mojito.interfaces.IMojitoFragment
 interface FragmentCoverLoader  {
     //对于查看原图的情况  如果 autoLoadTarget 为 true  需要对view进行隐藏
     fun attach(iMojitoFragment: IMojitoFragment, autoLoadTarget: Boolean): View?
+    //对于查看原图的情况  如果hasTargetUrl为false代表没有设置目标url  则编写cover类时需要隐藏查看原图功能
     fun imageCacheHandle(isCache: Boolean,hasTargetUrl:Boolean)
 
     /**

@@ -21,11 +21,11 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.request.DisplayRequest;
 import net.mikaelzero.mojito.view.sketch.core.request.ImageFrom;
 import net.mikaelzero.mojito.view.sketch.core.util.DrawableWrapper;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 
 import java.lang.ref.WeakReference;
 

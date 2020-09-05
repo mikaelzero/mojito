@@ -3,25 +3,19 @@ package net.mikaelzero.mojito.view.sketch
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
-import android.os.Build
-import android.transition.*
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
-import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.interfaces.IMojitoConfig
+import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.OnLongTapCallback
 import net.mikaelzero.mojito.loader.OnTapCallback
 import net.mikaelzero.mojito.tools.ScreenUtils
 import net.mikaelzero.mojito.view.sketch.core.SketchImageView
 import net.mikaelzero.mojito.view.sketch.core.decode.ImageSizeCalculator
+import kotlin.math.abs
 
 
 /**
@@ -36,6 +30,10 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
     private lateinit var frameLayout: FrameLayout
     private var isLongHeightImage = false
     private var isLongWidthImage = false
+    private var screenHeight = 0
+    private var screenWidth = 0
+    private var longImageHeightOrWidth = 0
+    private var onMojitoViewCallback: OnMojitoViewCallback? = null
 
     override fun providerRealView(): View {
         return sketchImageView
@@ -52,15 +50,18 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
             return RectF(rectF)
         }
 
-    override fun init(context: Context, originUrl: String, targetUrl: String?) {
+    override fun init(context: Context, originUrl: String, targetUrl: String?, onMojitoViewCallback: OnMojitoViewCallback?) {
         frameLayout = FrameLayout(context)
         sketchImageView = SketchImageView(context)
         sketchImageView.isZoomEnabled = true
         sketchImageView.options.isDecodeGifImage = true
         frameLayout.addView(sketchImageView)
+        screenHeight = ScreenUtils.getScreenHeight(context)
+        screenWidth = ScreenUtils.getScreenWidth(context)
+        this.onMojitoViewCallback = onMojitoViewCallback
     }
 
-    override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isRight: Boolean): Boolean {
+    override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isHorizontal: Boolean): Boolean {
         return when {
             isLongHeightImage -> {
                 when {
@@ -75,19 +76,19 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
                         sketchImageView.zoomer?.getVisibleRect(rectF)
                         val drawRect = RectF()
                         sketchImageView.zoomer?.getDrawRect(drawRect)
-
+                        onMojitoViewCallback?.onLongImageMove(abs(drawRect.top) / (longImageHeightOrWidth - screenHeight).toFloat())
                         //长图处于顶部  并且有向下滑动的趋势
                         val isTop = sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale && rectF.top == 0 && isDown
                         //长图不处于顶部和底部的时候
                         val isCenter = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
                                 && rectF.top != 0
-                                && rectF.bottom < drawRect.bottom
+                                && screenHeight != drawRect.bottom.toInt()
                         //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
                         val isScale = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
                         val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
                                 && !isDown
-                                && rectF.bottom >= drawRect.bottom)
-                        Log.e("result", "result:  isTop$isTop    isCenter:$isCenter    isScale:$isScale    isBottom:$isBottom")
+                                && screenHeight == drawRect.bottom.toInt())
+//                        Log.e("result", "result:  isTop$isTop    isCenter:$isCenter    isScale:$isScale    isBottom:$isBottom")
                         return isTop || isCenter || isScale || isBottom
                     }
                 }
@@ -96,17 +97,18 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
                 val rectF = Rect()
                 sketchImageView.zoomer?.getVisibleRect(rectF)
                 val result = when {
-                    isDrag -> {
+                    isDrag && !isHorizontal -> {
                         false
                     }
                     isActionUp -> {
                         !isDrag
                     }
                     else -> {
-                        //长图处于最大化不需要事件
-                        (sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f && !isDown) ||
-                                //长图处于缩放  需要事件
-                                sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
+                        val drawRect = RectF()
+                        sketchImageView.zoomer?.getDrawRect(drawRect)
+                        onMojitoViewCallback?.onLongImageMove(abs(drawRect.left) / abs(drawRect.right - drawRect.left))
+                        val isScale = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
+                        return isHorizontal || isScale
                     }
                 }
                 result
@@ -156,6 +158,11 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
         isLongWidthImage = sizeCalculator.canUseReadModeByWidth(width, height) &&
                 width > (ScreenUtils.getScreenWidth(sketchImageView.context) * 1.5)
         sketchImageView.zoomer?.isReadMode = isLongHeightImage || isLongWidthImage
+        if (isLongWidthImage) {
+            longImageHeightOrWidth = width
+        } else if (isLongHeightImage) {
+            longImageHeightOrWidth = height
+        }
         if (isLongHeightImage || isLongWidthImage) {
 
         } else {

@@ -21,13 +21,13 @@ import android.graphics.BitmapFactory;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.exifinterface.media.ExifInterface;
 
 import net.mikaelzero.mojito.view.sketch.core.SLog;
 import net.mikaelzero.mojito.view.sketch.core.datasource.DataSource;
 import net.mikaelzero.mojito.view.sketch.core.request.ErrorCause;
 import net.mikaelzero.mojito.view.sketch.core.request.LoadRequest;
 import net.mikaelzero.mojito.view.sketch.core.uri.GetDataSourceException;
-import net.mikaelzero.mojito.view.sketch.core.util.ExifInterface;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -32,16 +32,17 @@ allprojects {
     }
 }
 
+VERSION: 1.5
 
-implementation 'net.mikaelzero.mojito:core:1.1.0'
+implementation 'net.mikaelzero.mojito:core:VERSION'
 
 //support long image and gif with Sketch
-implementation 'net.mikaelzero.mojito:SketchImageFactory:1.1.0'
+implementation 'net.mikaelzero.mojito:SketchImageFactory:VERSION'
 
 //load with fresco
-implementation 'net.mikaelzero.mojito:FrescoImageLoader:1.1.0'
+implementation 'net.mikaelzero.mojito:FrescoImageLoader:VERSION'
 //load with glide
-implementation 'net.mikaelzero.mojito:GlideImageLoader:1.1.0'
+implementation 'net.mikaelzero.mojito:GlideImageLoader:VERSION'
 
 ```
 
@@ -119,7 +120,7 @@ Mojito.with(context)
     .start()
 ```
 
-## Video Vide
+## Video View
 
 ```kotlin
 Mojito.with(context)
@@ -166,6 +167,10 @@ Mojito.with(context)
 
     //when you drag your image 
     override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) {
+    }
+
+    //the ratio of long image when you scroll
+    override fun onLongImageMove(ratio: Float) {
     }
 }
 ```

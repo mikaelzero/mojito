@@ -1,5 +1,6 @@
 package net.mikaelzero.mojito.impl
 
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import net.mikaelzero.mojito.MojitoView
@@ -26,5 +27,8 @@ import net.mikaelzero.mojito.interfaces.OnMojitoListener
 
     override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) {
     }
+
+   override fun onLongImageMove(ratio: Float) {
+   }
 
 }

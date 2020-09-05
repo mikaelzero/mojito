@@ -27,7 +27,7 @@ class PreviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         context = this
         setContentView(R.layout.activity_display)
-        // jest for test please invoke initialize in your application
+        // just for test please invoke initialize in your application
         if (imageLoader == 0) {
             Mojito.initialize(
                 GlideImageLoader.with(this),

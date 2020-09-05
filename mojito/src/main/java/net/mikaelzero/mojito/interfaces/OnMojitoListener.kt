@@ -15,4 +15,5 @@ interface OnMojitoListener {
     fun onShowFinish(mojitoView: MojitoView, showImmediately: Boolean)
     fun onMojitoViewFinish()
     fun onDrag(view: MojitoView, moveX: Float, moveY: Float)
+    fun onLongImageMove(ratio: Float)
 }
