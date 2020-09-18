@@ -32,7 +32,7 @@ allprojects {
     }
 }
 
-VERSION: 1.5
+VERSION: 1.5.2
 
 implementation 'net.mikaelzero.mojito:core:VERSION'
 
