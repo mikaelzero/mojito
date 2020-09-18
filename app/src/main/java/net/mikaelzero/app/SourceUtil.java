@@ -28,6 +28,14 @@ public class SourceUtil {
         return list;
     }
 
+    public static List<String> getTestImages() {
+        ArrayList<String> list = new ArrayList<>();
+        for (int i = 0; i <2000; i++) {
+            list.addAll(getNormalImages());
+        }
+        return list;
+    }
+
     public static List<String> getVideoImages() {
         List<String> list = new ArrayList<>();
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");

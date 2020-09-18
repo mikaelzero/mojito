@@ -9,8 +9,8 @@ android {
         applicationId "net.mikaelzero.app"
         minSdkVersion 21
         targetSdkVersion globalConfiguration.androidTargetSdkVersion
-        versionCode 1
-        versionName "1"
+        versionCode 2
+        versionName "2"
         multiDexEnabled true
     }
     buildTypes {

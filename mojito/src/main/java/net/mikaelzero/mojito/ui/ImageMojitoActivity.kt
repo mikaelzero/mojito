@@ -124,7 +124,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
         })
-        if (viewParams != null && viewParams!!.size > 1) {
+        if (!activityConfig.originImageUrls.isNullOrEmpty()) {
             iIndicator?.attach(indicatorLayout)
             iIndicator?.onShow(viewPager)
         }

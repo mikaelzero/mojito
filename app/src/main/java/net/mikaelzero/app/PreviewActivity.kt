@@ -93,6 +93,7 @@ class PreviewActivity : AppCompatActivity() {
         noViewViewPagerBtn.setOnClickListener {
             Mojito.with(context)
                 .urls(SourceUtil.getNormalImages())
+                .setIndicator(NumIndicator())
                 .start()
         }
     }

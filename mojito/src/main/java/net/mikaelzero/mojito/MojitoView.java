@@ -159,8 +159,11 @@ public class MojitoView extends FrameLayout {
     }
 
     public void show(boolean showImmediately) {
-        mAlpha = showImmediately ? mAlpha = 1f : 0f;
         setVisibility(View.VISIBLE);
+        mAlpha = showImmediately ? mAlpha = 1f : 0f;
+        if (showImmediately) {
+            backgroundView.setAlpha(mAlpha);
+        }
         setOriginParams();
         beginShow(showImmediately);
     }
@@ -483,7 +486,6 @@ public class MojitoView extends FrameLayout {
             public void onAnimationEnd(Animator animation) {
                 isAnimating = false;
                 if (isToZero) {
-                    setVisibility(View.GONE);
                     if (onMojitoViewCallback != null) {
                         onMojitoViewCallback.onMojitoViewFinish();
                     }
