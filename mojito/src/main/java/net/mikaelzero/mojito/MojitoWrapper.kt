@@ -19,6 +19,7 @@ import net.mikaelzero.mojito.interfaces.OnMojitoListener
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
+import net.mikaelzero.mojito.tools.DataWrapUtil
 import net.mikaelzero.mojito.tools.MojitoConstant
 import net.mikaelzero.mojito.ui.ImageMojitoActivity
 import java.lang.IllegalArgumentException
@@ -182,9 +183,9 @@ class MojitoWrapper constructor(val context: Context?) {
     fun start() {
         assert()
         ImageMojitoActivity.hasShowedAnim = false
+        DataWrapUtil.put(configBean)
         val activity = scanForActivity(context)
         val intent = Intent(activity, ImageMojitoActivity::class.java)
-        intent.putExtra(MojitoConstant.KEY_ACTIVITY_PARAMS, configBean)
         activity?.startActivity(intent)
         activity?.overridePendingTransition(0, 0)
     }

@@ -542,17 +542,14 @@ public class MojitoView extends FrameLayout {
                     setViewPagerLocking(false);
                     break;
                 }
-                if (onMojitoViewCallback != null) {
-                    float tempTranslateY = Math.abs(mMoveDownTranslateY);
-                    onMojitoViewCallback.onDrag(this, mTranslateX, tempTranslateY);
-                }
-                isDrag = true;
-                int dy = y - mLastY;
-                int newMarY = imageWrapper.getMarginTop() + dy;
-                dragAnd2Normal(newMarY, true);
+                Log.e("1", "1111");
+                handleMove(y);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 setViewPagerLocking(false);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                backToNormal();
                 break;
             case MotionEvent.ACTION_UP:
                 if (isAnimating) {
@@ -587,6 +584,17 @@ public class MojitoView extends FrameLayout {
 
         mLastY = y;
         return super.dispatchTouchEvent(event);
+    }
+
+    public void handleMove(int y) {
+        if (onMojitoViewCallback != null) {
+            float tempTranslateY = Math.abs(mMoveDownTranslateY);
+            onMojitoViewCallback.onDrag(this, mTranslateX, tempTranslateY);
+        }
+        isDrag = true;
+        int dy = y - mLastY;
+        int newMarY = imageWrapper.getMarginTop() + dy;
+        dragAnd2Normal(newMarY, true);
     }
 
     //不消费该事件会导致事件交还给上级

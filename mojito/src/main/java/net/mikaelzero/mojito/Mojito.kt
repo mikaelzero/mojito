@@ -5,6 +5,7 @@ import net.mikaelzero.mojito.impl.DefaultMojitoConfig
 import net.mikaelzero.mojito.interfaces.IMojitoConfig
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.loader.ImageLoader
+import net.mikaelzero.mojito.tools.DataWrapUtil
 
 
 class Mojito {
@@ -60,6 +61,7 @@ class Mojito {
 
 
         fun clean() {
+            DataWrapUtil.remove()
             imageLoader()?.cancelAll()
         }
     }

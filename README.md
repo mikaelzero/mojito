@@ -1,4 +1,4 @@
-# mojito
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.5.5-blue.svg) ![Size](https://img.shields.io/badge/size-403K-brightgreen.svg)
 
 ## Demo Download
 
@@ -12,11 +12,8 @@
 ## GIf Preview
 
 
-<img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714120562-assets/web-upload/e39ca518-7035-429c-8489-e60d4775f5ea.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714117035-assets/web-upload/5ca1cfd8-9e31-401a-8c3f-1f8f7b535470.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714121590-assets/web-upload/693c4211-c6af-4fd6-98b7-4762401d32b9.gif" width="200">
-
+<img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714120562-assets/web-upload/e39ca518-7035-429c-8489-e60d4775f5ea.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714117035-assets/web-upload/5ca1cfd8-9e31-401a-8c3f-1f8f7b535470.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714113185-assets/web-upload/91658d67-be7a-491a-b841-dfbf0beb41d6.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714119732-assets/web-upload/5667bf15-7f35-42b5-8ac3-1fa60fa1a2f3.gif" width="200">
 </br>
-
-<img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714113185-assets/web-upload/91658d67-be7a-491a-b841-dfbf0beb41d6.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714121774-assets/web-upload/907c13e3-277b-4700-9e97-2bf33a1679eb.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714119732-assets/web-upload/5667bf15-7f35-42b5-8ac3-1fa60fa1a2f3.gif" width="200">
 
 
 # Getting started
@@ -25,14 +22,14 @@
 
 ## Add the dependencies
 
+![Version](https://img.shields.io/badge/version-1.5.5-blue.svg)
+
 ```gradle
 allprojects {
     repositories {
         maven { url 'https://dl.bintray.com/mikaelzero/maven'}
     }
 }
-
-VERSION: 1.5.2
 
 implementation 'net.mikaelzero.mojito:core:VERSION'
 

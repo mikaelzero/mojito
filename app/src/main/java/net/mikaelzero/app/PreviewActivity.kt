@@ -43,7 +43,7 @@ class PreviewActivity : AppCompatActivity() {
         val adapter = if (imageLoader == 0) GlideAdapter() else FrescoAdapter()
         adapter.setList(SourceUtil.getNormalImages())
         recyclerView.adapter = adapter
-        adapter.setOnItemClickListener { adapter, view, position ->
+        adapter.setOnItemClickListener { _, view, position ->
             Mojito.with(context)
                 .urls(SourceUtil.getNormalImages())
                 .position(position)

@@ -21,6 +21,7 @@ import net.mikaelzero.mojito.interfaces.*
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
+import net.mikaelzero.mojito.tools.DataWrapUtil
 import net.mikaelzero.mojito.tools.MojitoConstant
 
 class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
@@ -42,7 +43,11 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             userCustomLayout.addView(activityCoverLoader!!.providerView())
         }
 
-        activityConfig = intent.getParcelableExtra(MojitoConstant.KEY_ACTIVITY_PARAMS)!!
+        if (DataWrapUtil.config == null) {
+            finish()
+            return
+        }
+        activityConfig = DataWrapUtil.get()!!
         val currentPosition = activityConfig.position ?: 0
         viewParams = activityConfig.viewParams
 
