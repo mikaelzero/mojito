@@ -23,7 +23,7 @@
 
 ## Add the dependencies
 
-![Version](https://img.shields.io/badge/version-1.5.5-blue.svg)
+![Version](https://img.shields.io/badge/version-1.5.6-blue.svg)
 
 ```gradle
 allprojects {
