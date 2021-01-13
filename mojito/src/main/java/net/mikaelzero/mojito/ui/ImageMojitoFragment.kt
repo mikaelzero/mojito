@@ -5,7 +5,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,6 +95,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mImageLoader?.loadImage(showView.hashCode(), uri, !isFile, object : DefaultImageCallback() {
             override fun onSuccess(image: File) {
                 mainHandler.post {
+                    if (isDetached || context == null) {
+                        return@post
+                    }
                     mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
                     startAnim(image)
                 }
@@ -103,6 +105,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
             override fun onFail(error: Exception) {
                 mainHandler.post {
+                    if (isDetached || context == null) {
+                        return@post
+                    }
                     startAnim(ScreenUtils.getScreenWidth(context), ScreenUtils.getScreenHeight(context), fragmentConfig.originUrl)
                 }
             }
@@ -170,6 +175,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
             override fun onSuccess(image: File) {
                 mainHandler.post {
+                    if (isDetached || context == null) {
+                        return@post
+                    }
                     handleImageOnSuccess(image)
                 }
             }
@@ -195,6 +203,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
             override fun onSuccess(image: File) {
                 mainHandler.post {
+                    if (isDetached || context == null) {
+                        return@post
+                    }
                     handleImageOnSuccess(image)
                     val realSizes = getRealSizeFromFile(image)
                     mojitoView?.resetSize(realSizes[0], realSizes[1])
@@ -205,6 +216,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     private fun handleImageOnStart() {
         mainHandler.post {
+            if (isDetached || context == null) {
+                return@post
+            }
             if (loadingLayout?.visibility == View.GONE) {
                 loadingLayout?.visibility = View.VISIBLE
             }
@@ -214,6 +228,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     private fun handleImageOnProgress(progress: Int) {
         mainHandler.post {
+            if (isDetached || context == null) {
+                return@post
+            }
             if (loadingLayout?.visibility == View.GONE) {
                 loadingLayout?.visibility = View.VISIBLE
             }
@@ -222,8 +239,8 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     private fun handleImageOnSuccess(image: File) {
-        if (loadingLayout.visibility == View.VISIBLE) {
-            loadingLayout.visibility = View.GONE
+        if (loadingLayout?.visibility == View.VISIBLE) {
+            loadingLayout?.visibility = View.GONE
         }
         fragmentCoverLoader?.imageCacheHandle(isCache = true, hasTargetUrl = true)
         mViewLoadFactory?.loadSillContent(showView!!, Uri.fromFile(image))
@@ -260,11 +277,23 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             }
         }
         mainHandler.post {
-            if (loadingLayout.visibility == View.GONE) {
-                loadingLayout.visibility = View.VISIBLE
+            if (isDetached || context == null) {
+                return@post
+            }
+            if (loadingLayout?.visibility == View.GONE) {
+                loadingLayout?.visibility = View.VISIBLE
             }
             iProgress?.onFailed(fragmentConfig.position)
             fragmentCoverLoader?.imageCacheHandle(isCache = false, hasTargetUrl = true)
+        }
+    }
+
+    private fun postToMain(r: Runnable) {
+        mainHandler.post {
+            if (isDetached || context == null) {
+                return@post
+            }
+            r.run()
         }
     }
 

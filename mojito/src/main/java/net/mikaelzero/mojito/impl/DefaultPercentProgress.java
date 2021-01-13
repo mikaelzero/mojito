@@ -19,11 +19,14 @@ public class DefaultPercentProgress implements IProgress {
 
     @Override
     public void attach(int position, FrameLayout parent) {
+        if (parent == null) {
+            return;
+        }
         Context context = parent.getContext();
         int progressSize = LoadingView.dip2Px(context, 50);
         FrameLayout.LayoutParams progressLp = new FrameLayout.LayoutParams(progressSize, progressSize);
         progressLp.gravity = Gravity.CENTER;
-         loadingView = new LoadingView(context);
+        loadingView = new LoadingView(context);
         loadingView.setLayoutParams(progressLp);
         parent.addView(loadingView);
     }
@@ -42,12 +45,16 @@ public class DefaultPercentProgress implements IProgress {
 
     @Override
     public void onFinish(int position) {
-        loadingView.loadCompleted();
+        if (loadingView != null) {
+            loadingView.loadCompleted();
+        }
     }
 
     @Override
     public void onFailed(int position) {
-        loadingView.loadFaild();
+        if (loadingView != null) {
+            loadingView.loadFaild();
+        }
     }
 
     @Override

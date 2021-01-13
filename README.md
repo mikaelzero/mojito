@@ -1,4 +1,4 @@
-# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.5.5-blue.svg) ![Size](https://img.shields.io/badge/size-403K-brightgreen.svg)
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.5.6-blue.svg) ![Size](https://img.shields.io/badge/size-403K-brightgreen.svg)
 
 ## Demo Download
 
@@ -12,8 +12,9 @@
 ## GIf Preview
 
 
-<img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714120562-assets/web-upload/e39ca518-7035-429c-8489-e60d4775f5ea.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714117035-assets/web-upload/5ca1cfd8-9e31-401a-8c3f-1f8f7b535470.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714113185-assets/web-upload/91658d67-be7a-491a-b841-dfbf0beb41d6.gif" width="200"><img src="https://cdn.nlark.com/yuque/0/2020/gif/252337/1592714119732-assets/web-upload/5667bf15-7f35-42b5-8ac3-1fa60fa1a2f3.gif" width="200">
-</br>
+<img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_1.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_2.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_3.gif?raw=true" width="200">
+<img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_4.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_5.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_6.gif?raw=true" width="200">
+
 
 
 # Getting started

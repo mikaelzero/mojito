@@ -76,6 +76,11 @@ class PreviewActivity : AppCompatActivity() {
             Mojito.with(context)
                 .urls(SourceUtil.getSingleImage())
                 .views(singleIv)
+                .setOnMojitoListener(object : SimpleMojitoViewCallback() {
+                    override fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int) {
+                        Toast.makeText(fragmentActivity, "long click", Toast.LENGTH_SHORT).show()
+                    }
+                })
                 .start()
         }
         longHorIv.setOnClickListener {

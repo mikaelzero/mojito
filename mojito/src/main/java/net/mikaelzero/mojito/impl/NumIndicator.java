@@ -30,6 +30,7 @@ public class NumIndicator implements IIndicator {
     @Override
     public void attach(FrameLayout parent) {
         originBottomMargin = Utils.dip2px(parent.getContext(), 16);
+        currentBottomMargin = originBottomMargin;
         FrameLayout.LayoutParams indexLp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, Utils.dip2px(parent.getContext(), 36));
         indexLp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
         indexLp.bottomMargin = originBottomMargin;
@@ -96,6 +97,9 @@ public class NumIndicator implements IIndicator {
         }
         if (isToMin) {
             numTv.setVisibility(View.GONE);
+            return;
+        }
+        if (begin == end) {
             return;
         }
         final FrameLayout.LayoutParams indexLp = (FrameLayout.LayoutParams) numTv.getLayoutParams();

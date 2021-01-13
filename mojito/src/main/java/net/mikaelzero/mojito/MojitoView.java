@@ -11,7 +11,6 @@ import android.transition.ChangeBounds;
 import android.transition.ChangeImageTransform;
 import android.transition.ChangeTransform;
 import android.transition.Transition;
-import android.transition.TransitionListenerAdapter;
 import android.transition.TransitionManager;
 import android.transition.TransitionSet;
 import android.util.AttributeSet;
@@ -22,15 +21,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
-
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback;
 import net.mikaelzero.mojito.loader.ContentLoader;
-import net.mikaelzero.mojito.interfaces.IMojitoConfig;
 import net.mikaelzero.mojito.tools.MarginViewWrapper;
 import net.mikaelzero.mojito.tools.ScreenUtils;
 import net.mikaelzero.mojito.tools.TransitionAdapterListener;
@@ -50,7 +43,7 @@ public class MojitoView extends FrameLayout {
     private float mMoveDownTranslateY;
     private float mTranslateX;
 
-    private float MAX_TRANSLATE_Y;
+    private final float MAX_TRANSLATE_Y;
 
     FrameLayout contentLayout;
     View backgroundView;
@@ -61,8 +54,8 @@ public class MojitoView extends FrameLayout {
     private int mOriginHeight;
     private int mOriginWidth;
 
-    private int screenWidth;
-    private int screenHeight;
+    private final int screenWidth;
+    private final int screenHeight;
     private int targetImageTop;
     private int targetImageWidth;
     private int targetImageHeight;
@@ -529,7 +522,7 @@ public class MojitoView extends FrameLayout {
                 mYDistanceTraveled += Math.abs(mMoveDownTranslateY);
 
                 // if touch slop too short,un need event
-                if (Math.abs(mYDistanceTraveled) < touchSlop && (Math.abs(mTranslateX) > Math.abs(mYDistanceTraveled) && !isDrag)) {
+                if (Math.abs(mYDistanceTraveled) < touchSlop && (Math.abs(mTranslateX) >= Math.abs(mYDistanceTraveled) && !isDrag)) {
                     mYDistanceTraveled = 0;
                     if (isTouchPointInContentLayout(contentLayout, event)) {
                         break;
@@ -542,7 +535,6 @@ public class MojitoView extends FrameLayout {
                     setViewPagerLocking(false);
                     break;
                 }
-                Log.e("1", "1111");
                 handleMove(y);
                 break;
             case MotionEvent.ACTION_POINTER_UP:
