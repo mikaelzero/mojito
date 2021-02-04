@@ -1,4 +1,4 @@
-# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.5.6-blue.svg) ![Size](https://img.shields.io/badge/size-403K-brightgreen.svg)
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.5.7-blue.svg) ![Size](https://img.shields.io/badge/size-403K-brightgreen.svg)
 
 ## Demo Download
 
@@ -7,7 +7,6 @@
 ## Video Preview
 
 [SAMPLE VIDEO LINK](https://www.bilibili.com/video/BV1Df4y1y7Hq)
-
 
 ## GIf Preview
 
@@ -22,8 +21,6 @@
 ------
 
 ## Add the dependencies
-
-![Version](https://img.shields.io/badge/version-1.5.6-blue.svg)
 
 ```gradle
 allprojects {
@@ -118,7 +115,7 @@ Mojito.with(context)
     .start()
 ```
 
-## Video View
+## Video View or Video/Image View
 
 ```kotlin
 Mojito.with(context)
