@@ -31,8 +31,8 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     val fragmentMap = hashMapOf<Int, ImageMojitoFragment?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
+        super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         ImmersionBar.with(this).fullScreen(true).init()
         setContentView(R.layout.activity_image)
