@@ -10,4 +10,5 @@ interface IMojitoConfig {
     fun duration(): Long
     fun maxTransYRatio(): Float
     fun errorDrawableResId(): Int
+    fun transparentNavigationBar():Boolean
 }

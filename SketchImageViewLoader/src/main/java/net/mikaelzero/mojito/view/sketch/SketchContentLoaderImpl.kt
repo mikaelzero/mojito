@@ -3,11 +3,11 @@ package net.mikaelzero.mojito.view.sketch
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.RectF
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.lifecycle.LifecycleObserver
+import net.mikaelzero.mojito.Mojito.Companion.mojitoConfig
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.OnLongTapCallback
@@ -56,9 +56,10 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
         sketchImageView.isZoomEnabled = true
         sketchImageView.options.isDecodeGifImage = true
         frameLayout.addView(sketchImageView)
-        screenHeight = ScreenUtils.getScreenHeight(context)
+        screenHeight = if (mojitoConfig().transparentNavigationBar()) ScreenUtils.getScreenHeight(context) else ScreenUtils.getAppScreenHeight(context)
         screenWidth = ScreenUtils.getScreenWidth(context)
         this.onMojitoViewCallback = onMojitoViewCallback
+        sketchImageView.zoomer?.blockDisplayer?.setPause(true)
     }
 
     override fun dispatchTouchEvent(isDrag: Boolean, isActionUp: Boolean, isDown: Boolean, isHorizontal: Boolean): Boolean {
@@ -78,13 +79,14 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
                         sketchImageView.zoomer?.getDrawRect(drawRect)
                         onMojitoViewCallback?.onLongImageMove(abs(drawRect.top) / (longImageHeightOrWidth - screenHeight).toFloat())
                         //长图处于顶部  并且有向下滑动的趋势
-                        val isTop = sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale && rectF.top == 0 && isDown
+                        val isTop = sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.fillZoomScale && rectF.top == 0 && isDown
                         //长图不处于顶部和底部的时候
-                        val isCenter = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
+                        val isCenter = sketchImageView.zoomer!!.fillZoomScale - sketchImageView.zoomer!!.zoomScale <= 0.01f
                                 && rectF.top != 0
                                 && screenHeight != drawRect.bottom.toInt()
                         //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
-                        val isScale = sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
+                        //如果宽度已经充满，但还是可以放大，这种情况不应该是处于缩放状态
+                        val isScale = if (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.fillZoomScale) false else sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
                         val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
                                 && !isDown
                                 && screenHeight == drawRect.bottom.toInt())
@@ -123,6 +125,7 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
     }
 
     override fun beginBackToMin(isResetSize: Boolean) {
+        sketchImageView.zoomer?.blockDisplayer?.setPause(true)
         if (isLongHeightImage || isLongWidthImage) {
 
         } else {
@@ -141,10 +144,11 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
         } else {
             sketchImageView.scaleType = ImageView.ScaleType.FIT_CENTER
         }
+        sketchImageView.zoomer?.blockDisplayer?.setPause(false)
     }
 
     override fun needReBuildSize(): Boolean {
-        return sketchImageView.zoomer!!.zoomScale > sketchImageView.zoomer!!.fullZoomScale
+        return sketchImageView.zoomer!!.zoomScale >= sketchImageView.zoomer!!.fullZoomScale
     }
 
     override fun useTransitionApi(): Boolean {

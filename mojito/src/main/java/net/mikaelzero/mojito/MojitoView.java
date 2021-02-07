@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
@@ -21,7 +22,9 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+
 import androidx.annotation.RequiresApi;
+
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback;
 import net.mikaelzero.mojito.loader.ContentLoader;
 import net.mikaelzero.mojito.tools.MarginViewWrapper;
@@ -94,7 +97,7 @@ public class MojitoView extends FrameLayout {
     public MojitoView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         screenWidth = ScreenUtils.getScreenWidth(context);
-        screenHeight = ScreenUtils.getScreenHeight(context);
+        screenHeight = Mojito.mojitoConfig().transparentNavigationBar() ? ScreenUtils.getScreenHeight(context) : ScreenUtils.getAppScreenHeight(context);
         MAX_TRANSLATE_Y = screenHeight * Mojito.mojitoConfig().maxTransYRatio();
 
         addView(LayoutInflater.from(getContext()).inflate(R.layout.layout_content, null), 0);
@@ -275,29 +278,39 @@ public class MojitoView extends FrameLayout {
     }
 
     private void backToNormal() {
+        backToNormal(false);
+    }
+
+    private void backToNormal(boolean immediately) {
         contentLoader.backToNormal();
-        isAnimating = true;
+        isAnimating = !immediately;
         releaseLeft = imageWrapper.getMarginLeft() - (screenWidth - targetImageWidth) / 2;
         releaseY = imageWrapper.getMarginTop();
-        ValueAnimator valueAnimator = ValueAnimator.ofFloat(imageWrapper.getMarginTop(), targetImageTop);
-        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float value = (float) animation.getAnimatedValue();
-                dragAnd2Normal(value, false);
+        if (immediately) {
+            backgroundView.setAlpha(1f);
+            setImageDataOfAnimatorEnd();
+            changeContentViewToFullscreen();
+        } else {
+            ValueAnimator valueAnimator = ValueAnimator.ofFloat(imageWrapper.getMarginTop(), targetImageTop);
+            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float value = (float) animation.getAnimatedValue();
+                    dragAnd2Normal(value, false);
+                }
+            });
+            valueAnimator.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    isAnimating = false;
+                }
+            });
+            valueAnimator.setDuration(animationDuration).start();
+            if (onMojitoViewCallback != null) {
+                onMojitoViewCallback.onRelease(true, false);
             }
-        });
-        valueAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                isAnimating = false;
-            }
-        });
-        valueAnimator.setDuration(animationDuration).start();
-        if (onMojitoViewCallback != null) {
-            onMojitoViewCallback.onRelease(true, false);
+            changeBackgroundViewAlpha(false);
         }
-        changeBackgroundViewAlpha(false);
     }
 
     public void backToMin() {
@@ -519,6 +532,7 @@ public class MojitoView extends FrameLayout {
                 float moveY = event.getY();
                 mTranslateX = moveX - mDownX;
                 mMoveDownTranslateY = moveY - mDownY;
+                Log.e("mMoveDownTranslateY", "mMoveDownTranslateY:" + mMoveDownTranslateY);
                 mYDistanceTraveled += Math.abs(mMoveDownTranslateY);
 
                 // if touch slop too short,un need event
@@ -541,7 +555,7 @@ public class MojitoView extends FrameLayout {
                 setViewPagerLocking(false);
                 break;
             case MotionEvent.ACTION_CANCEL:
-                backToNormal();
+                backToNormal(true);
                 break;
             case MotionEvent.ACTION_UP:
                 if (isAnimating) {

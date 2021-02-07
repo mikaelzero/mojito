@@ -34,7 +34,12 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        ImmersionBar.with(this).fullScreen(true).init()
+//        ImmersionBar.with(this).fullScreen(true).init()
+        if (Mojito.mojitoConfig().transparentNavigationBar()) {
+            ImmersionBar.with(this).transparentBar().init()
+        } else {
+            ImmersionBar.with(this).transparentStatusBar().init()
+        }
         setContentView(R.layout.activity_image)
 
         userCustomLayout.removeAllViews()

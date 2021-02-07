@@ -16,6 +16,9 @@ public class SourceUtil {
 
     public static List<String> getNormalImages() {
         List<String> list = new ArrayList<>();
+        list.add("https://i.loli.net/2021/02/05/b1eCjrIW5yqow2s.jpg");
+        list.add("https://i.loli.net/2021/02/05/bsh78Ov9aHVTJPc.jpg");
+        list.add("https://i.loli.net/2021/02/05/fiEUhAPJSOYld97.jpg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591710912974-assets/web-upload/1e6325b7-4e26-443f-98f8-aa3925222ea1.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg");
@@ -30,7 +33,7 @@ public class SourceUtil {
 
     public static List<String> getTestImages() {
         ArrayList<String> list = new ArrayList<>();
-        for (int i = 0; i <2000; i++) {
+        for (int i = 0; i < 2000; i++) {
             list.addAll(getNormalImages());
         }
         return list;
@@ -63,7 +66,7 @@ public class SourceUtil {
     }
 
     public static String videoUrl() {
-        return "https://apd-8d51891fce5fc22e6bb1ec1f711fc97b.v.smtcdns.com/mv.music.tc.qq.com/AV32c3rihanK4crv62XO5c_uI3uURafaVFT27KI_Y6AE/97A73ABFCADF3AFDFDDA1AF6BD3D6C0C0444ED0DC63C9A8FE1B0DEC94B360208D1C75AE5B284A44AF4FF4F9DE59BFAE1ZZqqmusic_default/1049_M0143700004FSwAW2Mxtku1001735049.f9844.mp4?fname=1049_M0143700004FSwAW2Mxtku1001735049.f9844.mp4";
+        return "http://v26.huoshanvod.com/688ef4380d1527a409db928db87bbdd3/60223480/video/tos/cn/tos-cn-ve-51/098a0bcec18e436ab8836537947d5523/?a=1112&br=3708&bt=927&cd=0%7C0%7C0&ch=0&cr=0&cs=0&cv=1&dr=3&ds=3&er=&l=202102071506400102120810760E006E79&lr=&mime_type=video_mp4&pl=0&qs=0&rc=M207czlpeTxlMzMzMzYzM0ApNmVoPDM7ZGU1N2U7OzZnNmdlMmxjXmYzLTJgLS02MC9zczZhMC0tMjQzXzNgNjJgYC06Yw%3D%3D&vl=&vr=.mp4";
     }
 
     public static String getSingleImage() {
