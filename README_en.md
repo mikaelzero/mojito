@@ -1,16 +1,14 @@
 # mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.6.7-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
 
-[English](https://github.com/MikaelZero/mojito/blob/master/README_en.md)
-
-## 二维码下载体验
+## Demo Download
 
 <img src="https://cdn.nlark.com/yuque/0/2020/png/252337/1592720888032-assets/web-upload/30908db5-767a-49f6-9564-5b8264b07c14.png" width="180">
 
-## 通过视频查看效果
+## Video Preview
 
 [SAMPLE VIDEO LINK](https://www.bilibili.com/video/BV1Df4y1y7Hq)
 
-## 动图效果
+## GIf Preview
 
 
 <img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_1.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_2.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_3.gif?raw=true" width="200">
@@ -18,11 +16,11 @@
 
 
 
-# 开始
+# Getting started
 
 ------
 
-## 添加 dependencies
+## Add the dependencies
 
 ```gradle
 allprojects {
@@ -44,7 +42,7 @@ implementation 'net.mikaelzero.mojito:GlideImageLoader:VERSION'
 ```
 
 
-## 初始化
+## Initialize
 
 ```kotlin
 // in your application
@@ -63,7 +61,7 @@ Mojito.initialize(
         )
 ```
 
-## 开始使用
+## Start
 
 ```kotlin
 Mojito.with(context)
@@ -72,7 +70,7 @@ Mojito.with(context)
     .start()
 ```
 
-# 使用
+# Usage
 
 ## RecyclerView
 
@@ -100,7 +98,7 @@ Mojito.with(context)
     .start()
 ```
 
-## 单个 View
+## Single View
 
 ```kotlin
  Mojito.with(context)
@@ -109,7 +107,7 @@ Mojito.with(context)
     .start()
 ```
 
-## 无 View
+## No View
 
 ```kotlin
  Mojito.with(context)
@@ -117,7 +115,7 @@ Mojito.with(context)
     .start()
 ```
 
-## 视频 View or 视频/图片 混合View
+## Video View or Video/Image View
 
 ```kotlin
 Mojito.with(context)
@@ -141,7 +139,7 @@ Mojito.with(context)
     .start()
 ```
 
-## Callback回调
+## Callback
 
 ```kotlin
  abstract class SimpleMojitoViewCallback : OnMojitoListener {
@@ -176,14 +174,14 @@ Mojito.with(context)
 
 | Name  | desc |
 | :-----| :----: |
-| url(src,target) |设置缩略图和原图url数据|
-| position | 点击的位置 |
+| url(src,target) | set source urls and  target urls|
+| position | position of click |
 | views|  1. recylclerView,imageViewId <br> 2. single view <br> 3. multi views|
-| autoLoadTarget |  默认为true，如果你设置了原图的url并且设置了autoLoadTarget(false)<br>你需要使用setFragmentCoverLoader来自定义view|
-| setProgressLoader|  当你设置了 autoLoadTarget false 才会生效|
-| setIndicator | 可以选择 NumIndicator  或者 CircleIndexIndicator|
-| setActivityCoverLoader |  自定义Activity的覆盖层view|
-|setMultiContentLoader | 如果使用视频和图片混合模式，需要设置 ImageViewLoadFactory|
+| autoLoadTarget |  default true,if you set target urls,and set autoLoadTarget(false)<br> you should load target url by yourself <br> and using  setFragmentCoverLoader() to custom click view|
+| setProgressLoader|  only work when you set autoLoadTarget false|
+| setIndicator | you can choose NumIndicator  or CircleIndexIndicator|
+| setActivityCoverLoader |  custom cover layout|
+|setMultiContentLoader | if you need both of video and image ,provider different  ImageViewLoadFactory|
 
 
 ## Thanks
