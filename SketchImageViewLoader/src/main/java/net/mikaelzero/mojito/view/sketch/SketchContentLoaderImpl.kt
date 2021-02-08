@@ -87,10 +87,9 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
                         //长图处于缩放状态  由于库的bug 会出现 8.99999  和  9
                         //如果宽度已经充满，但还是可以放大，这种情况不应该是处于缩放状态
                         val isScale = if (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.fillZoomScale) false else sketchImageView.zoomer!!.maxZoomScale - sketchImageView.zoomer!!.zoomScale > 0.01f
-                        val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.maxZoomScale
+                        val isBottom = (sketchImageView.zoomer!!.zoomScale == sketchImageView.zoomer!!.fillZoomScale
                                 && !isDown
                                 && screenHeight == drawRect.bottom.toInt())
-//                        Log.e("result", "result:  isTop$isTop    isCenter:$isCenter    isScale:$isScale    isBottom:$isBottom")
                         return isTop || isCenter || isScale || isBottom
                     }
                 }
@@ -116,7 +115,8 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
                 result
             }
             else -> {
-                sketchImageView.zoomer!!.zoomScale > sketchImageView.zoomer!!.fullZoomScale
+                (sketchImageView.zoomer!!.zoomScale > sketchImageView.zoomer!!.fullZoomScale)
+                        && sketchImageView.zoomer!!.zoomScale - sketchImageView.zoomer!!.fullZoomScale > 0.01f
             }
         }
     }
@@ -156,13 +156,9 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
     }
 
     override fun isLongImage(width: Int, height: Int): Boolean {
-        val sizeCalculator = ImageSizeCalculator()
-//        isLongHeightImage = sizeCalculator.canUseReadModeByHeight(width, height) &&
-//                height > (ScreenUtils.getScreenHeight(sketchImageView.context) * 1.5)
-//        isLongWidthImage = sizeCalculator.canUseReadModeByWidth(width, height)&&
-//                width > (ScreenUtils.getScreenWidth(sketchImageView.context) * 1.5)
-        isLongHeightImage = sizeCalculator.canUseReadModeByHeight(width, height)
-        isLongWidthImage = sizeCalculator.canUseReadModeByWidth(width, height)
+        //需要加上1.5倍数的判断，因为存在一种可能，宽是10，高度是100，这种图不能作为一个长图
+        isLongHeightImage = height > width * 2
+        isLongWidthImage = width > height * 5
         sketchImageView.zoomer?.isReadMode = isLongHeightImage || isLongWidthImage
         if (isLongWidthImage) {
             longImageHeightOrWidth = width

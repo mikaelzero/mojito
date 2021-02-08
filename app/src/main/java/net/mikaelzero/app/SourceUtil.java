@@ -16,6 +16,7 @@ public class SourceUtil {
 
     public static List<String> getNormalImages() {
         List<String> list = new ArrayList<>();
+        list.add("https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=2733011025,434524842&fm=26&gp=0.jpg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592042332605-assets/web-upload/1af8e4c0-bf8b-410a-bfff-a16fec01ccb5.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1591710912974-assets/web-upload/1e6325b7-4e26-443f-98f8-aa3925222ea1.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1588042170204-assets/web-upload/48a5152a-5024-43fd-bd50-796d6f284e77.jpeg");
@@ -76,6 +77,8 @@ public class SourceUtil {
 
     public static List<String> getTargetButtonTarget() {
         List<String> list = new ArrayList<>();
+        list.add("https://i.loli.net/2021/02/08/CLcprTGDS8mZoQB.png");
+        list.add("https://i.loli.net/2021/02/08/3HwSWnEAXrhyGOY.jpg");
         list.add("https://i.loli.net/2021/02/08/3HwSWnEAXrhyGOY.jpg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592643441654-assets/web-upload/771e09b0-aaf9-4308-bae0-cd5b3cb98817.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592643441557-assets/web-upload/94ed7774-2bed-4dbe-be54-080c2f8939a1.jpeg");
@@ -85,6 +88,8 @@ public class SourceUtil {
 
     public static List<String> getTargetButtonSmall() {
         List<String> list = new ArrayList<>();
+        list.add("https://i.loli.net/2021/02/08/DiQvR57lKnGwXqp.png");
+        list.add("https://i.loli.net/2021/02/08/f5QedwvkMLcH8sP.jpg");
         list.add("https://i.loli.net/2021/02/08/f5QedwvkMLcH8sP.jpg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592643585276-assets/web-upload/6e2520de-544d-45b6-9892-ff228d14e175.jpeg");
         list.add("https://cdn.nlark.com/yuque/0/2020/jpeg/252337/1592643585330-assets/web-upload/85629ce4-bacf-4ab4-af6f-5a0a67931b68.jpeg");

@@ -36,6 +36,7 @@
         <activity android:name=".ActivityCoverActivity" />
         <activity android:name=".video.VideoActivity" />
         <activity android:name=".stagger.StaggerActivity" />
+        <activity android:name=".TestMainActivity" />
     </application>
 
 </manifest>
