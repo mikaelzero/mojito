@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Build;
+import android.provider.Settings;
 import android.view.Display;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -61,7 +62,7 @@ public final class ScreenUtils {
     }
 
     public static int getAppScreenHeight(Context context) {
-        return getScreenHeight(context)-getNavigationBarHeight(context);
+        return getScreenHeight(context) - getNavigationBarHeight(context);
     }
 
     public static int getNavigationBarHeight(Context context) {
@@ -74,6 +75,18 @@ public final class ScreenUtils {
             display.getSize(size);
             display.getRealSize(realSize);
             Resources resources = context.getResources();
+            int navigationBarIsMin = 0;
+            //判断是否显示了导航栏，如果不存在，高度就为0
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+                navigationBarIsMin = Settings.System.getInt(context.getContentResolver(),
+                        "navigationbar_is_min", 0);
+            } else {
+                navigationBarIsMin = Settings.Global.getInt(context.getContentResolver(),
+                        "navigationbar_is_min", 0);
+            }
+            if (navigationBarIsMin == 0) {
+                return 0;
+            }
             int resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
             int height = resources.getDimensionPixelSize(resourceId);
             //超出系统默认的导航栏高度以上，则认为存在虚拟导航

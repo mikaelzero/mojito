@@ -108,7 +108,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     if (isDetached || context == null) {
                         return@post
                     }
-                    startAnim(ScreenUtils.getScreenWidth(context), ScreenUtils.getScreenHeight(context), fragmentConfig.originUrl)
+                    startAnim(ScreenUtils.getScreenWidth(context), ScreenUtils.getScreenHeight(context), originLoadFail = true, needLoadImageUrl = fragmentConfig.originUrl)
                 }
             }
         })
@@ -121,7 +121,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
 
-    private fun startAnim(w: Int, h: Int, needLoadImageUrl: String = "") {
+    private fun startAnim(w: Int, h: Int, originLoadFail: Boolean = false, needLoadImageUrl: String = "") {
         if (fragmentConfig.viewParams == null) {
             mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
         } else {
@@ -139,7 +139,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         } else {
             ImageMojitoActivity.multiContentLoader!!.providerEnableTargetLoad(fragmentConfig.position)
         }
-        if (fragmentConfig.targetUrl != null && targetEnable) {
+        //查看原图的情况下  如果缩略图加载失败了  需要先加载缩略图  再根据条件判断是否要去加载原图
+        if (originLoadFail && needLoadImageUrl.isNotEmpty()) {
+            loadImageWithoutCache(needLoadImageUrl, fragmentConfig.targetUrl != null && targetEnable)
+        } else if (fragmentConfig.targetUrl != null && targetEnable) {
             replaceImageUrl(fragmentConfig.targetUrl!!)
         } else if (needLoadImageUrl.isNotEmpty()) {
             loadImageWithoutCache(needLoadImageUrl)
@@ -187,7 +190,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     /**
      *  如果图片还未加载出来  则加载图片  最后通知修改宽高
      */
-    private fun loadImageWithoutCache(url: String) {
+    private fun loadImageWithoutCache(url: String, needHandleTarget: Boolean = false) {
         mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), false, object : DefaultImageCallback() {
             override fun onStart() {
                 handleImageOnStart()
@@ -209,6 +212,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     handleImageOnSuccess(image)
                     val realSizes = getRealSizeFromFile(image)
                     mojitoView?.resetSize(realSizes[0], realSizes[1])
+                    if (needHandleTarget) {
+                        replaceImageUrl(fragmentConfig.targetUrl!!)
+                    }
                 }
             }
         })

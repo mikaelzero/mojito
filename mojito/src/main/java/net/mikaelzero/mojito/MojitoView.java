@@ -532,7 +532,6 @@ public class MojitoView extends FrameLayout {
                 float moveY = event.getY();
                 mTranslateX = moveX - mDownX;
                 mMoveDownTranslateY = moveY - mDownY;
-                Log.e("mMoveDownTranslateY", "mMoveDownTranslateY:" + mMoveDownTranslateY);
                 mYDistanceTraveled += Math.abs(mMoveDownTranslateY);
 
                 // if touch slop too short,un need event
@@ -555,6 +554,7 @@ public class MojitoView extends FrameLayout {
                 setViewPagerLocking(false);
                 break;
             case MotionEvent.ACTION_CANCEL:
+                //个别情况比如快速滑动或其他情况触发了ACTION_CANCEL需要重置为normal状态
                 backToNormal(true);
                 break;
             case MotionEvent.ACTION_UP:
