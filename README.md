@@ -1,4 +1,4 @@
-# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.6.2-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.6.5-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
 
 ## Demo Download
 

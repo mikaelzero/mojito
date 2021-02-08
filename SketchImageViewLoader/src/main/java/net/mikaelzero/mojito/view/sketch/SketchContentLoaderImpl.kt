@@ -157,7 +157,7 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
 
     override fun isLongImage(width: Int, height: Int): Boolean {
         isLongHeightImage = height > width * 2
-        isLongWidthImage = width > height * 5
+        isLongWidthImage = width > height * 5 && width > (ScreenUtils.getScreenWidth(sketchImageView.context) * 1.5)
         sketchImageView.zoomer?.isReadMode = isLongHeightImage || isLongWidthImage
         if (isLongWidthImage) {
             longImageHeightOrWidth = width
