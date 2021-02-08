@@ -156,7 +156,6 @@ class SketchContentLoaderImpl : ContentLoader, LifecycleObserver {
     }
 
     override fun isLongImage(width: Int, height: Int): Boolean {
-        //需要加上1.5倍数的判断，因为存在一种可能，宽是10，高度是100，这种图不能作为一个长图
         isLongHeightImage = height > width * 2
         isLongWidthImage = width > height * 5
         sketchImageView.zoomer?.isReadMode = isLongHeightImage || isLongWidthImage

@@ -236,7 +236,7 @@ public abstract class FunctionCallbackView extends androidx.appcompat.widget.App
     @Nullable
     @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (getFunctions().showDownloadProgressFunction != null || wrappedProgressListener != null) {
+        if (wrappedProgressListener != null) {
             return progressListenerProxy;
         } else {
             return null;

@@ -38,13 +38,6 @@ class OnClickListenerProxy implements View.OnClickListener {
             return;
         }
 
-        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.onClick(v)) {
-            return;
-        }
-
-        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.onClick(v)) {
-            return;
-        }
 
         if (view.wrappedClickListener != null) {
             view.wrappedClickListener.onClick(v);
@@ -55,15 +48,6 @@ class OnClickListenerProxy implements View.OnClickListener {
         FunctionCallbackView view = viewWeakReference.get();
         if (view == null) {
             return false;
-        }
-
-        if (view.getFunctions().clickRetryFunction != null && view.getFunctions().clickRetryFunction.isClickable()) {
-            return true;
-        }
-
-        //noinspection SimplifiableIfStatement
-        if (view.getFunctions().clickPlayGifFunction != null && view.getFunctions().clickPlayGifFunction.isClickable()) {
-            return true;
         }
 
         return view.wrappedClickListener != null;
