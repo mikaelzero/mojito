@@ -9,6 +9,7 @@ data class ActivityConfig(
     var targetImageUrls: List<String>? = null,
     var viewParams: List<ViewParams>? = null,
     var position: Int? = null,
+    var startPos:Int = 0,
     var headerSize: Int? = null,
     var autoLoadTarget: Boolean = true
 ) : Parcelable

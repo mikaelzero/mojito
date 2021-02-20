@@ -1,6 +1,8 @@
-# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.6.7-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.6.8-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
 
 [English](https://github.com/MikaelZero/mojito/blob/master/README_en.md)
+
+## 如果这个库帮助到了你，希望能够分享给你身边的人。
 
 ## 二维码下载体验
 

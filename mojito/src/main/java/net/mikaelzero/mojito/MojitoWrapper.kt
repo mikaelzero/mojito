@@ -20,9 +20,7 @@ import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
-import net.mikaelzero.mojito.tools.MojitoConstant
 import net.mikaelzero.mojito.ui.ImageMojitoActivity
-import java.lang.IllegalArgumentException
 
 /**
  * @Author:         MikaelZero
@@ -54,9 +52,9 @@ class MojitoWrapper constructor(val context: Context?) {
         return this
     }
 
-    fun position(position: Int, headerSize: Int = 0): MojitoWrapper {
-        configBean.headerSize = headerSize
-        configBean.position = position - headerSize
+    fun position(position: Int, startPos: Int = 0): MojitoWrapper {
+        configBean.startPos = startPos
+        configBean.position = position - startPos
         return this
     }
 
@@ -67,51 +65,28 @@ class MojitoWrapper constructor(val context: Context?) {
     }
 
     fun views(recyclerView: RecyclerView, @IdRes viewId: Int): MojitoWrapper {
-        val originImageList = mutableListOf<View?>()
+        val originImageViewList = mutableListOf<View?>()
         val childCount = recyclerView.childCount
         for (i in 0 until childCount) {
             val originImage = recyclerView.getChildAt(i).findViewById<View>(viewId)
             if (originImage != null) {
-                originImageList.add(originImage)
+                originImageViewList.add(originImage)
             }
         }
-        val layoutManager = recyclerView.layoutManager
-        var firstPos = 0
-        var lastPos = 0
-        val totalCount = layoutManager!!.itemCount - (configBean.headerSize ?: 0)
-        when (layoutManager) {
-            is GridLayoutManager -> {
-                firstPos = layoutManager.findFirstVisibleItemPosition()
-                lastPos = layoutManager.findLastVisibleItemPosition()
-            }
-            is LinearLayoutManager -> {
-                firstPos = layoutManager.findFirstVisibleItemPosition()
-                lastPos = layoutManager.findLastVisibleItemPosition()
-            }
-            is StaggeredGridLayoutManager -> {
 
+        val newOriginImageViewList = mutableListOf<View?>()
+        originImageViewList.forEachIndexed { index, view ->
+            if (index >= configBean.startPos) {
+                newOriginImageViewList.add(view)
             }
         }
-        fillPlaceHolder(originImageList, totalCount, firstPos, lastPos)
-        val views = arrayOfNulls<View>(originImageList.size)
-        for (i in originImageList.indices) {
-            views[i] = originImageList[i]
+        val views = arrayOfNulls<View>(newOriginImageViewList.size)
+        for (i in newOriginImageViewList.indices) {
+            views[i] = newOriginImageViewList[i]
         }
         return views(views)
     }
 
-    private fun fillPlaceHolder(originImageList: MutableList<View?>, totalCount: Int, firstPos: Int, lastPos: Int) {
-        if (firstPos > 0) {
-            for (pos in firstPos downTo 1) {
-                originImageList.add(0, null)
-            }
-        }
-        if (lastPos < totalCount) {
-            for (i in totalCount - 1 - lastPos downTo 1) {
-                originImageList.add(null)
-            }
-        }
-    }
 
     fun views(views: Array<View?>): MojitoWrapper {
         val list = mutableListOf<ViewParams>()
