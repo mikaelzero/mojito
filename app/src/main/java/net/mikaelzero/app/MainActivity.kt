@@ -20,6 +20,7 @@ class MainActivity : AppCompatActivity() {
         "查看原图按钮功能",
         "Activity 自定义覆盖层",
         "瀑布流",
+        "不同场景下的使用",
         "视频，视频和图片共用",
         "清除缓存"
     )
@@ -31,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         "load target image by button",
         "Activity Cover",
         "Stagger Layout",
+        "Different scenes",
         "load Video",
         "clean cache"
     )
@@ -49,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        adapter.setOnItemClickListener { adapter, view, position ->
+        adapter.setOnItemClickListener { _, view, position ->
             when (position) {
                 0 -> {
                     PreviewActivity.imageLoader = 0
@@ -79,9 +81,13 @@ class MainActivity : AppCompatActivity() {
                     startActivity(Intent(this@MainActivity, StaggerActivity::class.java))
                 }
                 7 -> {
-                    startActivity(Intent(this@MainActivity, VideoActivity::class.java))
+                    val intent = Intent(this@MainActivity, DifferentScenesActivity::class.java)
+                    startActivity(intent)
                 }
                 8 -> {
+                    startActivity(Intent(this@MainActivity, VideoActivity::class.java))
+                }
+                9 -> {
                     Mojito.cleanCache()
                 }
             }

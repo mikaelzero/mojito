@@ -46,7 +46,7 @@ class PreviewActivity : AppCompatActivity() {
         adapter.setOnItemClickListener { _, view, position ->
             Mojito.with(context)
                 .urls(SourceUtil.getNormalImages())
-                .position(position)
+                .position(position,headerSize = 1,footerSize = 1)
                 .views(recyclerView, R.id.srcImageView)
                 .autoLoadTarget(false)
                 .setProgressLoader(object : InstanceLoader<IProgress> {

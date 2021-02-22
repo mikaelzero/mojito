@@ -6,10 +6,10 @@
     android:background="@color/colorPrimary">
 
     <ImageView
-        android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
         android:layout_gravity="center"
-        android:layout_margin="16dp"
+        android:layout_margin="8dp"
         android:src="@mipmap/ic_launcher" />
 
 </FrameLayout>
