@@ -2,8 +2,6 @@
 
 [English](https://github.com/MikaelZero/mojito/blob/master/README_en.md)
 
-## 如果这个库帮助到了你，希望能够分享给你身边的人。
-
 ## 二维码下载体验
 
 <img src="https://cdn.nlark.com/yuque/0/2020/png/252337/1592720888032-assets/web-upload/30908db5-767a-49f6-9564-5b8264b07c14.png" width="180">
