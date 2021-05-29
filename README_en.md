@@ -1,4 +1,4 @@
-# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) ![Version](https://img.shields.io/badge/version-1.7.0-blue.svg) ![Size](https://img.shields.io/badge/size-242K-brightgreen.svg)
+# mojito   ![Language](https://img.shields.io/badge/language-java-orange.svg) ![Language](https://img.shields.io/badge/language-kotlin-orange.svg) [![](https://jitpack.io/v/MikaelZero/mojito.svg)](https://jitpack.io/#MikaelZero/mojito)
 
 ## Demo Download
 
@@ -25,20 +25,18 @@
 ```gradle
 allprojects {
     repositories {
-        maven { url 'https://dl.bintray.com/mikaelzero/maven'}
+        maven { url 'https://jitpack.io' }
     }
 }
 
-implementation 'net.mikaelzero.mojito:core:VERSION'
-
+implementation "com.github.MikaelZero.mojito:mojito:$mojito_version"
 //support long image and gif with Sketch
-implementation 'net.mikaelzero.mojito:SketchImageFactory:VERSION'
+implementation "com.github.MikaelZero.mojito:SketchImageViewLoader:$mojito_version"
 
-//load with fresco
-implementation 'net.mikaelzero.mojito:FrescoImageLoader:VERSION'
 //load with glide
-implementation 'net.mikaelzero.mojito:GlideImageLoader:VERSION'
-
+implementation "com.github.MikaelZero.mojito:GlideImageLoader:$mojito_version"
+//load with fresco
+implementation "com.github.MikaelZero.mojito:FrescoImageLoader:$mojito_version"
 ```
 
 

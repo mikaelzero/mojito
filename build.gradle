@@ -3,14 +3,14 @@
 buildscript {
     ext {
         kotlin_version = '1.4.10'
-        mojito_version = '1.7.0'
+        mojito_version = '1.7.1'
     }
 
     repositories {
         google()
+        maven { url "https://jitpack.io" }
         jcenter()
         mavenCentral()
-        maven { url "https://jitpack.io" }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:4.2.1'
@@ -22,9 +22,9 @@ buildscript {
 allprojects {
     repositories {
         google()
+        maven { url "https://jitpack.io" }
         jcenter()
         mavenCentral()
-        maven { url "https://jitpack.io" }
     }
 }
 
