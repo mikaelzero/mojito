@@ -31,14 +31,14 @@ allprojects {
     }
 }
 
-implementation "com.github.MikaelZero.mojito:mojito:$mojito_version"
+implementation "com.github.mikaelzero.mojito:mojito:$mojito_version"
 //support long image and gif with Sketch
-implementation "com.github.MikaelZero.mojito:SketchImageViewLoader:$mojito_version"
+implementation "com.github.mikaelzero.mojito:SketchImageViewLoader:$mojito_version"
 
 //load with glide
-implementation "com.github.MikaelZero.mojito:GlideImageLoader:$mojito_version"
+implementation "com.github.mikaelzero.mojito:GlideImageLoader:$mojito_version"
 //load with fresco
-implementation "com.github.MikaelZero.mojito:FrescoImageLoader:$mojito_version"
+implementation "com.github.mikaelzero.mojito:FrescoImageLoader:$mojito_version"
 ```
 
 

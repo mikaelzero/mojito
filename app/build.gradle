@@ -54,8 +54,8 @@ dependencies {
     implementation project(':FrescoImageLoader')
     implementation project(':SketchImageViewLoader')
 
-//    implementation "com.github.MikaelZero.mojito:mojito:$mojito_version"
-//    implementation "com.github.MikaelZero.mojito:SketchImageViewLoader:$mojito_version"
-//    implementation "com.github.MikaelZero.mojito:GlideImageLoader:$mojito_version"
-//    implementation "com.github.MikaelZero.mojito:FrescoImageLoader:$mojito_version"
+//    implementation "com.github.mikaelzero.mojito:mojito:$mojito_version"
+//    implementation "com.github.mikaelzero.mojito:SketchImageViewLoader:$mojito_version"
+//    implementation "com.github.mikaelzero.mojito:GlideImageLoader:$mojito_version"
+//    implementation "com.github.mikaelzero.mojito:FrescoImageLoader:$mojito_version"
 }
