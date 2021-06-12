@@ -1,6 +1,5 @@
 package net.mikaelzero.mojito.impl
 
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.FragmentActivity
 import net.mikaelzero.mojito.MojitoView
@@ -12,6 +11,9 @@ import net.mikaelzero.mojito.interfaces.OnMojitoListener
  * @Description:
  */
  abstract class SimpleMojitoViewCallback : OnMojitoListener {
+    override fun onStartAnim(position: Int) {
+
+    }
     override fun onClick(view: View, x: Float, y: Float, position: Int) {
 
     }
@@ -22,7 +24,7 @@ import net.mikaelzero.mojito.interfaces.OnMojitoListener
     override fun onShowFinish(mojitoView: MojitoView, showImmediately: Boolean) {
     }
 
-    override fun onMojitoViewFinish() {
+    override fun onMojitoViewFinish(pagePosition:Int) {
     }
 
     override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) {
@@ -30,5 +32,9 @@ import net.mikaelzero.mojito.interfaces.OnMojitoListener
 
    override fun onLongImageMove(ratio: Float) {
    }
+
+    override fun onViewPageSelected(position: Int) {
+
+    }
 
 }

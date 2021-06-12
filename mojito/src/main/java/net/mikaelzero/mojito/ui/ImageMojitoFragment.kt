@@ -29,7 +29,7 @@ import java.io.File
 
 class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     lateinit var fragmentConfig: FragmentConfig
-    var showView: View? = null
+    private var showView: View? = null
     private var mImageLoader: ImageLoader? = null
     private var mViewLoadFactory: ImageViewLoadFactory? = null
     private var contentLoader: ContentLoader? = null
@@ -47,7 +47,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             return
         }
         if (arguments != null) {
-            fragmentConfig = arguments!!.getParcelable(MojitoConstant.KEY_FRAGMENT_PARAMS)!!
+            fragmentConfig = requireArguments().getParcelable(MojitoConstant.KEY_FRAGMENT_PARAMS)!!
         }
         mImageLoader = imageLoader()
         mViewLoadFactory = if (ImageMojitoActivity.multiContentLoader != null) {
@@ -71,7 +71,6 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mojitoView?.setOnMojitoViewCallback(this)
         mojitoView?.setContentLoader(contentLoader, fragmentConfig.originUrl, fragmentConfig.targetUrl)
         showView = contentLoader?.providerRealView()
-
 
         contentLoader?.onTapCallback(object : OnTapCallback {
             override fun onTap(view: View, x: Float, y: Float) {
@@ -122,6 +121,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
 
     private fun startAnim(w: Int, h: Int, originLoadFail: Boolean = false, needLoadImageUrl: String = "") {
+        if (!fragmentConfig.showImmediately) {
+            ImageMojitoActivity.onMojitoListener?.onStartAnim(fragmentConfig.position)
+        }
         if (fragmentConfig.viewParams == null) {
             mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
         } else {
@@ -307,7 +309,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         mojitoView?.backToMin()
     }
 
-    override fun providerContext(): Fragment? {
+    override fun providerContext(): Fragment {
         return this
     }
 
@@ -337,7 +339,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     override fun onMojitoViewFinish() {
-        ImageMojitoActivity.onMojitoListener?.onMojitoViewFinish()
+        ImageMojitoActivity.onMojitoListener?.onMojitoViewFinish(fragmentConfig.position)
         if (context is ImageMojitoActivity) {
             (context as ImageMojitoActivity).finishView()
         }

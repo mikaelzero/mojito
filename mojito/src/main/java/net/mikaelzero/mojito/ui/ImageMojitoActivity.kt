@@ -130,6 +130,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                     imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
                     viewPagerBeans.size, position
                 )
+                onMojitoListener?.onViewPageSelected(position)
             }
 
         })

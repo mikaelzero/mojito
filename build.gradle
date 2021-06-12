@@ -3,7 +3,7 @@
 buildscript {
     ext {
         kotlin_version = '1.4.10'
-        mojito_version = '1.7.1'
+        mojito_version = '1.7.2'
     }
 
     repositories {

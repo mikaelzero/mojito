@@ -525,6 +525,9 @@ public class MojitoView extends FrameLayout {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+                if (isMultiFinger && mMoveDownTranslateY != 0) {
+                    return true;
+                }
                 if (isAnimating || isMultiFinger) {
                     break;
                 }
@@ -542,6 +545,7 @@ public class MojitoView extends FrameLayout {
                     }
                     break;
                 }
+                Log.e("1", "dispatchTouchEvent: isMultiFinger" + isMultiFinger);
                 if (contentLoader.dispatchTouchEvent(isDrag, false, mMoveDownTranslateY < 0, Math.abs(mTranslateX) > Math.abs(mMoveDownTranslateY))) {
                     //if is long image,top or bottom or minScale, need handle event
                     //if image scale<1(origin scale) , need handle event

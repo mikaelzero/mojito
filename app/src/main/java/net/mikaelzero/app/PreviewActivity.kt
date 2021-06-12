@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.facebook.drawee.backends.pipeline.info.ForwardingImageOriginListener
 import kotlinx.android.synthetic.main.activity_display.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
@@ -46,7 +47,7 @@ class PreviewActivity : AppCompatActivity() {
         adapter.setOnItemClickListener { _, view, position ->
             Mojito.with(context)
                 .urls(SourceUtil.getNormalImages())
-                .position(position,headerSize = 1,footerSize = 1)
+                .position(position, headerSize = 1, footerSize = 1)
                 .views(recyclerView, R.id.srcImageView)
                 .autoLoadTarget(false)
                 .setProgressLoader(object : InstanceLoader<IProgress> {
@@ -61,6 +62,27 @@ class PreviewActivity : AppCompatActivity() {
 
                     override fun onClick(view: View, x: Float, y: Float, position: Int) {
                         Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()
+                    }
+
+                    override fun onStartAnim(position: Int) {
+                        recyclerView.getChildAt(position+1).findViewById<View?>(R.id.srcImageView)?.visibility = View.GONE
+                    }
+
+                    override fun onMojitoViewFinish(pagePosition: Int) {
+                        for (x in 0 until recyclerView.childCount) {
+                            recyclerView.getChildAt(x).findViewById<View?>(R.id.srcImageView)?.visibility = View.VISIBLE
+                        }
+                    }
+
+                    override fun onViewPageSelected(position: Int) {
+                        for (x in 0 until recyclerView.childCount) {
+                            if ((position + 1) == x) {
+                                recyclerView.getChildAt(x).findViewById<View?>(R.id.srcImageView)?.visibility = View.GONE
+                            } else {
+                                recyclerView.getChildAt(x).findViewById<View?>(R.id.srcImageView)?.visibility = View.VISIBLE
+                            }
+                        }
+
                     }
                 })
                 .setIndicator(NumIndicator())

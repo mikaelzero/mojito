@@ -10,10 +10,12 @@ import net.mikaelzero.mojito.MojitoView
  * @Description:
  */
 interface OnMojitoListener {
+    fun onStartAnim(position: Int)
     fun onClick(view: View, x: Float, y: Float, position: Int)
     fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int)
     fun onShowFinish(mojitoView: MojitoView, showImmediately: Boolean)
-    fun onMojitoViewFinish()
+    fun onMojitoViewFinish(pagePosition: Int)
     fun onDrag(view: MojitoView, moveX: Float, moveY: Float)
     fun onLongImageMove(ratio: Float)
+    fun onViewPageSelected(position: Int)
 }
