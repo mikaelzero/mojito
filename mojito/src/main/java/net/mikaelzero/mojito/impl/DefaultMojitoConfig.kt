@@ -8,7 +8,7 @@ import net.mikaelzero.mojito.interfaces.IMojitoConfig
  * @Description:
  */
 open class DefaultMojitoConfig : IMojitoConfig {
-    override fun duration(): Long = 300
+    override fun duration(): Long = 250
     override fun maxTransYRatio(): Float = 0.16f
     override fun errorDrawableResId(): Int = 0
     override fun transparentNavigationBar(): Boolean = true
