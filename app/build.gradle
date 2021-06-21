@@ -42,7 +42,6 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4'
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     implementation "com.daimajia.swipelayout:library:1.2.0@aar"
     implementation "com.facebook.fresco:fresco:2.1.0"
     implementation 'org.salient.artvideoplayer:artplayer-core:1.1.0'

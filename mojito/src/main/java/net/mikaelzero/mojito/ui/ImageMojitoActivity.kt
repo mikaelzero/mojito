@@ -151,6 +151,8 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         iIndicator = null
         activityCoverLoader = null
         onMojitoListener = null
+        viewParams = null
+        fragmentMap.clear()
         Mojito.clean()
         finish()
         overridePendingTransition(0, 0)
