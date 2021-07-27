@@ -33,6 +33,8 @@ implementation "com.github.mikaelzero.mojito:mojito:$mojito_version"
 //support long image and gif with Sketch
 implementation "com.github.mikaelzero.mojito:SketchImageViewLoader:$mojito_version"
 
+//load with coil
+implementation "com.github.mikaelzero.mojito:coilimageloader:$mojito_version"
 //load with glide
 implementation "com.github.mikaelzero.mojito:GlideImageLoader:$mojito_version"
 //load with fresco
