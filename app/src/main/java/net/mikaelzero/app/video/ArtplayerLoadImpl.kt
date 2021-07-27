@@ -1,31 +1,26 @@
 package net.mikaelzero.app.video
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.RectF
 import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.ItemTouchUIUtil
+import coil.load
 import com.bumptech.glide.Glide
+import net.mikaelzero.app.MainActivity
 import net.mikaelzero.app.R
-import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.interfaces.OnMojitoViewCallback
 import net.mikaelzero.mojito.loader.ContentLoader
 import net.mikaelzero.mojito.loader.OnLongTapCallback
 import net.mikaelzero.mojito.loader.OnTapCallback
-import net.mikaelzero.mojito.tools.Utils
-import org.salient.artplayer.MediaPlayerManager
 import org.salient.artplayer.conduction.PlayerState
 import org.salient.artplayer.conduction.ScaleType
 import org.salient.artplayer.player.SystemMediaPlayer
-import org.salient.artplayer.ui.VideoView
 
 /**
  * @Author:         MikaelZero
@@ -55,7 +50,20 @@ class ArtplayerLoadImpl : ContentLoader {
         videoView.setScreenScale(ScaleType.DEFAULT)
 
         videoView.background = null
-        Glide.with(context).load(originUrl).into(videoView.cover)
+
+
+        when (MainActivity.loaderType) {
+            MainActivity.LoaderType.Coil -> {
+                videoView.cover.load(originUrl)
+            }
+            MainActivity.LoaderType.Glide -> {
+                Glide.with(context).load(originUrl).into(videoView.cover)
+            }
+            MainActivity.LoaderType.Fresco -> {
+                videoView.cover.setImageURI(Uri.parse(originUrl))
+            }
+        }
+
         if (targetUrl != null) {
             videoView.mediaPlayer = SystemMediaPlayer().apply {
                 setDataSource(videoView.context, Uri.parse(targetUrl))

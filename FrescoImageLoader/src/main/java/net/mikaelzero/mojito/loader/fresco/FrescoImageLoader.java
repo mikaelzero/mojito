@@ -72,7 +72,6 @@ public final class FrescoImageLoader implements ImageLoader {
             mExecutorSupplier.forLocalStorageRead().execute(new Runnable() {
                 @Override
                 public void run() {
-                    callback.onCacheHit(ImageInfoExtractor.getImageType(localCache), localCache);
                     callback.onSuccess(localCache);
                 }
             });
@@ -92,7 +91,6 @@ public final class FrescoImageLoader implements ImageLoader {
                 protected void onSuccess(final File image) {
                     rememberTempFile(requestId, image);
                     callback.onFinish();
-                    callback.onCacheMiss(ImageInfoExtractor.getImageType(image), image);
                     callback.onSuccess(image);
                 }
 

@@ -16,20 +16,14 @@ import okhttp3.OkHttpClient
 import java.io.File
 import java.util.*
 
-open class GlideImageLoader constructor(val context: Context, okHttpClient: OkHttpClient?) : ImageLoader {
+open class GlideImageLoader private constructor(val context: Context, okHttpClient: OkHttpClient?) : ImageLoader {
     private val mRequestManager: RequestManager
     private val mFlyingRequestTargets: MutableMap<Int, ImageDownloadTarget> = HashMap(3)
 
     override fun loadImage(requestId: Int, uri: Uri, onlyRetrieveFromCache: Boolean, callback: ImageLoader.Callback) {
-        val cacheMissed = BooleanArray(1)
         val target: ImageDownloadTarget = object : ImageDownloadTarget(uri.toString()) {
             override fun onResourceReady(resource: File, transition: Transition<in File>?) {
                 super.onResourceReady(resource, transition)
-                if (cacheMissed[0]) {
-                    callback.onCacheMiss(ImageInfoExtractor.getImageType(resource), resource)
-                } else {
-                    callback.onCacheHit(ImageInfoExtractor.getImageType(resource), resource)
-                }
                 callback.onSuccess(resource)
             }
 
@@ -39,7 +33,6 @@ open class GlideImageLoader constructor(val context: Context, okHttpClient: OkHt
             }
 
             override fun onDownloadStart() {
-                cacheMissed[0] = true
                 callback.onStart()
             }
 
@@ -51,7 +44,6 @@ open class GlideImageLoader constructor(val context: Context, okHttpClient: OkHt
                 callback.onFinish()
             }
         }
-//        cancel(requestId)
         rememberTarget(requestId, target)
         downloadImageInto(uri, target, onlyRetrieveFromCache)
     }

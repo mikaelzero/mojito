@@ -8,13 +8,9 @@ import kotlinx.android.synthetic.main.activity_target.*
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
 import net.mikaelzero.mojito.impl.DefaultTargetFragmentCover
-import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
-import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 class ActivityCoverActivity : AppCompatActivity() {
     var context: Context? = null
@@ -23,12 +19,8 @@ class ActivityCoverActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         context = this
         setContentView(R.layout.activity_cover)
-        Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-        val adapter = GlideAdapter()
+        val adapter = ImageAdapter()
         adapter.setList(SourceUtil.getTargetButtonSmall())
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->

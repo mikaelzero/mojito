@@ -9,6 +9,7 @@ import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 
 class App : Application() {
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         MultiDex.install(this)
@@ -16,9 +17,6 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
+
     }
 }

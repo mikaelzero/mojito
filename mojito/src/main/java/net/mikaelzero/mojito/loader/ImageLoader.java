@@ -20,9 +20,6 @@ public interface ImageLoader {
 
     @UiThread
     interface Callback {
-        void onCacheHit(int imageType, File image);
-
-        void onCacheMiss(int imageType, File image);
 
         void onStart();
 

@@ -68,13 +68,17 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         iProgress = ImageMojitoActivity.progressLoader?.providerInstance()
         iProgress?.attach(fragmentConfig.position, loadingLayout)
         contentLoader = mViewLoadFactory?.newContentLoader()
-        mojitoView?.setOnMojitoViewCallback(this)
-        mojitoView?.setContentLoader(contentLoader, fragmentConfig.originUrl, fragmentConfig.targetUrl)
+
+        mojitoView.setBackgroundAlpha(
+            if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) 1f else if (fragmentConfig.showImmediately) 1f else 0f
+        )
+        mojitoView.setOnMojitoViewCallback(this)
+        mojitoView.setContentLoader(contentLoader, fragmentConfig.originUrl, fragmentConfig.targetUrl)
         showView = contentLoader?.providerRealView()
 
         contentLoader?.onTapCallback(object : OnTapCallback {
             override fun onTap(view: View, x: Float, y: Float) {
-                mojitoView?.backToMin()
+                mojitoView.backToMin()
                 ImageMojitoActivity.onMojitoListener?.onClick(view, x, y, fragmentConfig.position)
             }
         })
@@ -125,21 +129,20 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             ImageMojitoActivity.onMojitoListener?.onStartAnim(fragmentConfig.position)
         }
         if (fragmentConfig.viewParams == null) {
-            mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
+            mojitoView?.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) true else fragmentConfig.showImmediately)
         } else {
             mojitoView?.putData(
                 fragmentConfig.viewParams!!.getLeft(), fragmentConfig.viewParams!!.getTop(),
                 fragmentConfig.viewParams!!.getWidth(), fragmentConfig.viewParams!!.getHeight(),
                 w, h
             )
-            mojitoView?.show(if (ImageMojitoActivity.hasShowedAnim) true else fragmentConfig.showImmediately)
+            mojitoView?.show(if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) true else fragmentConfig.showImmediately)
         }
-        ImageMojitoActivity.hasShowedAnim = true
 
         val targetEnable = if (ImageMojitoActivity.multiContentLoader == null) {
             true
         } else {
-            ImageMojitoActivity.multiContentLoader!!.providerEnableTargetLoad(fragmentConfig.position)
+            ImageMojitoActivity.multiContentLoader?.providerEnableTargetLoad(fragmentConfig.position) ?: false
         }
         //查看原图的情况下  如果缩略图加载失败了  需要先加载缩略图  再根据条件判断是否要去加载原图
         if (originLoadFail && needLoadImageUrl.isNotEmpty()) {
@@ -360,6 +363,9 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     override fun showFinish(mojitoView: MojitoView, showImmediately: Boolean) {
         ImageMojitoActivity.onMojitoListener?.onShowFinish(mojitoView, showImmediately)
+        if (!showImmediately) {
+            ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] = true
+        }
     }
 
     override fun onLongImageMove(ratio: Float) {

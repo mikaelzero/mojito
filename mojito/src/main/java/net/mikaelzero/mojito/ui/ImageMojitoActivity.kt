@@ -52,7 +52,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             return
         }
         activityConfig = DataWrapUtil.get()!!
-        val currentPosition = activityConfig.position ?: 0
+        val currentPosition = activityConfig.position
         viewParams = activityConfig.viewParams
 
         val viewPagerBeans = mutableListOf<ViewPagerBean>()
@@ -166,8 +166,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     }
 
     companion object {
-        var hasShowedAnim = false
-
+        var hasShowedAnimMap = hashMapOf<Int, Boolean>()
         var progressLoader: InstanceLoader<IProgress>? = null
         var fragmentCoverLoader: InstanceLoader<FragmentCoverLoader>? = null
         var multiContentLoader: MultiContentLoader? = null

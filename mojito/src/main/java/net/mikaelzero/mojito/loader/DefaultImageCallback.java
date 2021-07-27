@@ -8,15 +8,6 @@ import java.io.File;
  * @Description:
  */
 public class DefaultImageCallback implements ImageLoader.Callback {
-    @Override
-    public void onCacheHit(int imageType, File image) {
-
-    }
-
-    @Override
-    public void onCacheMiss(int imageType, File image) {
-
-    }
 
     @Override
     public void onStart() {

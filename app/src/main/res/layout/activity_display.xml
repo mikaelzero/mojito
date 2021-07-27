@@ -13,13 +13,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/singleIv"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop" />
 
-        <ImageView
+        <FrameLayout
             android:id="@+id/longHorIv"
             android:layout_width="match_parent"
             android:layout_height="200dp"

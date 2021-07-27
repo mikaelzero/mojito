@@ -2,6 +2,17 @@
 
 [English](https://github.com/MikaelZero/mojito/blob/master/README_en.md)
 
+
+## 功能列表
+
+- 支持Coil图片加载器
+- 支持Glide图片加载器
+- 支持Fresco图片加载器
+- 支持视频图片混合、GIF、图片预览
+- 支持拖拽关闭
+- 支持自定义页面索引指示器、进度条、Cover
+- 支持原图加载策略
+
 ## 二维码下载体验
 
 <img src="https://cdn.nlark.com/yuque/0/2020/png/252337/1592720888032-assets/web-upload/30908db5-767a-49f6-9564-5b8264b07c14.png" width="180">

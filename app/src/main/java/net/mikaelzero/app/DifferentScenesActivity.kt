@@ -3,21 +3,11 @@ package net.mikaelzero.app
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.activity_different_scenes.*
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.impl.DefaultPercentProgress
 import net.mikaelzero.mojito.impl.NumIndicator
-import net.mikaelzero.mojito.impl.SimpleMojitoViewCallback
-import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.loader.InstanceLoader
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 class DifferentScenesActivity : AppCompatActivity() {
     var context: Context? = null
@@ -26,12 +16,8 @@ class DifferentScenesActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         context = this
         setContentView(R.layout.activity_different_scenes)
-        Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-        val adapter = GlideAdapter2()
+        val adapter = DifferentScenesAdapter()
         val list = mutableListOf<UrlBean>()
         list.add(UrlBean("", 0))
         list.add(UrlBean("", 0))

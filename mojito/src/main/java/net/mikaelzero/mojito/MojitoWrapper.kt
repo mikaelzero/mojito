@@ -220,7 +220,7 @@ class MojitoWrapper constructor(val context: Context?) {
 
     fun start() {
         assert()
-        ImageMojitoActivity.hasShowedAnim = false
+        ImageMojitoActivity.hasShowedAnimMap[configBean.position] = false
         DataWrapUtil.put(configBean)
         val activity = scanForActivity(context)
         val intent = Intent(activity, ImageMojitoActivity::class.java)

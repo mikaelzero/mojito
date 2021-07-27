@@ -14,8 +14,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-public abstract class ImageDownloadSubscriber
-        extends BaseDataSubscriber<CloseableReference<PooledByteBuffer>> {
+public abstract class ImageDownloadSubscriber extends BaseDataSubscriber<CloseableReference<PooledByteBuffer>> {
     private static int sCounter = 0;
 
     private final File mTempFile;
@@ -24,8 +23,7 @@ public abstract class ImageDownloadSubscriber
 
     public ImageDownloadSubscriber(Context context) {
         // no need for any file extension, use a counter to avoid conflict.
-        mTempFile =
-            new File(context.getCacheDir(), System.currentTimeMillis() + "_" + nextCounter());
+        mTempFile = new File(context.getCacheDir(), System.currentTimeMillis() + "_" + nextCounter());
     }
 
     private static synchronized int nextCounter() {

@@ -4,17 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.bumptech.glide.Glide
 import com.gyf.immersionbar.ImmersionBar
 import kotlinx.android.synthetic.main.activity_target.recyclerView
 import kotlinx.android.synthetic.main.activity_video.*
-import net.mikaelzero.app.GlideAdapter
+import net.mikaelzero.app.ImageAdapter
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
+import net.mikaelzero.app.addImg
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.loader.MultiContentLoader
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
 import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 class VideoActivity : AppCompatActivity() {
@@ -25,11 +24,10 @@ class VideoActivity : AppCompatActivity() {
         context = this
         setContentView(R.layout.activity_video)
         ImmersionBar.with(this).transparentBar().init()
-        Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
-        Glide.with(this).load(SourceUtil.getSingleVideoImages()).into(singleVideoIv)
+
+
+        singleVideoIv.addImg(SourceUtil.getSingleVideoImages())
+
         singleVideoIv.setOnClickListener {
             Mojito.with(context)
                 .urls(SourceUtil.getSingleVideoImages(), SourceUtil.getSingleVideoTargetImages())
@@ -46,7 +44,7 @@ class VideoActivity : AppCompatActivity() {
                 .start()
         }
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-        val adapter = GlideAdapter()
+        val adapter = ImageAdapter()
         adapter.setList(SourceUtil.getVideoImages())
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->

@@ -12,8 +12,6 @@ import net.mikaelzero.mojito.impl.NumIndicator
 import net.mikaelzero.mojito.interfaces.IProgress
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 class TargetActivity : AppCompatActivity() {
     var context: Context? = null
@@ -22,12 +20,8 @@ class TargetActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         context = this
         setContentView(R.layout.activity_target)
-        Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
         recyclerView.layoutManager = GridLayoutManager(this, 3)
-        val adapter = GlideAdapter()
+        val adapter = ImageAdapter()
         adapter.setList(SourceUtil.getTargetButtonSmall())
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->

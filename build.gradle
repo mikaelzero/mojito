@@ -2,18 +2,18 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.4.10'
-        mojito_version = '1.7.3'
+        kotlin_version = '1.5.21'
+        mojito_version = '1.8.0'
     }
 
     repositories {
         google()
         maven { url "https://jitpack.io" }
-        jcenter()
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:4.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
@@ -23,8 +23,8 @@ allprojects {
     repositories {
         google()
         maven { url "https://jitpack.io" }
-        jcenter()
         mavenCentral()
+        jcenter()
     }
 }
 
