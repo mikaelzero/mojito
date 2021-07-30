@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.activity_local.*
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
+import net.mikaelzero.app.databinding.ActivityLocalBinding
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.NumIndicator
 
@@ -22,9 +22,11 @@ import net.mikaelzero.mojito.impl.NumIndicator
 class LocalImageActivity : AppCompatActivity() {
 
     private var images: List<String>? = null
+    private lateinit var binding: ActivityLocalBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_local)
+        binding = ActivityLocalBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
                 this,
@@ -41,15 +43,16 @@ class LocalImageActivity : AppCompatActivity() {
         if (images != null && !images.isNullOrEmpty()) {
             val localAdapter = LocalImageAdapter()
             localAdapter.setList(images)
-            recyclerView.adapter = localAdapter
-            recyclerView.layoutManager = GridLayoutManager(this, 3)
+            binding.recyclerView.adapter = localAdapter
+            binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
             localAdapter.setOnItemClickListener { adapter, view, position ->
-                Mojito.with(this)
-                    .urls(images)
-                    .position(position)
-                    .views(recyclerView, R.id.srcImageView)
-                    .setIndicator(NumIndicator())
-                    .start()
+                Mojito.start(this) {
+                    urls(images)
+                    position(position)
+                    views(binding.recyclerView, R.id.srcImageView)
+                    setIndicator(NumIndicator())
+                }
+
             }
         }
     }

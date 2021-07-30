@@ -4,7 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import kotlinx.android.synthetic.main.activity_main.*
+import coil.imageLoader
+import coil.util.CoilUtils
+import com.bumptech.glide.Glide
+import com.facebook.drawee.backends.pipeline.Fresco
+import net.mikaelzero.app.databinding.ActivityMainBinding
 import net.mikaelzero.app.local.LocalImageActivity
 import net.mikaelzero.app.stagger.StaggerActivity
 import net.mikaelzero.app.video.VideoActivity
@@ -59,12 +63,15 @@ class MainActivity : AppCompatActivity() {
 
     var startType: StartType = StartType.Normal
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         setImageLoader(applicationContext, LoaderType.Coil)
-        coil.isChecked = true
-        loaderRb.setOnCheckedChangeListener { group, checkedId ->
+        binding.coil.isChecked = true
+        binding.loaderRb.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.coil -> {
                     setImageLoader(applicationContext, LoaderType.Coil)
@@ -77,8 +84,8 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        normal.isChecked = true
-        functionRg.setOnCheckedChangeListener { group, checkedId ->
+        binding.normal.isChecked = true
+        binding.functionRg.setOnCheckedChangeListener { group, checkedId ->
             when (checkedId) {
                 R.id.normal -> {
                     startType = StartType.Normal
@@ -103,7 +110,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        startFb.setOnClickListener {
+        binding.startFb.setOnClickListener {
             when (startType) {
                 StartType.Normal -> {
                     startActivity(Intent(this@MainActivity, PreviewActivity::class.java))
@@ -128,9 +135,17 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        cacheBt.setOnClickListener {
+        binding.cacheBt.setOnClickListener {
+            imageLoader.memoryCache.clear()
+            CoilUtils.createDefaultCache(this).directory.delete()
             CoilImageLoader.with(applicationContext).cleanCache()
+            Glide.get(this).clearMemory()
+            Thread { Glide.get(this).clearDiskCache() }.start()
             GlideImageLoader.with(applicationContext).cleanCache()
+            val imagePipeline = Fresco.getImagePipeline()
+            imagePipeline.clearMemoryCaches()
+            imagePipeline.clearDiskCaches()
+            imagePipeline.clearCaches()
             FrescoImageLoader.with(applicationContext).cleanCache()
         }
     }

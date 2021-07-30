@@ -15,6 +15,7 @@ import net.mikaelzero.mojito.loader.ImageLoader
 import okhttp3.OkHttpClient
 import java.io.File
 import java.util.*
+import kotlin.concurrent.thread
 
 open class GlideImageLoader private constructor(val context: Context, okHttpClient: OkHttpClient?) : ImageLoader {
     private val mRequestManager: RequestManager
@@ -67,7 +68,7 @@ open class GlideImageLoader private constructor(val context: Context, okHttpClie
 
     override fun cleanCache() {
         Glide.get(context).clearMemory()
-        Thread(Runnable { Glide.get(context).clearDiskCache() }).start()
+        Thread { Glide.get(context).clearDiskCache() }.start()
     }
 
     private fun downloadImageInto(uri: Uri?, target: Target<File>, onlyRetrieveFromCache: Boolean) {

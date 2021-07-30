@@ -1,50 +1,60 @@
 package net.mikaelzero.mojito.ui
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.Window
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.gyf.immersionbar.ImmersionBar
-import kotlinx.android.synthetic.main.activity_image.*
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.R
 import net.mikaelzero.mojito.bean.ActivityConfig
 import net.mikaelzero.mojito.bean.FragmentConfig
-import net.mikaelzero.mojito.bean.ViewParams
 import net.mikaelzero.mojito.bean.ViewPagerBean
+import net.mikaelzero.mojito.bean.ViewParams
+import net.mikaelzero.mojito.databinding.ActivityImageBinding
 import net.mikaelzero.mojito.interfaces.*
 import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
-import net.mikaelzero.mojito.tools.MojitoConstant
 
 class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
+    private lateinit var binding: ActivityImageBinding
     private var viewParams: List<ViewParams>? = null
     lateinit var activityConfig: ActivityConfig
-    private lateinit var imageViewPagerAdapter: FragmentPagerAdapter
+    private lateinit var imageViewPagerAdapter: FragmentStateAdapter
     val fragmentMap = hashMapOf<Int, ImageMojitoFragment?>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
         if (Mojito.mojitoConfig().transparentNavigationBar()) {
             ImmersionBar.with(this).transparentBar().init()
         } else {
             ImmersionBar.with(this).transparentStatusBar().init()
         }
-        setContentView(R.layout.activity_image)
+        binding = ActivityImageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        userCustomLayout.removeAllViews()
+        binding.userCustomLayout.removeAllViews()
         activityCoverLoader?.let {
             activityCoverLoader?.attach(this)
-            userCustomLayout.addView(activityCoverLoader!!.providerView())
+            binding.userCustomLayout.addView(activityCoverLoader!!.providerView())
         }
 
         if (DataWrapUtil.config == null) {
@@ -88,8 +98,10 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 )
             )
         }
-        imageViewPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-            override fun getItem(position: Int): Fragment {
+        imageViewPagerAdapter = object : FragmentStateAdapter(supportFragmentManager, lifecycle) {
+            override fun getItemCount(): Int = viewPagerBeans.size
+
+            override fun createFragment(position: Int): Fragment {
                 val fragment = fragmentMap[position]
                 return if (fragment == null) {
                     val fragmentConfig = FragmentConfig(
@@ -107,16 +119,11 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                     fragment
                 }
             }
-
-            override fun getCount(): Int = viewPagerBeans.size
         }
-        viewPager.adapter = imageViewPagerAdapter
-        viewPager.setCurrentItem(currentPosition, false)
-        activityCoverLoader?.pageChange(
-            imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
-            viewPagerBeans.size, currentPosition
-        )
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.viewPager.adapter = imageViewPagerAdapter
+        binding.viewPager.setCurrentItem(currentPosition, false)
+        activityCoverLoader?.pageChange(getCurrentFragment(), viewPagerBeans.size, currentPosition)
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageScrollStateChanged(state: Int) {
 
             }
@@ -126,22 +133,19 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             }
 
             override fun onPageSelected(position: Int) {
-                activityCoverLoader?.pageChange(
-                    imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment,
-                    viewPagerBeans.size, position
-                )
+                activityCoverLoader?.pageChange(getCurrentFragment(), viewPagerBeans.size, position)
                 onMojitoListener?.onViewPageSelected(position)
             }
-
         })
         if (!activityConfig.originImageUrls.isNullOrEmpty()) {
-            iIndicator?.attach(indicatorLayout)
-            iIndicator?.onShow(viewPager)
+            iIndicator?.attach(binding.indicatorLayout)
+            iIndicator?.onShow(binding.viewPager)
         }
     }
 
     fun setViewPagerLock(isLock: Boolean) {
-        viewPager.isLocked = isLock
+//        viewPager.isLocked = isLock
+        binding.viewPager.isUserInputEnabled = isLock
     }
 
     fun finishView() {
@@ -158,9 +162,10 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         overridePendingTransition(0, 0)
     }
 
+
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_BACK) {
-            (imageViewPagerAdapter.getItem(viewPager.currentItem) as ImageMojitoFragment).backToMin()
+            (getCurrentFragment() as ImageMojitoFragment).backToMin()
             true
         } else super.onKeyDown(keyCode, event)
     }
@@ -176,7 +181,11 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     }
 
     override fun getCurrentFragment(): IMojitoFragment {
-        return imageViewPagerAdapter.getItem(viewPager.currentItem) as IMojitoFragment
+        return supportFragmentManager.findFragmentByTag(
+            "f" + imageViewPagerAdapter.getItemId(
+                binding.viewPager.currentItem
+            )
+        ) as IMojitoFragment
     }
 
     override fun getContext(): Context {

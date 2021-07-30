@@ -2,7 +2,6 @@
 
 [English](https://github.com/MikaelZero/mojito/blob/master/README_en.md)
 
-
 ## 功能列表
 
 - 支持Coil图片加载器
@@ -23,11 +22,8 @@
 
 ## 动图效果
 
-
 <img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_1.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_2.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_3.gif?raw=true" width="200">
 <img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_4.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_5.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_6.gif?raw=true" width="200">
-
-
 
 # 开始
 
@@ -54,24 +50,23 @@ implementation "com.github.mikaelzero.mojito:GlideImageLoader:$mojito_version"
 implementation "com.github.mikaelzero.mojito:FrescoImageLoader:$mojito_version"
 ```
 
-
 ## 初始化
 
 ```kotlin
 // in your application
 Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
+    GlideImageLoader.with(this),
+    SketchImageLoadFactory()
+)
 
 //or
 
 //YourMojitoConfig:IMojitoConfig
 Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory(),
-            YourMojitoConfig()
-        )
+    GlideImageLoader.with(this),
+    SketchImageLoadFactory(),
+    YourMojitoConfig()
+)
 ```
 
 ## 开始使用
@@ -88,57 +83,46 @@ Mojito.with(context)
 ## RecyclerView
 
 ```kotlin
-Mojito.with(context)
-    .urls(SourceUtil.getNormalImages())
-    .position(position)
-    .views(recyclerView, R.id.srcImageView)
-    .autoLoadTarget(false)
-    .setProgressLoader(object : InstanceLoader<IProgress> {
-        override fun providerInstance(): IProgress {
-            return DefaultPercentProgress()
-        }
-    })
-    .setOnMojitoListener(object : SimpleMojitoViewCallback() {
-        override fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int) {
-            Toast.makeText(context, "long click", Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onClick(view: View, x: Float, y: Float, position: Int) {
+binding.recyclerView.mojito(R.id.srcImageView) {
+    urls(SourceUtil.getNormalImages())
+    position(position)
+    mojitoListener(
+        onClick = { view, x, y, pos ->
             Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()
-            }
-        })
-    .setIndicator(NumIndicator())
-    .start()
+        }
+    )
+    progressLoader {
+        DefaultPercentProgress()
+    }
+    setIndicator(NumIndicator())
+}
 ```
 
 ## 单个 View
 
 ```kotlin
- Mojito.with(context)
-    .urls(SourceUtil.getSingleImage())
-    .views(singleIv)
-    .start()
+binding.longHorIv.mojito(SourceUtil.getLongHorImage())
 ```
 
 ## 无 View
 
 ```kotlin
- Mojito.with(context)
-    .urls(SourceUtil.getNormalImages())
-    .start()
+ Mojito.start(context) {
+    urls(SourceUtil.getNormalImages())
+}
 ```
 
 ## 视频 View or 视频/图片 混合View
 
 ```kotlin
-Mojito.with(context)
-    .urls(SourceUtil.getVideoImages(), SourceUtil.getVideoTargetImages())
-    .setMultiTargetEnableLoader(object : MultiTargetEnableLoader {
+Mojito.start(context) {
+    urls(SourceUtil.getVideoImages(), SourceUtil.getVideoTargetImages())
+    setMultiTargetEnableLoader(object : MultiTargetEnableLoader {
         override fun providerEnable(position: Int): Boolean {
             return position != 1
         }
     })
-    .setMultiContentLoader(object : MultiContentLoader {
+    setMultiContentLoader(object : MultiContentLoader {
         override fun providerLoader(position: Int): ImageViewLoadFactory {
             return if (position == 1) {
                 ArtLoadFactory()
@@ -147,9 +131,9 @@ Mojito.with(context)
             }
         }
     })
-    .position(position)
-    .views(recyclerView, R.id.srcImageView)
-    .start()
+    position(position)
+    views(recyclerView, R.id.srcImageView)
+}
 ```
 
 ## Callback回调
@@ -192,10 +176,9 @@ Mojito.with(context)
 | views|  1. recylclerView,imageViewId <br> 2. single view <br> 3. multi views|
 | autoLoadTarget |  默认为true，如果你设置了原图的url并且设置了autoLoadTarget(false)<br>你需要使用setFragmentCoverLoader来自定义view|
 | setProgressLoader|  当你设置了 autoLoadTarget false 才会生效|
-| setIndicator | 可以选择 NumIndicator  或者 CircleIndexIndicator|
+| setIndicator | 可以选择 NumIndicator 或者 CircleIndexIndicator|
 | setActivityCoverLoader |  自定义Activity的覆盖层view|
 |setMultiContentLoader | 如果使用视频和图片混合模式，需要设置 ImageViewLoadFactory|
-
 
 ## Thanks
 

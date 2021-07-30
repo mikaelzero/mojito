@@ -10,11 +10,8 @@
 
 ## GIf Preview
 
-
 <img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_1.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_2.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_3.gif?raw=true" width="200">
 <img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_4.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_5.gif?raw=true" width="200"><img src="https://github.com/MikaelZero/Media/blob/master/mojito_gif_6.gif?raw=true" width="200">
-
-
 
 # Getting started
 
@@ -41,24 +38,23 @@ implementation "com.github.mikaelzero.mojito:GlideImageLoader:$mojito_version"
 implementation "com.github.mikaelzero.mojito:FrescoImageLoader:$mojito_version"
 ```
 
-
 ## Initialize
 
 ```kotlin
 // in your application
 Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory()
-        )
+    GlideImageLoader.with(this),
+    SketchImageLoadFactory()
+)
 
 //or
 
 //YourMojitoConfig:IMojitoConfig
 Mojito.initialize(
-            GlideImageLoader.with(this),
-            SketchImageLoadFactory(),
-            YourMojitoConfig()
-        )
+    GlideImageLoader.with(this),
+    SketchImageLoadFactory(),
+    YourMojitoConfig()
+)
 ```
 
 ## Start
@@ -75,57 +71,46 @@ Mojito.with(context)
 ## RecyclerView
 
 ```kotlin
-Mojito.with(context)
-    .urls(SourceUtil.getNormalImages())
-    .position(position)
-    .views(recyclerView, R.id.srcImageView)
-    .autoLoadTarget(false)
-    .setProgressLoader(object : InstanceLoader<IProgress> {
-        override fun providerInstance(): IProgress {
-            return DefaultPercentProgress()
-        }
-    })
-    .setOnMojitoListener(object : SimpleMojitoViewCallback() {
-        override fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int) {
-            Toast.makeText(context, "long click", Toast.LENGTH_SHORT).show()
-        }
-
-        override fun onClick(view: View, x: Float, y: Float, position: Int) {
+binding.recyclerView.mojito(R.id.srcImageView) {
+    urls(SourceUtil.getNormalImages())
+    position(position)
+    mojitoListener(
+        onClick = { view, x, y, pos ->
             Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()
-            }
-        })
-    .setIndicator(NumIndicator())
-    .start()
+        }
+    )
+    progressLoader {
+        DefaultPercentProgress()
+    }
+    setIndicator(NumIndicator())
+}
 ```
 
 ## Single View
 
 ```kotlin
- Mojito.with(context)
-    .urls(SourceUtil.getSingleImage())
-    .views(singleIv)
-    .start()
+binding.longHorIv.mojito(SourceUtil.getLongHorImage())
 ```
 
 ## No View
 
 ```kotlin
- Mojito.with(context)
-    .urls(SourceUtil.getNormalImages())
-    .start()
+ Mojito.start(context) {
+    urls(SourceUtil.getNormalImages())
+}
 ```
 
 ## Video View or Video/Image View
 
 ```kotlin
-Mojito.with(context)
-    .urls(SourceUtil.getVideoImages(), SourceUtil.getVideoTargetImages())
-    .setMultiTargetEnableLoader(object : MultiTargetEnableLoader {
+Mojito.start(context) {
+    urls(SourceUtil.getVideoImages(), SourceUtil.getVideoTargetImages())
+    setMultiTargetEnableLoader(object : MultiTargetEnableLoader {
         override fun providerEnable(position: Int): Boolean {
             return position != 1
         }
     })
-    .setMultiContentLoader(object : MultiContentLoader {
+    setMultiContentLoader(object : MultiContentLoader {
         override fun providerLoader(position: Int): ImageViewLoadFactory {
             return if (position == 1) {
                 ArtLoadFactory()
@@ -134,9 +119,9 @@ Mojito.with(context)
             }
         }
     })
-    .position(position)
-    .views(recyclerView, R.id.srcImageView)
-    .start()
+    position(position)
+    views(recyclerView, R.id.srcImageView)
+}
 ```
 
 ## Callback
@@ -182,7 +167,6 @@ Mojito.with(context)
 | setIndicator | you can choose NumIndicator  or CircleIndexIndicator|
 | setActivityCoverLoader |  custom cover layout|
 |setMultiContentLoader | if you need both of video and image ,provider different  ImageViewLoadFactory|
-
 
 ## Thanks
 

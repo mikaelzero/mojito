@@ -3,12 +3,10 @@ package net.mikaelzero.app.stagger
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import kotlinx.android.synthetic.main.activity_stagger.*
 import net.mikaelzero.app.R
 import net.mikaelzero.app.SourceUtil
+import net.mikaelzero.app.databinding.ActivityStaggerBinding
 import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 /**
  * @Author:         MikaelZero
@@ -16,19 +14,22 @@ import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
  * @Description:
  */
 class StaggerActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityStaggerBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_stagger)
-        recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
+        binding = ActivityStaggerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.recyclerView.layoutManager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
         val adapter = StaggerAdapter()
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         adapter.setList(SourceUtil.getNormalImages())
         adapter.setOnItemClickListener { adapter, view, position ->
-            Mojito.with(this)
-                .urls(SourceUtil.getNormalImages())
-                .position(position)
-                .views(recyclerView, R.id.srcImageView)
-                .start()
+            Mojito.start(this) {
+                urls(SourceUtil.getNormalImages())
+                position(position)
+                views(binding.recyclerView, R.id.srcImageView)
+            }
+
         }
     }
 }

@@ -4,43 +4,38 @@ import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import kotlinx.android.synthetic.main.activity_target.*
+import net.mikaelzero.app.databinding.ActivityCoverBinding
 import net.mikaelzero.mojito.Mojito
 import net.mikaelzero.mojito.impl.DefaultPercentProgress
 import net.mikaelzero.mojito.impl.DefaultTargetFragmentCover
-import net.mikaelzero.mojito.interfaces.IProgress
-import net.mikaelzero.mojito.loader.FragmentCoverLoader
-import net.mikaelzero.mojito.loader.InstanceLoader
 
 class ActivityCoverActivity : AppCompatActivity() {
     var context: Context? = null
-
+    private lateinit var binding: ActivityCoverBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         context = this
-        setContentView(R.layout.activity_cover)
-        recyclerView.layoutManager = GridLayoutManager(this, 3)
+        binding = ActivityCoverBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
         val adapter = ImageAdapter()
         adapter.setList(SourceUtil.getTargetButtonSmall())
-        recyclerView.adapter = adapter
+        binding.recyclerView.adapter = adapter
         adapter.setOnItemClickListener { adapter, view, position ->
-            Mojito.with(context)
-                .urls(SourceUtil.getTargetButtonSmall(), SourceUtil.getTargetButtonTarget())
-                .position(position)
-                .views(recyclerView, R.id.srcImageView)
-                .autoLoadTarget(false)
-                .setActivityCoverLoader(BilibiliActivityCoverLoader())
-                .setFragmentCoverLoader(object : InstanceLoader<FragmentCoverLoader> {
-                    override fun providerInstance(): FragmentCoverLoader {
-                        return DefaultTargetFragmentCover()
-                    }
-                })
-                .setProgressLoader(object : InstanceLoader<IProgress> {
-                    override fun providerInstance(): IProgress {
-                        return DefaultPercentProgress()
-                    }
-                })
-                .start()
+            Mojito.start(this) {
+                urls(SourceUtil.getTargetButtonSmall(), SourceUtil.getTargetButtonTarget())
+                position(position)
+                views(binding.recyclerView, R.id.srcImageView)
+                autoLoadTarget(false)
+                setActivityCoverLoader(BilibiliActivityCoverLoader())
+                fragmentCoverLoader {
+                    DefaultTargetFragmentCover()
+                }
+                progressLoader {
+                    DefaultPercentProgress()
+                }
+            }
+
         }
 
     }

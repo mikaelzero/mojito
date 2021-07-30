@@ -1,22 +1,11 @@
 package net.mikaelzero.coilimageloader
 
-import android.content.Context
 import android.graphics.drawable.Drawable
 import net.mikaelzero.coilimageloader.ProgressSupport.expect
 import net.mikaelzero.coilimageloader.ProgressSupport.forget
-import java.io.File
 
 
-abstract class ImageDownloadTarget constructor(
-    private val context: Context,
-    private val mUrl: String,
-) : coil.target.Target, ProgressSupport.ProgressListener {
-    private var sCounter = 0
-    private val mTempFile: File
-
-    init {
-        mTempFile = File(context.cacheDir, System.currentTimeMillis().toString() + "_" + nextCounter())
-    }
+abstract class ImageDownloadTarget constructor(private val mUrl: String) : coil.target.Target, ProgressSupport.ProgressListener {
 
     override fun onError(error: Drawable?) {
         super.onError(error)
@@ -34,9 +23,4 @@ abstract class ImageDownloadTarget constructor(
     }
 
 
-    @Synchronized
-    fun nextCounter(): Int {
-        sCounter++
-        return sCounter
-    }
 }

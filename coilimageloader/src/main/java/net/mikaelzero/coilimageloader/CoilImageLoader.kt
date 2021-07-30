@@ -1,10 +1,10 @@
 package net.mikaelzero.coilimageloader
 
+import android.content.ContentResolver
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
-import androidx.core.net.toFile
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
@@ -16,8 +16,9 @@ import okhttp3.Cache
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
+import kotlin.collections.set
+
 
 /**
  * @Author:         MikaelZero
@@ -25,6 +26,12 @@ import java.util.HashMap
  * @Description:
  */
 class CoilImageLoader private constructor(val context: Context) : ImageLoader {
+
+    private val SCHEMES = setOf(
+        ContentResolver.SCHEME_FILE,
+        ContentResolver.SCHEME_ANDROID_RESOURCE,
+        ContentResolver.SCHEME_CONTENT
+    )
 
     private fun getImageLoader(context: Context): coil.ImageLoader {
         return coil.ImageLoader.Builder(context)
@@ -69,7 +76,7 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
         val request = ImageRequest.Builder(context)
             .data(uri)
             .memoryCacheKey(uri.toString())
-            .target(object : ImageDownloadTarget(context, uri?.toString().orEmpty()) {
+            .target(object : ImageDownloadTarget(uri?.toString().orEmpty()) {
                 override fun onSuccess(result: Drawable) {
                     super.onSuccess(result)
                     val resource = uri.getCoilCacheFile()
@@ -111,8 +118,8 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
     }
 
     fun Uri?.getCoilCacheFile(): File? {
-        if (this?.scheme == "file" || this?.scheme == "content") {
-            if (this.path == null) {
+        if (SCHEMES.contains(this?.scheme)) {
+            if (this?.path == null) {
                 return null
             }
             return File(this.path!!)

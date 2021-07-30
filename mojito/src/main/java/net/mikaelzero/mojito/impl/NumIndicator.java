@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.widget.ViewPager2;
 
 import net.mikaelzero.mojito.interfaces.IIndicator;
 import net.mikaelzero.mojito.tools.Utils;
@@ -44,10 +45,10 @@ public class NumIndicator implements IIndicator {
     }
 
     @Override
-    public void onShow(ViewPager viewPager) {
+    public void onShow(ViewPager2 viewPager) {
         numTv.setVisibility(View.VISIBLE);
         if (viewPager.getAdapter() != null) {
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -55,16 +56,15 @@ public class NumIndicator implements IIndicator {
 
                 @Override
                 public void onPageSelected(int position) {
-                    String str = (position + 1) + "/" + viewPager.getAdapter().getCount();
+                    String str = (position + 1) + "/" + viewPager.getAdapter().getItemCount();
                     numTv.setText(str);
                 }
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
-
                 }
             });
-            String firstStr = (viewPager.getCurrentItem() + 1) + "/" + viewPager.getAdapter().getCount();
+            String firstStr = (viewPager.getCurrentItem() + 1) + "/" + viewPager.getAdapter().getItemCount();
             numTv.setText(firstStr);
         }
     }
