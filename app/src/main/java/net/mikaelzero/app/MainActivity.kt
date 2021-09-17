@@ -142,11 +142,11 @@ class MainActivity : AppCompatActivity() {
             Glide.get(this).clearMemory()
             Thread { Glide.get(this).clearDiskCache() }.start()
             GlideImageLoader.with(applicationContext).cleanCache()
-            val imagePipeline = Fresco.getImagePipeline()
-            imagePipeline.clearMemoryCaches()
-            imagePipeline.clearDiskCaches()
-            imagePipeline.clearCaches()
-            FrescoImageLoader.with(applicationContext).cleanCache()
+//            val imagePipeline = Fresco.getImagePipeline()
+//            imagePipeline.clearMemoryCaches()
+//            imagePipeline.clearDiskCaches()
+//            imagePipeline.clearCaches()
+//            FrescoImageLoader.with(applicationContext).cleanCache()
         }
     }
 

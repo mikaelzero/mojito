@@ -23,6 +23,6 @@ dependencies {
     implementation(mojito.Library.ANDROIDX_RECYCLER_VIEW)
     implementation(mojito.Library.KOTLINX_STDLIB)
     implementation("com.gyf.immersionbar:immersionbar:3.0.0")
-    implementation("androidx.exifinterface:exifinterface:1.3.2")
+    implementation("androidx.exifinterface:exifinterface:1.3.3")
     implementation("androidx.viewpager2:viewpager2:1.0.0")
 }

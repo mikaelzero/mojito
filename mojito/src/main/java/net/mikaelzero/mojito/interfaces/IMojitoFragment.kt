@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
  * @Description:
  */
 interface IMojitoFragment {
-    fun providerContext():Fragment?
+    fun providerContext(): Fragment?
     fun loadTargetUrl()
     fun backToMin()
 }

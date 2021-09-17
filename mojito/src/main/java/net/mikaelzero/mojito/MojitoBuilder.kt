@@ -1,15 +1,12 @@
 package net.mikaelzero.mojito
 
-import android.graphics.drawable.Drawable
 import android.view.View
-import android.widget.FrameLayout
 import androidx.annotation.IdRes
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import androidx.viewpager.widget.ViewPager
 import net.mikaelzero.mojito.bean.ActivityConfig
 import net.mikaelzero.mojito.bean.ViewParams
 import net.mikaelzero.mojito.interfaces.*

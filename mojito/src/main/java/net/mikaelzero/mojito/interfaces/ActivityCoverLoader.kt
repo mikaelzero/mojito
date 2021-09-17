@@ -20,5 +20,5 @@ interface ActivityCoverLoader {
      * 手指松开后的状态
      */
     fun fingerRelease(isToMax: Boolean, isToMin: Boolean)
-    fun pageChange(iMojitoFragment: IMojitoFragment, totalSize: Int, position: Int)
+    fun pageChange(totalSize: Int, position: Int)
 }

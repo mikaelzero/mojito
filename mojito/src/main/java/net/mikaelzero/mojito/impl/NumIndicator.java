@@ -45,10 +45,10 @@ public class NumIndicator implements IIndicator {
     }
 
     @Override
-    public void onShow(ViewPager2 viewPager) {
+    public void onShow(ViewPager viewPager) {
         numTv.setVisibility(View.VISIBLE);
         if (viewPager.getAdapter() != null) {
-            viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
                 @Override
                 public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -56,15 +56,16 @@ public class NumIndicator implements IIndicator {
 
                 @Override
                 public void onPageSelected(int position) {
-                    String str = (position + 1) + "/" + viewPager.getAdapter().getItemCount();
+                    String str = (position + 1) + "/" + viewPager.getAdapter().getCount();
                     numTv.setText(str);
                 }
 
                 @Override
                 public void onPageScrollStateChanged(int state) {
+
                 }
             });
-            String firstStr = (viewPager.getCurrentItem() + 1) + "/" + viewPager.getAdapter().getItemCount();
+            String firstStr = (viewPager.getCurrentItem() + 1) + "/" + viewPager.getAdapter().getCount();
             numTv.setText(firstStr);
         }
     }

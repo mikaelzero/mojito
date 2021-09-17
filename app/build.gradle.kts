@@ -5,6 +5,7 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-parcelize")
+    id("com.didi.dokit")
 }
 setupAppModule {
     defaultConfig {
@@ -52,4 +53,7 @@ dependencies {
     implementation(project(":FrescoImageLoader"))
     implementation(project(":SketchImageViewLoader"))
     implementation(project(":coilimageloader"))
+
+    debugImplementation("io.github.didi.dokit:dokitx:3.5.0-beta01")
+    releaseImplementation("io.github.didi.dokit:dokitx-no-op:3.5.0-beta01")
 }

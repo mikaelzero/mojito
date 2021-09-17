@@ -7,7 +7,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import net.mikaelzero.mojito.interfaces.ActivityCoverLoader
 import net.mikaelzero.mojito.interfaces.IMojitoActivity
-import net.mikaelzero.mojito.interfaces.IMojitoFragment
 
 /**
  * @Author:         MikaelZero
@@ -22,7 +21,7 @@ class BilibiliActivityCoverLoader : ActivityCoverLoader {
         numTv = view.findViewById(R.id.numTv)
         val closeIv = view.findViewById<ImageView>(R.id.closeIv)
         closeIv.setOnClickListener {
-            context.getCurrentFragment().backToMin()
+            context.getCurrentFragment()?.backToMin()
         }
     }
 
@@ -39,7 +38,7 @@ class BilibiliActivityCoverLoader : ActivityCoverLoader {
     }
 
     @SuppressLint("SetTextI18n")
-    override fun pageChange(iMojitoFragment: IMojitoFragment, totalSize: Int, position: Int) {
+    override fun pageChange(totalSize: Int, position: Int) {
         numTv?.text = (position + 1).toString() + "/" + totalSize
     }
 

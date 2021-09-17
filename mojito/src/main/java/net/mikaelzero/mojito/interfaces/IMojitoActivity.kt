@@ -8,6 +8,6 @@ import android.content.Context
  * @Description:
  */
 interface IMojitoActivity {
-    fun getCurrentFragment(): IMojitoFragment
+    fun getCurrentFragment(): IMojitoFragment?
     fun getContext():Context
 }

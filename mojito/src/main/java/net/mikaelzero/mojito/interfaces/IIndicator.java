@@ -9,7 +9,7 @@ public interface IIndicator {
 
     void attach(FrameLayout parent);
 
-    void onShow(ViewPager2 viewPager);
+    void onShow(ViewPager viewPager);
 
     /**
      * 拖动的时候  移动的 X 和 Y 距离
