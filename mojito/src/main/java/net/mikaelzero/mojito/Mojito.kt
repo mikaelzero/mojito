@@ -10,6 +10,7 @@ import net.mikaelzero.mojito.interfaces.IMojitoConfig
 import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.loader.ImageLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
+import net.mikaelzero.mojito.tools.scanForActivity
 import net.mikaelzero.mojito.ui.ImageMojitoActivity
 
 
@@ -75,14 +76,5 @@ class Mojito {
             activity?.overridePendingTransition(0, 0)
         }
 
-        private fun scanForActivity(context: Context?): Activity? {
-            if (context == null) return null
-            if (context is Activity) {
-                return context
-            } else if (context is ContextWrapper) {
-                return scanForActivity(context.baseContext)
-            }
-            return null
-        }
     }
 }
