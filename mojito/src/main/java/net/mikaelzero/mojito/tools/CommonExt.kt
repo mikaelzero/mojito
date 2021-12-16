@@ -1,6 +1,10 @@
+@file:JvmName("CommonExt")
+
 package net.mikaelzero.mojito.tools
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.view.View
 
 fun Context?.dp2px(dp: Int): Int {
@@ -46,3 +50,12 @@ fun View?.px2dp(px: Int): Int {
     return (px / scale + 0.5f).toInt()
 }
 
+fun scanForActivity(context: Context?): Activity? {
+    if (context == null) return null
+    if (context is Activity) {
+        return context
+    } else if (context is ContextWrapper) {
+        return scanForActivity(context.baseContext)
+    }
+    return null
+}
