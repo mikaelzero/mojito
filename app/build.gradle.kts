@@ -23,6 +23,16 @@ setupAppModule {
             proguardFiles("proguard-rules.pro")
         }
     }
+    dokitExt {
+        //通用设置
+        comm {
+            networkSwitch = true
+        }
+
+        slowMethod {
+
+        }
+    }
 }
 
 dependencies {
@@ -53,6 +63,7 @@ dependencies {
     implementation(project(":FrescoImageLoader"))
     implementation(project(":SketchImageViewLoader"))
     implementation(project(":coilimageloader"))
+    implementation(project(":PhotoViewImageViewLoader"))
 
     debugImplementation("io.github.didi.dokit:dokitx:3.5.0-beta01")
     releaseImplementation("io.github.didi.dokit:dokitx-no-op:3.5.0-beta01")

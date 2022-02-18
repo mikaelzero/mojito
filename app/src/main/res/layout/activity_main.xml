@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -23,30 +23,30 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/coil"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Coil Loader"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/glide"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Glide Loader"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/fresco"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Fresco Loader"
                     android:textSize="20sp" />
             </RadioGroup>
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
@@ -61,56 +61,56 @@
                 android:orientation="vertical"
                 android:padding="8dp">
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/normal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="基本演示(Normal)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/local"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="本地相册(Local Photo)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/origin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="查看原图(View original photo)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/cover"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Activity 自定义覆盖层(Activity Cover)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/stagger"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="瀑布流(Stagger Layout)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/scenes"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="不同场景下的使用(Different scenes)"
                     android:textSize="20sp" />
 
-                <com.google.android.material.radiobutton.MaterialRadioButton
+                <androidx.appcompat.widget.AppCompatRadioButton
                     android:id="@+id/video"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="视频，视频和图片共用(load Video and image)"
                     android:textSize="20sp" />
             </RadioGroup>
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.cardview.widget.CardView>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/startFb"
@@ -120,7 +120,7 @@
             android:layout_marginBottom="16dp"
             android:src="@drawable/ic_baseline_near_me_24" />
 
-        <com.google.android.material.button.MaterialButton
+        <Button
             android:id="@+id/cacheBt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

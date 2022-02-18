@@ -11,5 +11,6 @@ data class ActivityConfig(
     var position: Int = 0,
     var headerSize: Int = 0,
     var footerSize: Int = 0,
-    var autoLoadTarget: Boolean = true
+    var autoLoadTarget: Boolean = true,
+    var errorDrawableResIdList: HashMap<Int, Int> = hashMapOf()
 ) : Parcelable

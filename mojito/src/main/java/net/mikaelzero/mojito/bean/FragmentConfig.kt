@@ -15,5 +15,6 @@ data class FragmentConfig(
     var viewParams: ViewParams? = null,
     var position: Int,
     var autoLoadTarget: Boolean = true,
-    var showImmediately: Boolean
+    var showImmediately: Boolean,
+    var errorDrawableResId: Int = 0
 ) : Parcelable

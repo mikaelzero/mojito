@@ -17,9 +17,7 @@ dependencies {
     implementation(mojito.Library.KOTLINX_STDLIB)
     implementation(mojito.Library.ANDROIDX_APPCOMPAT)
     implementation(mojito.Library.ANDROIDX_CORE)
-    implementation(mojito.Library.OKHTTP)
-    implementation("me.panpf:sketch-gif:2.7.1")
-    implementation("androidx.exifinterface:exifinterface:1.3.3")
+    implementation("com.github.chrisbanes:PhotoView:2.3.0")
     implementation(project(":mojito"))
 }
 

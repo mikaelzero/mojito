@@ -80,8 +80,6 @@ public class ImageZoomer {
     @NonNull
     private ScaleDragHelper scaleDragHelper;
     @NonNull
-    private ScrollBarHelper scrollBarHelper;
-    @NonNull
     private BlockDisplayer blockDisplayer;
 
     public ImageZoomer(@NonNull ImageView imageView) {
@@ -91,7 +89,6 @@ public class ImageZoomer {
 
         this.tapHelper = new TapHelper(appContext, this);
         this.scaleDragHelper = new ScaleDragHelper(appContext, this);
-        this.scrollBarHelper = new ScrollBarHelper(appContext, this);
         this.blockDisplayer = new BlockDisplayer(appContext, this);
     }
 
@@ -163,7 +160,6 @@ public class ImageZoomer {
         }
 
         blockDisplayer.onDraw(canvas);
-//        scrollBarHelper.onDraw(canvas);    // scrollBarHelper.onDraw 必须在 blockDisplayer.onDraw 之后执行，这样才不会被覆盖掉
     }
 
     /**
@@ -185,7 +181,6 @@ public class ImageZoomer {
 
     void onMatrixChanged() {
         // 在 setImageMatrix 前面执行，省了再执行一次 imageView.invalidate()
-//        scrollBarHelper.onMatrixChanged();
         blockDisplayer.onMatrixChanged();
 
         imageView.setImageMatrix(scaleDragHelper.getDrawMatrix());

@@ -14,8 +14,11 @@ import net.mikaelzero.app.stagger.StaggerActivity
 import net.mikaelzero.app.video.VideoActivity
 import net.mikaelzero.coilimageloader.CoilImageLoader
 import net.mikaelzero.mojito.Mojito
+import net.mikaelzero.mojito.impl.DefaultMojitoConfig
+import net.mikaelzero.mojito.interfaces.IMojitoConfig
 import net.mikaelzero.mojito.loader.fresco.FrescoImageLoader
 import net.mikaelzero.mojito.loader.glide.GlideImageLoader
+import net.mikaelzero.mojito.photoviewimageviewloader.PhotoViewImageLoadFactory
 import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 class MainActivity : AppCompatActivity() {
@@ -42,7 +45,8 @@ class MainActivity : AppCompatActivity() {
                 LoaderType.Coil -> {
                     Mojito.initialize(
                         CoilImageLoader.with(applicationContext),
-                        SketchImageLoadFactory()
+//                        PhotoViewImageLoadFactory()
+                        SketchImageLoadFactory(),
                     )
                 }
                 LoaderType.Glide -> {

@@ -1,10 +1,10 @@
 buildscript {
     apply(from = "buildSrc/plugins.gradle.kts")
     repositories {
+        mavenCentral()
         google()
         maven("https://jitpack.io")
         maven("https://oss.sonatype.org/content/repositories/public")
-        mavenCentral()
         gradlePluginPortal()
     }
     dependencies {
@@ -21,10 +21,10 @@ tasks.register<Delete>(name = "clean") {
 }
 allprojects {
     repositories {
+        mavenCentral()
         google()
         maven("https://jitpack.io")
         maven("https://oss.sonatype.org/content/repositories/public")
-        mavenCentral()
         gradlePluginPortal()
     }
 }

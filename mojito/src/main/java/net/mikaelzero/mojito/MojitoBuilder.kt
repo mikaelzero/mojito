@@ -23,6 +23,7 @@ import net.mikaelzero.mojito.ui.ImageMojitoActivity
 class MojitoBuilder {
     private var originImageUrls: List<String>? = null
     private var targetImageUrls: List<String>? = null
+    private var errorDrawableResIdList = hashMapOf<Int, Int>()
     private var viewParams: List<ViewParams>? = null
     private var position: Int = 0
     private var headerSize: Int = 0
@@ -55,6 +56,11 @@ class MojitoBuilder {
 
     fun autoLoadTarget(data: Boolean) = apply {
         this.autoLoadTarget = data
+    }
+
+    fun errorDrawableResId(pos: Int, res: Int) = apply {
+        errorDrawableResIdList[pos] = res;
+
     }
 
     fun urls(imageUrl: String) = apply {
@@ -280,7 +286,8 @@ class MojitoBuilder {
             position = this.position,
             headerSize = this.headerSize,
             footerSize = this.footerSize,
-            autoLoadTarget = this.autoLoadTarget
+            autoLoadTarget = this.autoLoadTarget,
+            errorDrawableResIdList = this.errorDrawableResIdList
         )
     }
 }

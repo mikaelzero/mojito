@@ -44,7 +44,7 @@ object Library {
 
     const val GLIDE = "com.github.bumptech.glide:glide:4.11.0"
     const val BASE_ADAPTER = "com.github.CymChad:BaseRecyclerViewAdapterHelper:3.0.4"
-    const val IMMERSIONBAR = "com.gyf.immersionbar:immersionbar:3.0.0"
+    const val IMMERSIONBAR = "com.geyifeng.immersionbar:immersionbar:3.2.1"
     const val SWIPELAYOUT = "com.daimajia.swipelayout:library:1.2.0@aar"
     const val FRESCO = "com.facebook.fresco:fresco:2.1.0"
     const val ART_PLAY_CORE = "org.salient.artvideoplayer:artplayer-core:1.1.0"

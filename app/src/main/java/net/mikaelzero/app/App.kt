@@ -4,9 +4,6 @@ import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
 import com.didichuxing.doraemonkit.DoKit
-import net.mikaelzero.mojito.Mojito
-import net.mikaelzero.mojito.loader.glide.GlideImageLoader
-import net.mikaelzero.mojito.view.sketch.SketchImageLoadFactory
 
 
 class App : Application() {

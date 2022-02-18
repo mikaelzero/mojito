@@ -27,7 +27,6 @@ class PreviewActivity : AppCompatActivity() {
         adapter.setList(SourceUtil.getNormalImages())
         binding.recyclerView.adapter = adapter
         adapter.setOnItemClickListener { _, view, position ->
-
             binding.recyclerView.mojito(R.id.srcImageView) {
                 urls(SourceUtil.getNormalImages())
                 position(position, headerSize = 1, footerSize = 1)
@@ -37,6 +36,7 @@ class PreviewActivity : AppCompatActivity() {
                         return DefaultPercentProgress()
                     }
                 })
+                errorDrawableResId(1, R.drawable.comment)
                 mojitoListener(
                     onClick = { view, x, y, pos ->
                         Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()

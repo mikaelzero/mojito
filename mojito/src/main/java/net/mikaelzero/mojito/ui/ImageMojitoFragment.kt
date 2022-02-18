@@ -84,6 +84,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                 ImageMojitoActivity.onMojitoListener?.onClick(view, x, y, fragmentConfig.position)
             }
         })
+        binding.loadingLayout.setOnClickListener {
+            binding.mojitoView.backToMin()
+            ImageMojitoActivity.onMojitoListener?.onClick(view, 0f, 0f, fragmentConfig.position)
+        }
         contentLoader?.onLongTapCallback(object : OnLongTapCallback {
             override fun onLongTap(view: View, x: Float, y: Float) {
                 if (!binding.mojitoView.isDrag) {
@@ -284,7 +288,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     private fun loadImageFail(onlyRetrieveFromCache: Boolean) {
         if (!onlyRetrieveFromCache) {
-            val errorDrawableResId = mojitoConfig().errorDrawableResId()
+            val errorDrawableResId = if (fragmentConfig.errorDrawableResId != 0) fragmentConfig.errorDrawableResId else mojitoConfig().errorDrawableResId()
             if (errorDrawableResId != 0) {
                 mViewLoadFactory?.loadContentFail(showView!!, errorDrawableResId)
             }
@@ -311,7 +315,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
     override fun backToMin() {
-        binding.mojitoView.backToMin()
+        _binding?.mojitoView?.backToMin()
     }
 
     override fun providerContext(): Fragment {
@@ -330,6 +334,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        _binding = null
         mImageLoader?.cancel(showView.hashCode())
     }
 

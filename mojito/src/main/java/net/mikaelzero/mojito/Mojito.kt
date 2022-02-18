@@ -11,6 +11,7 @@ import net.mikaelzero.mojito.interfaces.ImageViewLoadFactory
 import net.mikaelzero.mojito.loader.ImageLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
 import net.mikaelzero.mojito.ui.ImageMojitoActivity
+import java.lang.ref.WeakReference
 
 
 class Mojito {
@@ -75,6 +76,10 @@ class Mojito {
             activity?.overridePendingTransition(0, 0)
         }
 
+        fun finish() {
+            currentActivity?.get()?.backToMin()
+        }
+
         private fun scanForActivity(context: Context?): Activity? {
             if (context == null) return null
             if (context is Activity) {
@@ -84,5 +89,7 @@ class Mojito {
             }
             return null
         }
+
+        var currentActivity: WeakReference<ImageMojitoActivity>? = null
     }
 }

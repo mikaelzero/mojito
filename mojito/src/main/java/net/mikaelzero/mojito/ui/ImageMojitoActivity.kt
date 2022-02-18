@@ -3,11 +3,9 @@ package net.mikaelzero.mojito.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.*
-import androidx.annotation.NonNull
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.gyf.immersionbar.ImmersionBar
 import net.mikaelzero.mojito.Mojito
@@ -21,6 +19,7 @@ import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
+import java.lang.ref.WeakReference
 
 
 class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
@@ -99,7 +98,12 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                         viewPagerBeans[position].viewParams,
                         position,
                         activityConfig.autoLoadTarget,
-                        viewPagerBeans[position].showImmediately
+                        viewPagerBeans[position].showImmediately,
+                        if (activityConfig.errorDrawableResIdList[position] != null) {
+                            activityConfig.errorDrawableResIdList[position]!!
+                        } else {
+                            0
+                        }
                     )
                     val imageFragment = ImageMojitoFragment.newInstance(fragmentConfig)
                     fragmentMap[position] = imageFragment
@@ -127,12 +131,13 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 activityCoverLoader?.pageChange(viewPagerBeans.size, position)
                 onMojitoListener?.onViewPageSelected(position)
             }
-
         })
+        activityCoverLoader?.pageChange(viewPagerBeans.size, activityConfig.position)
         if (!activityConfig.originImageUrls.isNullOrEmpty()) {
             iIndicator?.attach(binding.indicatorLayout)
             iIndicator?.onShow(binding.viewPager)
         }
+        Mojito.currentActivity = WeakReference<ImageMojitoActivity>(this)
     }
 
     fun setViewPagerLock(isLock: Boolean) {
@@ -153,6 +158,9 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         overridePendingTransition(0, 0)
     }
 
+    fun backToMin() {
+        (imageViewPagerAdapter.getItem(binding.viewPager.currentItem) as ImageMojitoFragment).backToMin()
+    }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         return if (keyCode == KeyEvent.KEYCODE_BACK) {

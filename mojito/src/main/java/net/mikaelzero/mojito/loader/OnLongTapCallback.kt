@@ -8,5 +8,5 @@ import android.view.View
  * @Description:
  */
 interface OnLongTapCallback {
-    fun onLongTap(view: View,x:Float,y:Float)
+    fun onLongTap(view: View, x: Float, y: Float)
 }
