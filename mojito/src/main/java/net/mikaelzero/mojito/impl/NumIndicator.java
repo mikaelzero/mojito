@@ -3,16 +3,21 @@ package net.mikaelzero.mojito.impl;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.graphics.Color;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.viewpager.widget.ViewPager;
 import androidx.viewpager2.widget.ViewPager2;
 
 import net.mikaelzero.mojito.interfaces.IIndicator;
+import net.mikaelzero.mojito.tools.CommonExt;
 import net.mikaelzero.mojito.tools.Utils;
 
 import org.w3c.dom.Text;
@@ -30,11 +35,8 @@ public class NumIndicator implements IIndicator {
 
     @Override
     public void attach(FrameLayout parent) {
-        originBottomMargin = Utils.dip2px(parent.getContext(), 16);
-        currentBottomMargin = originBottomMargin;
         FrameLayout.LayoutParams indexLp = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, Utils.dip2px(parent.getContext(), 36));
         indexLp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
-        indexLp.bottomMargin = originBottomMargin;
 
         numTv = new TextView(parent.getContext());
         numTv.setGravity(Gravity.CENTER_VERTICAL);
@@ -42,6 +44,21 @@ public class NumIndicator implements IIndicator {
         numTv.setTextColor(Color.WHITE);
         numTv.setTextSize(16);
         parent.addView(numTv);
+
+        Activity activity = CommonExt.scanForActivity(parent.getContext());
+        if (activity != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(activity.getWindow().getDecorView(), (v, insets) -> {
+                originBottomMargin = insets.getInsets(WindowInsetsCompat.Type.navigationBars()).bottom;
+                currentBottomMargin = originBottomMargin;
+
+                if (numTv != null) {
+                    ViewGroup.MarginLayoutParams currentIndexLp = (ViewGroup.MarginLayoutParams) numTv.getLayoutParams();
+                    currentIndexLp.bottomMargin = originBottomMargin;
+                    numTv.setLayoutParams(currentIndexLp);
+                }
+                return insets;
+            });
+        }
     }
 
     @Override
