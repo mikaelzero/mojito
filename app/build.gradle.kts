@@ -5,7 +5,6 @@ plugins {
     id("com.android.application")
     id("kotlin-android")
     id("kotlin-parcelize")
-    id("com.didi.dokit")
 }
 setupAppModule {
     defaultConfig {
@@ -21,16 +20,6 @@ setupAppModule {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles("proguard-rules.pro")
-        }
-    }
-    dokitExt {
-        //通用设置
-        comm {
-            networkSwitch = true
-        }
-
-        slowMethod {
-
         }
     }
 }

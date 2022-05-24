@@ -97,7 +97,7 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             }
         })
         binding.loadingLayout.setOnClickListener {
-            binding.mojitoView.backToMin()
+            backToMin()
             ImageMojitoActivity.onMojitoListener?.onClick(view, 0f, 0f, fragmentConfig.position)
         }
         contentLoader?.onLongTapCallback(object : OnLongTapCallback {

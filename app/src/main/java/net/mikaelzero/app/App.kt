@@ -3,7 +3,6 @@ package net.mikaelzero.app
 import android.app.Application
 import android.content.Context
 import androidx.multidex.MultiDex
-import com.didichuxing.doraemonkit.DoKit
 
 
 class App : Application() {
@@ -15,6 +14,5 @@ class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        DoKit.Builder(this).build()
     }
 }
