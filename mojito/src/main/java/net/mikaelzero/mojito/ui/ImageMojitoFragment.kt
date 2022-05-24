@@ -1,5 +1,6 @@
 package net.mikaelzero.mojito.ui
 
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -38,7 +39,11 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     private var iProgress: IProgress? = null
     private var fragmentCoverLoader: FragmentCoverLoader? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentImageBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -59,7 +64,10 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         }
         fragmentCoverLoader = ImageMojitoActivity.fragmentCoverLoader?.providerInstance()
         binding.imageCoverLayout.removeAllViews()
-        val fragmentCoverAttachView = fragmentCoverLoader?.attach(this, fragmentConfig.targetUrl == null || fragmentConfig.autoLoadTarget)
+        val fragmentCoverAttachView = fragmentCoverLoader?.attach(
+            this,
+            fragmentConfig.targetUrl == null || fragmentConfig.autoLoadTarget
+        )
         if (fragmentCoverAttachView != null) {
             binding.imageCoverLayout.visibility = View.VISIBLE
             binding.imageCoverLayout.addView(fragmentCoverAttachView)
@@ -75,12 +83,16 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
             if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) 1f else if (fragmentConfig.showImmediately) 1f else 0f
         )
         binding.mojitoView.setOnMojitoViewCallback(this)
-        binding.mojitoView.setContentLoader(contentLoader, fragmentConfig.originUrl, fragmentConfig.targetUrl)
+        binding.mojitoView.setContentLoader(
+            contentLoader,
+            fragmentConfig.originUrl,
+            fragmentConfig.targetUrl
+        )
         showView = contentLoader?.providerRealView()
 
         contentLoader?.onTapCallback(object : OnTapCallback {
             override fun onTap(view: View, x: Float, y: Float) {
-                binding.mojitoView.backToMin()
+                backToMin()
                 ImageMojitoActivity.onMojitoListener?.onClick(view, x, y, fragmentConfig.position)
             }
         })
@@ -91,10 +103,21 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         contentLoader?.onLongTapCallback(object : OnLongTapCallback {
             override fun onLongTap(view: View, x: Float, y: Float) {
                 if (!binding.mojitoView.isDrag) {
-                    ImageMojitoActivity.onMojitoListener?.onLongClick(activity, view, x, y, fragmentConfig.position)
+                    ImageMojitoActivity.onMojitoListener?.onLongClick(
+                        activity,
+                        view,
+                        x,
+                        y,
+                        fragmentConfig.position
+                    )
                 }
             }
         })
+
+        loadImage()
+    }
+
+    private fun loadImage() {
         val isFile: Boolean = File(fragmentConfig.originUrl).isFile
         val uri = if (isFile) {
             Uri.fromFile(File(fragmentConfig.originUrl))
@@ -117,12 +140,21 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
                     if (isDetached || context == null) {
                         return@post
                     }
-                    startAnim(ScreenUtils.getScreenWidth(context), ScreenUtils.getScreenHeight(context), originLoadFail = true, needLoadImageUrl = fragmentConfig.originUrl)
+                    startAnim(
+                        ScreenUtils.getScreenWidth(context),
+                        ScreenUtils.getScreenHeight(context),
+                        originLoadFail = true,
+                        needLoadImageUrl = fragmentConfig.originUrl
+                    )
                 }
             }
         })
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        loadImage()
+    }
 
     private fun startAnim(image: File) {
         val realSizes = getRealSizeFromFile(image)
@@ -130,12 +162,21 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
     }
 
 
-    private fun startAnim(w: Int, h: Int, originLoadFail: Boolean = false, needLoadImageUrl: String = "") {
+    private fun startAnim(
+        w: Int,
+        h: Int,
+        originLoadFail: Boolean = false,
+        needLoadImageUrl: String = ""
+    ) {
         if (!fragmentConfig.showImmediately) {
             ImageMojitoActivity.onMojitoListener?.onStartAnim(fragmentConfig.position)
         }
         if (fragmentConfig.viewParams == null) {
-            binding.mojitoView.showWithoutView(w, h, if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) true else fragmentConfig.showImmediately)
+            binding.mojitoView.showWithoutView(
+                w,
+                h,
+                if (ImageMojitoActivity.hasShowedAnimMap[fragmentConfig.position] == true) true else fragmentConfig.showImmediately
+            )
         } else {
             binding.mojitoView.putData(
                 fragmentConfig.viewParams!!.getLeft(), fragmentConfig.viewParams!!.getTop(),
@@ -148,11 +189,15 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         val targetEnable = if (ImageMojitoActivity.multiContentLoader == null) {
             true
         } else {
-            ImageMojitoActivity.multiContentLoader?.providerEnableTargetLoad(fragmentConfig.position) ?: false
+            ImageMojitoActivity.multiContentLoader?.providerEnableTargetLoad(fragmentConfig.position)
+                ?: false
         }
         //查看原图的情况下  如果缩略图加载失败了  需要先加载缩略图  再根据条件判断是否要去加载原图
         if (originLoadFail && needLoadImageUrl.isNotEmpty()) {
-            loadImageWithoutCache(needLoadImageUrl, fragmentConfig.targetUrl != null && targetEnable)
+            loadImageWithoutCache(
+                needLoadImageUrl,
+                fragmentConfig.targetUrl != null && targetEnable
+            )
         } else if (fragmentConfig.targetUrl != null && targetEnable) {
             replaceImageUrl(fragmentConfig.targetUrl!!)
         } else if (needLoadImageUrl.isNotEmpty()) {
@@ -174,61 +219,69 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
         } else {
             !fragmentConfig.autoLoadTarget
         }
-        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), onlyRetrieveFromCache, object : DefaultImageCallback() {
-            override fun onStart() {
-                handleImageOnStart()
-            }
-
-            override fun onProgress(progress: Int) {
-                handleImageOnProgress(progress)
-            }
-
-            override fun onFail(error: Exception?) {
-                loadImageFail(onlyRetrieveFromCache)
-            }
-
-            override fun onSuccess(image: File) {
-                mainHandler.post {
-                    if (isDetached || context == null) {
-                        return@post
-                    }
-                    handleImageOnSuccess(image)
+        mImageLoader?.loadImage(
+            showView.hashCode(),
+            Uri.parse(url),
+            onlyRetrieveFromCache,
+            object : DefaultImageCallback() {
+                override fun onStart() {
+                    handleImageOnStart()
                 }
-            }
-        })
+
+                override fun onProgress(progress: Int) {
+                    handleImageOnProgress(progress)
+                }
+
+                override fun onFail(error: Exception?) {
+                    loadImageFail(onlyRetrieveFromCache)
+                }
+
+                override fun onSuccess(image: File) {
+                    mainHandler.post {
+                        if (isDetached || context == null) {
+                            return@post
+                        }
+                        handleImageOnSuccess(image)
+                    }
+                }
+            })
     }
 
     /**
      *  如果图片还未加载出来  则加载图片  最后通知修改宽高
      */
     private fun loadImageWithoutCache(url: String, needHandleTarget: Boolean = false) {
-        mImageLoader?.loadImage(showView.hashCode(), Uri.parse(url), false, object : DefaultImageCallback() {
-            override fun onStart() {
-                handleImageOnStart()
-            }
+        mImageLoader?.loadImage(
+            showView.hashCode(),
+            Uri.parse(url),
+            false,
+            object : DefaultImageCallback() {
+                override fun onStart() {
+                    handleImageOnStart()
+                }
 
-            override fun onProgress(progress: Int) {
-                handleImageOnProgress(progress)
-            }
+                override fun onProgress(progress: Int) {
+                    handleImageOnProgress(progress)
+                }
 
-            override fun onFail(error: Exception?) {
-                loadImageFail(false)
-            }
+                override fun onFail(error: Exception?) {
+                    loadImageFail(false)
+                }
 
-            override fun onSuccess(image: File) {
-                mainHandler.post {
-                    if (isDetached || context == null) {
-                        return@post
-                    }
-                    handleImageOnSuccess(image)
-                    val realSizes = getRealSizeFromFile(image)
-                    binding.mojitoView.resetSize(realSizes[0], realSizes[1])
-                    if (needHandleTarget) {
-                        replaceImageUrl(fragmentConfig.targetUrl!!)
+                override fun onSuccess(image: File) {
+                    mainHandler.post {
+                        if (isDetached || context == null) {
+                            return@post
+                        }
+                        handleImageOnSuccess(image)
+                        val realSizes = getRealSizeFromFile(image)
+                        binding.mojitoView.resetSize(realSizes[0], realSizes[1])
+                        if (needHandleTarget) {
+                            replaceImageUrl(fragmentConfig.targetUrl!!)
+                        }
                     }
                 }
-            }
-        })
+            })
     }
 
     private fun handleImageOnStart() {
@@ -288,7 +341,8 @@ class ImageMojitoFragment : Fragment(), IMojitoFragment, OnMojitoViewCallback {
 
     private fun loadImageFail(onlyRetrieveFromCache: Boolean) {
         if (!onlyRetrieveFromCache) {
-            val errorDrawableResId = if (fragmentConfig.errorDrawableResId != 0) fragmentConfig.errorDrawableResId else mojitoConfig().errorDrawableResId()
+            val errorDrawableResId =
+                if (fragmentConfig.errorDrawableResId != 0) fragmentConfig.errorDrawableResId else mojitoConfig().errorDrawableResId()
             if (errorDrawableResId != 0) {
                 mViewLoadFactory?.loadContentFail(showView!!, errorDrawableResId)
             }
