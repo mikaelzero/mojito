@@ -50,7 +50,7 @@ object Library {
     const val ART_PLAY_CORE = "org.salient.artvideoplayer:artplayer-core:1.1.0"
     const val ART_PLAY_IJK = "org.salient.artvideoplayer:artplayer-ijk:1.1.0"
     const val ART_PLAY_V7A = "org.salient.artvideoplayer:artplayer-armv7a:1.1.0"
-    const val COIL = "io.coil-kt:coil:1.3.0"
+    const val COIL = "io.coil-kt:coil:2.1.0"
 
     // TEST
 

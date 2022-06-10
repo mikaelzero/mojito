@@ -8,15 +8,11 @@ import android.os.Build.VERSION.SDK_INT
 import coil.decode.GifDecoder
 import coil.decode.ImageDecoderDecoder
 import coil.decode.SvgDecoder
+import coil.imageLoader
 import coil.request.Disposable
 import coil.request.ImageRequest
-import coil.util.CoilUtils
-import net.mikaelzero.mojito.loader.ImageLoader
-import okhttp3.Cache
-import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import java.io.File
-import java.util.*
 import kotlin.collections.set
 
 
@@ -25,7 +21,7 @@ import kotlin.collections.set
  * @CreateDate:     2021/7/23 11:07 上午
  * @Description:
  */
-class CoilImageLoader private constructor(val context: Context) : ImageLoader {
+class CoilImageLoader private constructor(val context: Context) : net.mikaelzero.mojito.loader.ImageLoader {
 
     private val SCHEMES = setOf(
         ContentResolver.SCHEME_FILE,
@@ -36,17 +32,16 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
     private fun getImageLoader(context: Context): coil.ImageLoader {
         return coil.ImageLoader.Builder(context)
             .crossfade(true)
-            .componentRegistry {
+            .components {
                 if (SDK_INT >= 28) {
-                    add(ImageDecoderDecoder(context))
+                    add(ImageDecoderDecoder.Factory())
                 } else {
-                    add(GifDecoder())
+                    add(GifDecoder.Factory())
                 }
-                add(SvgDecoder(context))
+                add(SvgDecoder.Factory())
             }
             .okHttpClient {
                 OkHttpClient.Builder()
-                    .cache(CoilUtils.createDefaultCache(context))
                     .addInterceptor { chain ->
                         val request = chain.request()
                         val response = chain.proceed(request)
@@ -66,7 +61,7 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
 
     private val mFlyingRequestTargets: MutableMap<Int, Disposable> = HashMap(3)
 
-    override fun loadImage(requestId: Int, uri: Uri?, onlyRetrieveFromCache: Boolean, callback: ImageLoader.Callback?) {
+    override fun loadImage(requestId: Int, uri: Uri?, onlyRetrieveFromCache: Boolean, callback: net.mikaelzero.mojito.loader.ImageLoader.Callback?) {
         val localCache = uri.toString().getCoilCacheFile()
         if (onlyRetrieveFromCache && (localCache == null || !localCache.exists())) {
             callback?.onFail(Exception(""))
@@ -109,14 +104,6 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
         rememberTarget(requestId, imageLoader.enqueue(request))
     }
 
-    private fun String?.toFile(): File? {
-        if (this == null) {
-            return null
-        }
-        val f = File(this)
-        return if (f.exists()) f else null
-    }
-
     fun Uri?.getCoilCacheFile(): File? {
         if (SCHEMES.contains(this?.scheme)) {
             if (this?.path == null) {
@@ -129,9 +116,7 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
     }
 
     fun String?.getCoilCacheFile(): File? {
-        return this?.toFile() ?: this?.toHttpUrlOrNull()?.let { u ->
-            CoilUtils.createDefaultCache(context).directory.listFiles()?.lastOrNull { it.name.endsWith(".1") && it.name.contains(Cache.key(u)) }
-        }
+        return context.imageLoader.diskCache?.get(this.orEmpty())?.data?.toFile()
     }
 
     override fun prefetch(uri: Uri?) {
@@ -164,8 +149,8 @@ class CoilImageLoader private constructor(val context: Context) : ImageLoader {
     }
 
     override fun cleanCache() {
-        getImageLoader(context).memoryCache.clear()
-        CoilUtils.createDefaultCache(context).directory.delete()
+        getImageLoader(context).memoryCache?.clear()
+        context.imageLoader.diskCache?.clear()
     }
 
 

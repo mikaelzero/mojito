@@ -140,8 +140,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         binding.cacheBt.setOnClickListener {
-            imageLoader.memoryCache.clear()
-            CoilUtils.createDefaultCache(this).directory.delete()
+            imageLoader.memoryCache?.clear()
             CoilImageLoader.with(applicationContext).cleanCache()
             Glide.get(this).clearMemory()
             Thread { Glide.get(this).clearDiskCache() }.start()

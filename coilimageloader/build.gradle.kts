@@ -18,8 +18,9 @@ dependencies {
     implementation(mojito.Library.ANDROIDX_APPCOMPAT)
     implementation(mojito.Library.ANDROIDX_CORE)
     implementation(mojito.Library.OKHTTP)
-    implementation("io.coil-kt:coil-base:1.3.0")
-    implementation("io.coil-kt:coil-gif:1.3.0")
-    implementation("io.coil-kt:coil-svg:1.3.0")
+    implementation(mojito.Library.COIL)
+    implementation("io.coil-kt:coil-base:2.1.0")
+    implementation("io.coil-kt:coil-gif:2.1.0")
+    implementation("io.coil-kt:coil-svg:2.1.0")
     implementation(project(":mojito"))
 }
