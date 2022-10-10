@@ -188,7 +188,9 @@ class MojitoBuilder {
     /**
      * fill recycleView
      */
-    private fun fillPlaceHolder(originImageList: MutableList<View?>, totalCount: Int, firstPos: Int, lastPos: Int) {
+    private fun fillPlaceHolder(
+        originImageList: MutableList<View?>, totalCount: Int, firstPos: Int, lastPos: Int
+    ) {
         if (firstPos > 0) {
             for (pos in firstPos downTo 1) {
                 originImageList.add(0, null)
@@ -211,22 +213,29 @@ class MojitoBuilder {
         crossinline onDrag: (view: MojitoView, moveX: Float, moveY: Float) -> Unit = { _, _, _ -> },
         crossinline onLongImageMove: (ratio: Float) -> Unit = {},
         crossinline onViewPageSelected: (position: Int) -> Unit = {},
+        crossinline onDownload: (url: String) -> Unit = {},
     ) = setOnMojitoListener(object : OnMojitoListener {
         override fun onStartAnim(position: Int) = onStartAnim(position)
 
-        override fun onClick(view: View, x: Float, y: Float, position: Int) = onClick(view, x, y, position)
+        override fun onClick(view: View, x: Float, y: Float, position: Int) =
+            onClick(view, x, y, position)
 
-        override fun onLongClick(fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int) = onLongClick(fragmentActivity, view, x, y, position)
+        override fun onLongClick(
+            fragmentActivity: FragmentActivity?, view: View, x: Float, y: Float, position: Int
+        ) = onLongClick(fragmentActivity, view, x, y, position)
 
-        override fun onShowFinish(mojitoView: MojitoView, showImmediately: Boolean) = onShowFinish(mojitoView, showImmediately)
+        override fun onShowFinish(mojitoView: MojitoView, showImmediately: Boolean) =
+            onShowFinish(mojitoView, showImmediately)
 
         override fun onMojitoViewFinish(pagePosition: Int) = onMojitoViewFinish(pagePosition)
 
-        override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) = onDrag(view, moveX, moveY)
+        override fun onDrag(view: MojitoView, moveX: Float, moveY: Float) =
+            onDrag(view, moveX, moveY)
 
         override fun onLongImageMove(ratio: Float) = onLongImageMove(ratio)
 
         override fun onViewPageSelected(position: Int) = onViewPageSelected(position)
+        override fun onDownload(url: String) = onDownload(url)
 
     })
 
@@ -261,7 +270,8 @@ class MojitoBuilder {
     ) = setMultiContentLoader(object : MultiContentLoader {
         override fun providerLoader(position: Int): ImageViewLoadFactory = providerLoader(position)
 
-        override fun providerEnableTargetLoad(position: Int): Boolean = providerEnableTargetLoad(position)
+        override fun providerEnableTargetLoad(position: Int): Boolean =
+            providerEnableTargetLoad(position)
     })
 
     fun setMultiContentLoader(loader: MultiContentLoader) = apply {

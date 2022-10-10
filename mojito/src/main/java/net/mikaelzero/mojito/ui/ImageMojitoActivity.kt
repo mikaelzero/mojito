@@ -2,7 +2,8 @@ package net.mikaelzero.mojito.ui
 
 import android.content.Context
 import android.os.Bundle
-import android.view.*
+import android.view.KeyEvent
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
@@ -32,7 +33,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
     override fun onCreate(savedInstanceState: Bundle?) {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+//        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
         if (Mojito.mojitoConfig().transparentNavigationBar()) {
             ImmersionBar.with(this).transparentBar().init()
         } else {
@@ -88,7 +89,8 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
                 )
             )
         }
-        imageViewPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+        imageViewPagerAdapter = object :
+            FragmentPagerAdapter(supportFragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
             override fun getItem(position: Int): Fragment {
                 val fragment = fragmentMap[position]
                 return if (fragment == null) {
@@ -123,7 +125,11 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
 
             }
 
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
 
             }
 
@@ -138,6 +144,14 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             iIndicator?.onShow(binding.viewPager)
         }
         Mojito.currentActivity = WeakReference<ImageMojitoActivity>(this)
+
+        binding.save.setOnClickListener {
+            fragmentMap[binding.viewPager.currentItem]?.fragmentConfig?.originUrl
+                ?.let { url ->
+                    onMojitoListener?.onDownload(url)
+                }
+
+        }
     }
 
     fun setViewPagerLock(isLock: Boolean) {
