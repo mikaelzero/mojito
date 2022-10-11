@@ -18,5 +18,4 @@ interface OnMojitoListener {
     fun onDrag(view: MojitoView, moveX: Float, moveY: Float)
     fun onLongImageMove(ratio: Float)
     fun onViewPageSelected(position: Int)
-    fun onDownload(url: String)
 }

@@ -27,7 +27,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
-        android:layout_marginTop="50dp"
+        android:padding="20dp"
+        android:layout_marginTop="30dp"
         android:src="@drawable/icon_save"
-        android:layout_marginRight="24dp" />
+        android:layout_marginRight="4dp" />
 </FrameLayout>

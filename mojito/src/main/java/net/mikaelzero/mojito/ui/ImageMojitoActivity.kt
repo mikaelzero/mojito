@@ -20,6 +20,7 @@ import net.mikaelzero.mojito.loader.FragmentCoverLoader
 import net.mikaelzero.mojito.loader.InstanceLoader
 import net.mikaelzero.mojito.loader.MultiContentLoader
 import net.mikaelzero.mojito.tools.DataWrapUtil
+import net.mikaelzero.mojito.tools.GlideDownloadUtils
 import java.lang.ref.WeakReference
 
 
@@ -148,7 +149,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         binding.save.setOnClickListener {
             fragmentMap[binding.viewPager.currentItem]?.fragmentConfig?.originUrl
                 ?.let { url ->
-                    onMojitoListener?.onDownload(url)
+                    GlideDownloadUtils.toDownload(this,url)
                 }
 
         }

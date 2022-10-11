@@ -213,7 +213,6 @@ class MojitoBuilder {
         crossinline onDrag: (view: MojitoView, moveX: Float, moveY: Float) -> Unit = { _, _, _ -> },
         crossinline onLongImageMove: (ratio: Float) -> Unit = {},
         crossinline onViewPageSelected: (position: Int) -> Unit = {},
-        crossinline onDownload: (url: String) -> Unit = {},
     ) = setOnMojitoListener(object : OnMojitoListener {
         override fun onStartAnim(position: Int) = onStartAnim(position)
 
@@ -235,7 +234,6 @@ class MojitoBuilder {
         override fun onLongImageMove(ratio: Float) = onLongImageMove(ratio)
 
         override fun onViewPageSelected(position: Int) = onViewPageSelected(position)
-        override fun onDownload(url: String) = onDownload(url)
 
     })
 
