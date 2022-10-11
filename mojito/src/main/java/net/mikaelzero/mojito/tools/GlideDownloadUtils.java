@@ -74,13 +74,12 @@ public class GlideDownloadUtils {
                 .listener(new RequestListener<File>() {
                     @Override
                     public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<File> target, boolean isFirstResource) {
-                        Toast.makeText(context, "下载失败", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "图片保存到相册成功", Toast.LENGTH_SHORT).show();
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(File resource, Object model, Target<File> target, DataSource dataSource, boolean isFirstResource) {
-                        Toast.makeText(context, "下载成功", Toast.LENGTH_SHORT).show();
                         saveToAlbum(context, resource.getAbsolutePath());
                         return false;
                     }

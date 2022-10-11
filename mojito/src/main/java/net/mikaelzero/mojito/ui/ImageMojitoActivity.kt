@@ -120,6 +120,9 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         }
         binding.viewPager.adapter = imageViewPagerAdapter
         binding.viewPager.setCurrentItem(currentPosition, false)
+        val url = viewPagerBeans[currentPosition].url
+        binding.save.visibility =
+            if (url.startsWith("http")) View.VISIBLE else View.GONE
 
         binding.viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
