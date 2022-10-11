@@ -3,6 +3,7 @@ package net.mikaelzero.mojito.ui
 import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.View
 import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -136,6 +137,9 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
             override fun onPageSelected(position: Int) {
                 activityCoverLoader?.pageChange(viewPagerBeans.size, position)
                 onMojitoListener?.onViewPageSelected(position)
+                val url = fragmentMap[position]?.fragmentConfig?.originUrl
+                binding.save.visibility =
+                    if (url != null && url.startsWith("http")) View.VISIBLE else View.GONE
             }
         })
         activityCoverLoader?.pageChange(viewPagerBeans.size, activityConfig.position)
@@ -148,7 +152,7 @@ class ImageMojitoActivity : AppCompatActivity(), IMojitoActivity {
         binding.save.setOnClickListener {
             fragmentMap[binding.viewPager.currentItem]?.fragmentConfig?.originUrl
                 ?.let { url ->
-                    GlideDownloadUtils.toDownload(this,url)
+                    GlideDownloadUtils.toDownload(this, url)
                 }
 
         }
