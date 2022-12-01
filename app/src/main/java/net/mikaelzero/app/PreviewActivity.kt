@@ -40,6 +40,9 @@ class PreviewActivity : AppCompatActivity() {
                 mojitoListener(
                     onClick = { view, x, y, pos ->
                         Toast.makeText(context, "tap click", Toast.LENGTH_SHORT).show()
+                    },
+                    onClickDownload = {activity,url ->
+                        Toast.makeText(activity, "download tap click", Toast.LENGTH_SHORT).show()
                     }
                 )
                 progressLoader {
